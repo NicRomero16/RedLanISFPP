@@ -1,4 +1,4 @@
-package red;
+package modelo;
 
 import java.util.Objects;
 
@@ -61,5 +61,5 @@ public class Conexion {
 	public String toString() {
 		return "Conexion [equipo1=" + equipo1 + ", equipo2=" + equipo2 + ", tipoCable=" + tipoCable + "]";
 	}
-
 }
+

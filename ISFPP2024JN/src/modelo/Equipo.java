@@ -1,4 +1,4 @@
-package red;
+package modelo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,11 +11,12 @@ public class Equipo {
 	private String modelo;
 	private TipoEquipo tipoEquipo;
 	private Ubicacion ubicacion;
-	private List<String> direccionesIP;
+	private boolean estado;
 	private List<Puerto> puertos;
+	private List<String> direccionesIP;
 
 	public Equipo(String codigo, String descripcion, String marca, String modelo, TipoEquipo tipoEquipo,
-			Ubicacion ubicacion) {
+			Ubicacion ubicacion, boolean estado, List<Puerto> puertos, List<String> direccionesIP) {
 		super();
 		this.codigo = codigo;
 		this.descripcion = descripcion;
@@ -23,8 +24,9 @@ public class Equipo {
 		this.modelo = modelo;
 		this.tipoEquipo = tipoEquipo;
 		this.ubicacion = ubicacion;
-		this.direccionesIP = new ArrayList<String>();
+		this.estado = true;
 		this.puertos = new ArrayList<Puerto>();
+		this.direccionesIP = new ArrayList<String>();
 	}
 
 	public String getDescripcion() {
@@ -89,6 +91,14 @@ public class Equipo {
 
 	public void setDireccionesIP(List<String> direccionesIP) {
 		this.direccionesIP = direccionesIP;
+	}
+
+	public boolean isEstado() {
+		return estado;
+	}
+
+	public void setEstado(boolean estado) {
+		this.estado = estado;
 	}
 
 	@Override

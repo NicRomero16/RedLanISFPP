@@ -1,16 +1,18 @@
-package red;
+package modelo;
 
 import java.util.Objects;
 
-public class TipoEquipo {
+public class TipoPuerto {
 
 	private String codigo;
 	private String descripcion;
+	private int velocidad;
 
-	public TipoEquipo(String codigo, String descripcion) {
+	public TipoPuerto(String codigo, String descripcion, int velocidad) {
 		super();
 		this.codigo = codigo;
 		this.descripcion = descripcion;
+		this.velocidad = velocidad;
 	}
 
 	public String getDescripcion() {
@@ -19,6 +21,14 @@ public class TipoEquipo {
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
+	}
+
+	public int getVelocidad() {
+		return velocidad;
+	}
+
+	public void setVelocidad(int velocidad) {
+		this.velocidad = velocidad;
 	}
 
 	public String getCodigo() {
@@ -42,13 +52,13 @@ public class TipoEquipo {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		TipoEquipo other = (TipoEquipo) obj;
+		TipoPuerto other = (TipoPuerto) obj;
 		return Objects.equals(codigo, other.codigo);
 	}
 
 	@Override
 	public String toString() {
-		return "TipoEquipo [codigo=" + codigo + ", descripcion=" + descripcion + "]";
+		return "TipoPuerto [codigo=" + codigo + ", descripcion=" + descripcion + ", velocidad=" + velocidad + "]";
 	}
 
 }
