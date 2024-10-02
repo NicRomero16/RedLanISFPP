@@ -1,32 +1,30 @@
 package red;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class Red {
-	String nombre;
-	List<Conexion> conexiones;
-	List<Ubicacion> ubicaciones;
-	List<Equipo> equipos;
 
-	public Red(String nombre, List<Conexion> conexiones, List<Ubicacion> ubicaciones, List<Equipo> equipos) {
+	private String nombre;
+	private List<Ubicacion> ubicaciones;
+	private List<Equipo> equipos;
+	private List<Conexion> conexiones;
+
+	public Red(String nombre) {
 		super();
 		this.nombre = nombre;
-		this.conexiones = conexiones;
-		this.ubicaciones = ubicaciones;
-		this.equipos = equipos;
+		this.ubicaciones = new ArrayList<Ubicacion>();
+		this.equipos = new ArrayList<Equipo>();
+		this.conexiones = new ArrayList<Conexion>();
 	}
 
 	public String getNombre() {
 		return nombre;
 	}
 
-	public List<Conexion> getConexiones() {
-		return conexiones;
-	}
-
-	public void setConexiones(List<Conexion> conexiones) {
-		this.conexiones = conexiones;
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
 	}
 
 	public List<Ubicacion> getUbicaciones() {
@@ -45,9 +43,17 @@ public class Red {
 		this.equipos = equipos;
 	}
 
+	public List<Conexion> getConexiones() {
+		return conexiones;
+	}
+
+	public void setConexiones(List<Conexion> conexiones) {
+		this.conexiones = conexiones;
+	}
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(nombre);
+		return Objects.hash(conexiones, equipos, nombre, ubicaciones);
 	}
 
 	@Override
@@ -59,11 +65,13 @@ public class Red {
 		if (getClass() != obj.getClass())
 			return false;
 		Red other = (Red) obj;
-		return Objects.equals(nombre, other.nombre);
+		return Objects.equals(conexiones, other.conexiones) && Objects.equals(equipos, other.equipos)
+				&& Objects.equals(nombre, other.nombre) && Objects.equals(ubicaciones, other.ubicaciones);
 	}
 
 	@Override
 	public String toString() {
-		return "Red [nombre=" + nombre + "]";
+		return "Red [nombre=" + nombre + ", ubicaciones=" + ubicaciones + ", equipos=" + equipos + ", conexiones="
+				+ conexiones + "]";
 	}
 }

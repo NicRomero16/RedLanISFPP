@@ -3,23 +3,16 @@ package red;
 import java.util.Objects;
 
 public class TipoPuerto {
-	String codigo;
-	String descripcion;
-	int velocidad;
+
+	private String codigo;
+	private String descripcion;
+	private int velocidad;
 
 	public TipoPuerto(String codigo, String descripcion, int velocidad) {
 		super();
 		this.codigo = codigo;
 		this.descripcion = descripcion;
 		this.velocidad = velocidad;
-	}
-
-	public String getCodigo() {
-		return codigo;
-	}
-
-	public void setCodigo(String codigo) {
-		this.codigo = codigo;
 	}
 
 	public String getDescripcion() {
@@ -36,6 +29,14 @@ public class TipoPuerto {
 
 	public void setVelocidad(int velocidad) {
 		this.velocidad = velocidad;
+	}
+
+	public String getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(String codigo) {
+		this.codigo = codigo;
 	}
 
 	@Override
