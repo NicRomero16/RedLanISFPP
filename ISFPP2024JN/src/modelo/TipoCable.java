@@ -4,23 +4,23 @@ import java.util.Objects;
 
 public class TipoCable {
 
-	private String cable;
+	private String codigo;
 	private String descripcion;
 	private int velocidad;
 
-	public TipoCable(String cable, String descripcion, int velocidad) {
+	public TipoCable(String codigo, String descripcion, int velocidad) {
 		super();
-		this.cable = cable;
+		this.codigo = codigo;
 		this.descripcion = descripcion;
 		this.velocidad = velocidad;
 	}
 
 	public String getCable() {
-		return cable;
+		return codigo;
 	}
 
 	public void setCable(String cable) {
-		this.cable = cable;
+		this.codigo = cable;
 	}
 
 	public String getDescripcion() {
@@ -41,7 +41,7 @@ public class TipoCable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(cable, descripcion, velocidad);
+		return Objects.hash(codigo, descripcion, velocidad);
 	}
 
 	@Override
@@ -53,12 +53,12 @@ public class TipoCable {
 		if (getClass() != obj.getClass())
 			return false;
 		TipoCable other = (TipoCable) obj;
-		return Objects.equals(cable, other.cable) && Objects.equals(descripcion, other.descripcion)
+		return Objects.equals(codigo, other.codigo) && Objects.equals(descripcion, other.descripcion)
 				&& velocidad == other.velocidad;
 	}
 
 	@Override
 	public String toString() {
-		return "TipoCable [cable=" + cable + ", descripcion=" + descripcion + ", velocidad=" + velocidad + "]";
+		return "TipoCable [codigo=" + codigo + ", descripcion=" + descripcion + ", velocidad=" + velocidad + "]";
 	}
 }

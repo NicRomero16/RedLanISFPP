@@ -11,12 +11,13 @@ public class Equipo {
 	private String modelo;
 	private TipoEquipo tipoEquipo;
 	private Ubicacion ubicacion;
-	private boolean estado;
 	private List<Puerto> puertos;
+	private TipoPuerto tipoPuerto;
 	private List<String> direccionesIP;
+	private boolean estado;
 
 	public Equipo(String codigo, String descripcion, String marca, String modelo, TipoEquipo tipoEquipo,
-			Ubicacion ubicacion, boolean estado, List<Puerto> puertos, List<String> direccionesIP) {
+			Ubicacion ubicacion, List<Puerto> puertos, List<String> direccionesIP, boolean estado) {
 		super();
 		this.codigo = codigo;
 		this.descripcion = descripcion;
@@ -77,6 +78,14 @@ public class Equipo {
 		this.puertos = puertos;
 	}
 
+	public TipoPuerto getTipoPuerto() {
+		return tipoPuerto;
+	}
+
+	public void setTipoPuerto(TipoPuerto tipoPuerto) {
+		this.tipoPuerto = tipoPuerto;
+	}
+
 	public String getCodigo() {
 		return codigo;
 	}
@@ -103,7 +112,7 @@ public class Equipo {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(codigo, descripcion, direccionesIP, marca, modelo, puertos, tipoEquipo, ubicacion);
+		return Objects.hash(codigo);
 	}
 
 	@Override
@@ -115,19 +124,10 @@ public class Equipo {
 		if (getClass() != obj.getClass())
 			return false;
 		Equipo other = (Equipo) obj;
-		return Objects.equals(codigo, other.codigo) && Objects.equals(descripcion, other.descripcion)
-				&& Objects.equals(direccionesIP, other.direccionesIP) && Objects.equals(marca, other.marca)
-				&& Objects.equals(modelo, other.modelo) && Objects.equals(puertos, other.puertos)
-				&& Objects.equals(tipoEquipo, other.tipoEquipo) && Objects.equals(ubicacion, other.ubicacion);
+		return Objects.equals(codigo, other.codigo);
 	}
 
-	@Override
-	public String toString() {
-		return "Equipo [codigo=" + codigo + ", descripcion=" + descripcion + ", marca=" + marca + ", modelo=" + modelo
-				+ ", tipoEquipo=" + tipoEquipo + ", ubicacion=" + ubicacion + ", direccionesIP=" + direccionesIP
-				+ ", puertos=" + puertos + "]";
-	}
-
+	// *//
 	private class Puerto {
 
 		private int cantidad;
@@ -144,36 +144,10 @@ public class Equipo {
 		}
 
 		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + getEnclosingInstance().hashCode();
-			result = prime * result + Objects.hash(cantidad, tipoPuerto);
-			return result;
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			Puerto other = (Puerto) obj;
-			if (!getEnclosingInstance().equals(other.getEnclosingInstance()))
-				return false;
-			return cantidad == other.cantidad && Objects.equals(tipoPuerto, other.tipoPuerto);
-		}
-
-		private Equipo getEnclosingInstance() {
-			return Equipo.this;
-		}
-
-		@Override
 		public String toString() {
 			return "Puerto [cantidad=" + cantidad + ", tipoPuerto=" + tipoPuerto + "]";
 		}
+		// **//
 
 	}
 }
