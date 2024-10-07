@@ -100,6 +100,7 @@ public class CargaDatos {
 		read.useDelimiter("\\s*;\\s*");
 
 		String codigo, descripcion, marca, modelo;
+		String[] puertos,direccionesIP;
 		TipoEquipo tipoEquipo;
 		Ubicacion ubicacion;
 		boolean estado;
@@ -110,6 +111,8 @@ public class CargaDatos {
 			modelo = read.next();
 			tipoEquipo = tipos.get(read.next());
 			ubicacion = ubicaciones.get(read.next());
+			puertos = read.next().split(",");
+			direccionesIP = read.next().split(",");
 			estado = read.nextBoolean();
 			
 		}

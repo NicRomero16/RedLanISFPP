@@ -39,8 +39,8 @@ public class EquipoSecuencialDAO implements EquipoDAO {
 			String linea;
 			while ((linea = br.readLine()) != null) {
 				String[] atributos = linea.split(";");
-				String[] atributos1 = linea.split(",");
-				// equipo.put();
+				// String[] atributos1 = linea.split(",");
+				equipo.put(atributos[0], new Equipo(atributos[0],atributos[1],atributos[2],atributos[3],atributos[4],atributos[5]));
 
 			}
 			// System.out.println(tipoEquipo.toString());
