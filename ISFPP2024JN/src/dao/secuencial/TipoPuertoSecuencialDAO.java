@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Formatter;
 import java.util.FormatterClosedException;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
@@ -63,13 +64,18 @@ public class TipoPuertoSecuencialDAO implements TipoPuertoDAO {
 
 	@Override
 	public void insertar(TipoPuerto tipoPuerto) {
-		// TODO Auto-generated method stub
+		map.put(tipoPuerto.getCodigo(), tipoPuerto);
+		writeToFile(map, name);
+		update = true;
 
 	}
 
 	@Override
 	public void actualizar(TipoPuerto tipoPuerto) {
-		// TODO Auto-generated method stub
+		int pos = map.values();
+		map.values().set(pos, ubicacion);
+		writeToFile(list, name);
+		actualizar = true;
 
 	}
 
@@ -85,6 +91,7 @@ public class TipoPuertoSecuencialDAO implements TipoPuertoDAO {
 		map = readFromFile(name);
 		update = false;
 	}
+		
 		return map;
 	}
 
