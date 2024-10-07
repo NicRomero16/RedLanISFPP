@@ -1,6 +1,6 @@
-package dao.secuencial;
+package dao;
 
-import java.util.List;
+import java.util.Map;
 
 import modelo.TipoCable;
 
@@ -11,6 +11,6 @@ public interface TipoCableDAO {
 
 	void borrar(TipoCable tipoCable);
 
-	List<TipoCable> buscarTodos();
+	Map<String,TipoCable> buscarTodos();
 
 }

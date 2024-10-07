@@ -15,12 +15,12 @@ public class TipoCable {
 		this.velocidad = velocidad;
 	}
 
-	public String getCable() {
+	public String getCodigo() {
 		return codigo;
 	}
 
-	public void setCable(String cable) {
-		this.codigo = cable;
+	public void setCodigo(String codigo) {
+		this.codigo = codigo;
 	}
 
 	public String getDescripcion() {
@@ -61,4 +61,5 @@ public class TipoCable {
 	public String toString() {
 		return "TipoCable [codigo=" + codigo + ", descripcion=" + descripcion + ", velocidad=" + velocidad + "]";
 	}
+
 }

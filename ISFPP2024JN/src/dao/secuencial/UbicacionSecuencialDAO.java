@@ -9,48 +9,47 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
 
-import dao.TipoPuertoDAO;
-import modelo.TipoPuerto;
+import dao.UbicacionDAO;
+import modelo.Ubicacion;
 
-public class TipoPuertoSecuencialDAO implements TipoPuertoDAO {
+public class UbicacionSecuencialDAO implements UbicacionDAO {
 
-	private Map<String, TipoPuerto> map;
+	private Map<String, Ubicacion> map;
 	private String name;
-	private boolean update;// (actualizar)
+	private boolean update;
 
-	public TipoPuertoSecuencialDAO() {
+	public UbicacionSecuencialDAO() {
 		ResourceBundle rb = ResourceBundle.getBundle("secuencial");
-		this.name = rb.getString("tipoPuerto");
-		this.update = true;
+		name = rb.getString("Ubicacion");
+		update = true;
 	}
 
-	private Map<String, TipoPuerto> readFromFile(String file) {
+	private Map<String, Ubicacion> readFromFile(String file) {
 
-		TreeMap<String, TipoPuerto> tipoPuerto = new TreeMap<String, TipoPuerto>();
+		TreeMap<String, Ubicacion> ubicacion = new TreeMap<String, Ubicacion>();
 
 		try (BufferedReader br = new BufferedReader(new FileReader(file))) {
 
 			String linea;
 			while ((linea = br.readLine()) != null) {
 				String[] atributos = linea.split(";");
-				tipoPuerto.put(atributos[0],
-						new TipoPuerto(atributos[0], atributos[1], Integer.parseInt(atributos[2])));
+				ubicacion.put(atributos[0], new Ubicacion(atributos[0], atributos[1]));
 
 			}
-			// System.out.println(tipoPuerto.toString());
+			// System.out.println(ubicacion.toString());
 
 		} catch (Exception ex) {
 			System.out.println("Error al leer el archivo ");
 		}
-		return tipoPuerto;
+		return ubicacion;
 	}
 
-	private void writeToFile(Map<String, TipoPuerto> map, String file) {
+	private void writeToFile(Map<String, Ubicacion> map, String file) {
 		Formatter outFile = null;
 		try {
 			outFile = new Formatter(file);
-			for (TipoPuerto e : map.values()) {
-				outFile.format("%s;%s;%d;\n", e.getCodigo(), e.getDescripcion(), e.getVelocidad());
+			for (Ubicacion e : map.values()) {
+				outFile.format("%s;%s;\n", e.getCodigo(), e.getDescripcion());
 			}
 		} catch (FileNotFoundException fileNotFoundException) {
 			System.err.println("Error creating file.");
@@ -63,34 +62,32 @@ public class TipoPuertoSecuencialDAO implements TipoPuertoDAO {
 	}
 
 	@Override
-	public void insertar(TipoPuerto tipoPuerto) {
-		map.put(tipoPuerto.getCodigo(), tipoPuerto);
+	public void insertar(Ubicacion ubicacion) {
+		map.put(ubicacion.getCodigo(), ubicacion);
+		writeToFile(map, name);
+		update = true;}
+
+	@Override
+	public void actualizar(Ubicacion ubicacion) {
+		map.put(ubicacion.getCodigo(), ubicacion);
 		writeToFile(map, name);
 		update = true;
 	}
 
 	@Override
-	public void actualizar(TipoPuerto tipoPuerto) {
-		map.put(tipoPuerto.getCodigo(), tipoPuerto);
-		writeToFile(map, name);
-		update = true;
-	}
-
-	@Override
-	public void borrar(TipoPuerto tipoPuerto) {
-		map.remove(tipoPuerto.getCodigo(), tipoPuerto);
+	public void borrar(Ubicacion ubicacion) {
+		map.remove(ubicacion.getCodigo(), ubicacion);
 		writeToFile(map, name);
 		update = true;
 
 	}
 
 	@Override
-	public Map<String, TipoPuerto> buscarTodos() {
+	public Map<String, Ubicacion> buscarTodos() {
 		if (update) {
 			map = readFromFile(name);
 			update = false;
 		}
 		return map;
 	}
-
 }
