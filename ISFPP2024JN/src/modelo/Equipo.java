@@ -12,18 +12,16 @@ public class Equipo {
 	private TipoEquipo tipoEquipo;
 	private Ubicacion ubicacion;
 	private List<Puerto> puertos;
-	private TipoPuerto tipoPuerto;
 	private List<String> direccionesIP;
 	private boolean estado;
 
-	public Equipo(String codigo, String descripcion, String marca, String modelo, TipoEquipo tipoEquipo,
-			Ubicacion ubicacion, List<Puerto> puertos, List<String> direccionesIP, boolean estado) {
+	public Equipo(String codigo, String descripcion, String marca, String modelo, Ubicacion ubicacion,
+			List<Puerto> puertos, List<String> direccionesIP, boolean estado) {
 		super();
 		this.codigo = codigo;
 		this.descripcion = descripcion;
 		this.marca = marca;
 		this.modelo = modelo;
-		this.tipoEquipo = tipoEquipo;
 		this.ubicacion = ubicacion;
 		this.estado = true;
 		this.puertos = new ArrayList<Puerto>();
@@ -78,14 +76,6 @@ public class Equipo {
 		this.puertos = puertos;
 	}
 
-	public TipoPuerto getTipoPuerto() {
-		return tipoPuerto;
-	}
-
-	public void setTipoPuerto(TipoPuerto tipoPuerto) {
-		this.tipoPuerto = tipoPuerto;
-	}
-
 	public String getCodigo() {
 		return codigo;
 	}
@@ -127,11 +117,21 @@ public class Equipo {
 		return Objects.equals(codigo, other.codigo);
 	}
 
+	public void CrearPuerto(int cantidad, TipoPuerto tipoPuerto) {
+		this.puertos.add(new Puerto(cantidad, tipoPuerto));
+	}
+
 	// *//
 	private class Puerto {
 
 		private int cantidad;
 		private TipoPuerto tipoPuerto;
+
+		private Puerto(int cantidad, TipoPuerto tipoPuerto) {
+
+			this.cantidad = cantidad;
+			this.tipoPuerto = tipoPuerto;
+		}
 
 		@SuppressWarnings("unused")
 		private int getCantidad() {

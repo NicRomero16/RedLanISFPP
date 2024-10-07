@@ -1,7 +1,10 @@
 package datos;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Scanner;
 import java.util.TreeMap;
 import java.lang.String;
@@ -14,48 +17,42 @@ import modelo.Ubicacion;
 
 public class Dato {
 
-	// ArchivoTexto = ruta del archivo
-	public static TreeMap<String, TipoPuerto> cargarTipoPuerto(String archivoTipoPuerto) throws FileNotFoundException {
 
-		Scanner read;
+	public static TreeMap<String, TipoPuerto> cargarTipoPuerto(String archivoTipoPuerto) throws IOException {
+		CargarParametros.parametros();
 		TreeMap<String, TipoPuerto> tipoPuerto = new TreeMap<String, TipoPuerto>();
 
-		read = new Scanner(new File(archivoTipoPuerto));
-		read.useDelimiter("\\s*;\\s*");
+		try (BufferedReader br = new BufferedReader(new FileReader(archivoTipoPuerto))) {
 
-		String codigo, descripcion, velocidad;
-		while (read.hasNext()) {
-			codigo = read.next();
-			descripcion = read.next();
-			velocidad = read.next();
-
-			tipoPuerto.put(codigo, new TipoPuerto(codigo, descripcion, Integer.parseInt(velocidad)));
+			String linea;
+			while ((linea = br.readLine()) != null) {
+				String[] atributos = linea.split(";");
+			//	String[] atributos1 = atributos[3].split(",");
+				tipoPuerto.put(atributos[0], new TipoPuerto(atributos[0], atributos[1],Integer.parseInt(atributos[2])));
+			}
+		} catch (Exception ex) {
+			System.out.println("Error al leer el archivo " + archivoTipoPuerto);
 		}
-		read.close();
 
 		return tipoPuerto;
-
 	}
 
-	public static TreeMap<String, TipoEquipo> cargarTipoEquipo(String archivoTipoPuerto) throws FileNotFoundException {
-
-		Scanner read;
+	public static TreeMap<String, TipoEquipo> cargarTipoEquipo(String archivoTipoPuerto) throws IOException {
+		CargarParametros.parametros();
 		TreeMap<String, TipoEquipo> tipoEquipo = new TreeMap<String, TipoEquipo>();
-
-		read = new Scanner(new File(archivoTipoPuerto));
-		read.useDelimiter("\\s*;\\s*");
-
-		String codigo, descripcion;
-		while (read.hasNext()) {
-			codigo = read.next();
-			descripcion = read.next();
-			tipoEquipo.put(codigo, new TipoEquipo(codigo, descripcion));
+		
+		try(BufferedReader br = new BufferedReader(new FileReader(archivoTipoPuerto))){
+			String linea;
+			while ((linea = br.readLine()) != null) {
+				String [] atributos = linea.split(";");
+				tipoEquipo.put(atributos[0],new TipoEquipo(atributos[0],atributos[1]));
+			}
+		}
+		catch (Exception ex) {
+			System.out.println("Error al leer el archivo" + archivoTipoPuerto);
 		}
 
-		read.close();
-
 		return tipoEquipo;
-
 	}
 
 	public static TreeMap<String, TipoCable> cargarTipoCable(String archivoTipoCable) throws FileNotFoundException {
@@ -105,7 +102,7 @@ public class Dato {
 		read = new Scanner(new File(archivoEquipo));
 		read.useDelimiter("\\s*;\\s*");
 
-		String codigo, descripcion, marca, modelo,ubicacion;
+		String codigo, descripcion, marca, modelo, ubicacion;
 		String[] tipoEquipo;
 		String[] tipoPuerto;
 		while (read.hasNext()) {
@@ -113,7 +110,6 @@ public class Dato {
 			descripcion = read.next();
 			marca = read.next();
 			modelo = read.next();
-			
 
 		}
 		read.close();
