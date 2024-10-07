@@ -78,7 +78,7 @@ public class TipoPuertoSecuencialDAO implements TipoPuertoDAO {
 
 	@Override
 	public void borrar(TipoPuerto tipoPuerto) {
-		map.remove(tipoPuerto.getCodigo(), tipoPuerto);
+		map.remove(tipoPuerto.getCodigo());
 		writeToFile(map, name);
 		update = true;
 

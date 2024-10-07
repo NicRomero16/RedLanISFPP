@@ -78,7 +78,7 @@ public class TipoCableSecuencialDAO implements TipoCableDAO{
 
 	@Override
 	public void borrar(TipoCable tipoCable) {
-		map.remove(tipoCable.getCodigo(), tipoCable);
+		map.remove(tipoCable.getCodigo());
 		writeToFile(map, name);
 		update = true;
 

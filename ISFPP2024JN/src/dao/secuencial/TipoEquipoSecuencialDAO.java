@@ -77,7 +77,7 @@ public class TipoEquipoSecuencialDAO implements TipoEquipoDAO {
 
 	@Override
 	public void borrar(TipoEquipo tipoEquipo) {
-		map.remove(tipoEquipo.getCodigo(), tipoEquipo);
+		map.remove(tipoEquipo.getCodigo());
 		writeToFile(map, name);
 		update = true;
 

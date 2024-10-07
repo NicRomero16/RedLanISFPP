@@ -76,7 +76,7 @@ public class UbicacionSecuencialDAO implements UbicacionDAO {
 
 	@Override
 	public void borrar(Ubicacion ubicacion) {
-		map.remove(ubicacion.getCodigo(), ubicacion);
+		map.remove(ubicacion.getCodigo());
 		writeToFile(map, name);
 		update = true;
 
