@@ -80,7 +80,7 @@ public class CargaDatos {
 
 		try (BufferedReader br = new BufferedReader(new FileReader(archivoUbicacion))) {
 			String linea;
-			while ((linea = br.readLine()) == null) {
+			while ((linea = br.readLine()) != null) {
 				String[] atributos = linea.split(";");
 				ubicacion.put(atributos[0], new Ubicacion(atributos[0], atributos[1]));
 			}
@@ -100,7 +100,8 @@ public class CargaDatos {
 		read.useDelimiter("\\s*;\\s*");
 
 		String codigo, descripcion, marca, modelo;
-		String[] puertos,direccionesIP;
+		String[] puertos;
+		String[] direccionesIP;
 		TipoEquipo tipoEquipo;
 		Ubicacion ubicacion;
 		boolean estado;
@@ -114,7 +115,7 @@ public class CargaDatos {
 			puertos = read.next().split(",");
 			direccionesIP = read.next().split(",");
 			estado = read.nextBoolean();
-			
+			equipo.put(codigo, new Equipo(codigo, descripcion, marca, modelo, tipoEquipo, ubicacion, estado));
 		}
 		read.close();
 		return equipo;

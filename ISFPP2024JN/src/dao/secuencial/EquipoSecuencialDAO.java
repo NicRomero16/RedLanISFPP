@@ -13,7 +13,7 @@ import modelo.Ubicacion;
 import dao.TipoEquipoDAO;
 import dao.UbicacionDAO;
 
-public class EquipoSecuencialDAO implements EquipoDAO {
+public class EquipoSecue-ncialDAO implements EquipoDAO {
 
 	private TreeMap<String, Equipo> map;
 	private String name;

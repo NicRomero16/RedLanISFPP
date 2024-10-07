@@ -15,17 +15,18 @@ public class Equipo {
 	private List<String> direccionesIP;
 	private boolean estado;
 
-	public Equipo(String codigo, String descripcion, String marca, String modelo, Ubicacion ubicacion,
-			List<Puerto> puertos, List<String> direccionesIP, boolean estado) {
+	public Equipo(String codigo, String descripcion, String marca, String modelo, TipoEquipo tipoEquipo,
+			Ubicacion ubicacion, boolean estado) {
 		super();
 		this.codigo = codigo;
 		this.descripcion = descripcion;
 		this.marca = marca;
 		this.modelo = modelo;
+		this.tipoEquipo = tipoEquipo;
 		this.ubicacion = ubicacion;
-		this.estado = true;
 		this.puertos = new ArrayList<Puerto>();
 		this.direccionesIP = new ArrayList<String>();
+		this.estado = estado;
 	}
 
 	public String getDescripcion() {
@@ -117,7 +118,7 @@ public class Equipo {
 		return Objects.equals(codigo, other.codigo);
 	}
 
-	public void CrearPuerto(int cantidad, TipoPuerto tipoPuerto) {
+	public void agregarPuerto(int cantidad, TipoPuerto tipoPuerto) {
 		this.puertos.add(new Puerto(cantidad, tipoPuerto));
 	}
 
@@ -148,6 +149,13 @@ public class Equipo {
 			return "Puerto [cantidad=" + cantidad + ", tipoPuerto=" + tipoPuerto + "]";
 		}
 		// **//
-
 	}
+
+	@Override
+	public String toString() {
+		return "Equipo [codigo=" + codigo + ", descripcion=" + descripcion + ", marca=" + marca + ", modelo=" + modelo
+				+ ", tipoEquipo=" + tipoEquipo + ", ubicacion=" + ubicacion + ", puertos=" + puertos
+				+ ", direccionesIP=" + direccionesIP + ", estado=" + estado + "]";
+	}
+
 }
