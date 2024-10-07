@@ -1,6 +1,7 @@
 package dao.secuencial;
 
 import java.util.List;
+import java.util.Map;
 
 import modelo.TipoPuerto;
 
@@ -13,6 +14,6 @@ public interface TipoPuertoDAO {
 
 	void borrar(TipoPuerto tipoPuerto);
 
-	List<TipoPuerto> buscarTodos();
+	Map<String,TipoPuerto> buscarTodos();
 
 }
