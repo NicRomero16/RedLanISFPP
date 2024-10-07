@@ -1,36 +1,47 @@
 package dao.secuencial;
 
-import java.util.Map;
+import java.util.TreeMap;
 
 import dao.ConexionDAO;
 import modelo.Conexion;
+import modelo.Equipo;
+import modelo.TipoCable;
 
 public class ConexionSecuencialDAO implements ConexionDAO {
 
+	private TreeMap<String, Conexion> map;
+	private String name;
+	private TreeMap<String, Equipo> equipos;
+	private TreeMap<String, TipoCable> tipoCable;
+	private boolean update;
+
+	private TreeMap<String, Conexion> readFromFile(String file) {
+		return map;
+	}
+
+	private void writeToFile(TreeMap<String, Conexion> map, String file) {
+
+	}
+
 	@Override
 	public void insertar(Conexion conexion) {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void actualizar(Conexion conexion) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void borrar(Conexion conexion) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
-	public Map<String, Conexion> buscarTodos() {
-		// TODO Auto-generated method stub
-		return null;
+	public TreeMap<String, Conexion> buscarTodos() {
+		if (update)
+			map = readFromFile(name);
+		update = false;
+		return map;
 	}
-
-
 
 }

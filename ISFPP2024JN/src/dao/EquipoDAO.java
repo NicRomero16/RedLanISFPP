@@ -1,6 +1,6 @@
 package dao;
 
-import java.util.Map;
+import java.util.TreeMap;
 
 import modelo.Equipo;
 
@@ -11,6 +11,6 @@ public interface EquipoDAO {
 
 	void borrar(Equipo equipo);
 
-	Map<String, Equipo> buscarTodos();
+	TreeMap<String, Equipo> buscarTodos();
 
 }

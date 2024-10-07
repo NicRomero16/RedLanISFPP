@@ -1,6 +1,6 @@
 package dao;
 
-import java.util.Map;
+import java.util.TreeMap;
 
 import modelo.Ubicacion;
 
@@ -11,6 +11,6 @@ public interface UbicacionDAO {
 
 	void borrar(Ubicacion ubicacion);
 
-	Map<String, Ubicacion> buscarTodos();
+	TreeMap<String, Ubicacion> buscarTodos();
 
 }

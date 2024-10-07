@@ -14,7 +14,7 @@ import modelo.TipoCable;
 
 public class TipoCableSecuencialDAO implements TipoCableDAO{
 
-	private Map<String, TipoCable> map;
+	private TreeMap<String, TipoCable> map;
 	private String name;
 	private boolean update;// (actualizar)
 
@@ -24,7 +24,7 @@ public class TipoCableSecuencialDAO implements TipoCableDAO{
 		this.update = true;
 	}
 
-	private Map<String, TipoCable> readFromFile(String file) {
+	private TreeMap<String, TipoCable> readFromFile(String file) {
 
 		TreeMap<String, TipoCable> tipoCable = new TreeMap<String, TipoCable>();
 
@@ -45,7 +45,7 @@ public class TipoCableSecuencialDAO implements TipoCableDAO{
 		return tipoCable;
 	}
 
-	private void writeToFile(Map<String, TipoCable> map, String file) {
+	private void writeToFile(TreeMap<String, TipoCable> map, String file) {
 		Formatter outFile = null;
 		try {
 			outFile = new Formatter(file);
@@ -85,7 +85,7 @@ public class TipoCableSecuencialDAO implements TipoCableDAO{
 	}
 
 	@Override
-	public Map<String, TipoCable> buscarTodos() {
+	public TreeMap<String, TipoCable> buscarTodos() {
 		if (update) {
 			map = readFromFile(name);
 			update = false;

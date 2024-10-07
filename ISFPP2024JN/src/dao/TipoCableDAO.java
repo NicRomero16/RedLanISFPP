@@ -1,6 +1,6 @@
 package dao;
 
-import java.util.Map;
+import java.util.TreeMap;
 
 import modelo.TipoCable;
 
@@ -11,6 +11,6 @@ public interface TipoCableDAO {
 
 	void borrar(TipoCable tipoCable);
 
-	Map<String,TipoCable> buscarTodos();
+	TreeMap<String,TipoCable> buscarTodos();
 
 }

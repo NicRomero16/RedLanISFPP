@@ -14,7 +14,7 @@ import modelo.TipoPuerto;
 
 public class TipoPuertoSecuencialDAO implements TipoPuertoDAO {
 
-	private Map<String, TipoPuerto> map;
+	private TreeMap<String, TipoPuerto> map;
 	private String name;
 	private boolean update;// (actualizar)
 
@@ -24,7 +24,7 @@ public class TipoPuertoSecuencialDAO implements TipoPuertoDAO {
 		this.update = true;
 	}
 
-	private Map<String, TipoPuerto> readFromFile(String file) {
+	private TreeMap<String, TipoPuerto> readFromFile(String file) {
 
 		TreeMap<String, TipoPuerto> tipoPuerto = new TreeMap<String, TipoPuerto>();
 
@@ -45,7 +45,7 @@ public class TipoPuertoSecuencialDAO implements TipoPuertoDAO {
 		return tipoPuerto;
 	}
 
-	private void writeToFile(Map<String, TipoPuerto> map, String file) {
+	private void writeToFile(TreeMap<String, TipoPuerto> map, String file) {
 		Formatter outFile = null;
 		try {
 			outFile = new Formatter(file);
@@ -85,7 +85,7 @@ public class TipoPuertoSecuencialDAO implements TipoPuertoDAO {
 	}
 
 	@Override
-	public Map<String, TipoPuerto> buscarTodos() {
+	public TreeMap<String, TipoPuerto> buscarTodos() {
 		if (update) {
 			map = readFromFile(name);
 			update = false;

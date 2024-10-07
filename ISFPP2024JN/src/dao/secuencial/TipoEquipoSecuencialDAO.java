@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Formatter;
 import java.util.FormatterClosedException;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
@@ -14,7 +15,7 @@ import modelo.TipoEquipo;
 
 public class TipoEquipoSecuencialDAO implements TipoEquipoDAO {
 
-	private Map<String, TipoEquipo> map;
+	private TreeMap<String,TipoEquipo> map;
 	private String name;
 	private boolean update;
 
@@ -24,7 +25,7 @@ public class TipoEquipoSecuencialDAO implements TipoEquipoDAO {
 		update = true;
 	}
 
-	private Map<String, TipoEquipo> readFromFile(String file) {
+	private TreeMap<String, TipoEquipo> readFromFile(String file) {
 
 		TreeMap<String, TipoEquipo> tipoEquipo = new TreeMap<String, TipoEquipo>();
 
@@ -44,7 +45,7 @@ public class TipoEquipoSecuencialDAO implements TipoEquipoDAO {
 		return tipoEquipo;
 	}
 
-	private void writeToFile(Map<String, TipoEquipo> map, String file) {
+	private void writeToFile(TreeMap<String, TipoEquipo> map, String file) {
 		Formatter outFile = null;
 		try {
 			outFile = new Formatter(file);
@@ -84,7 +85,7 @@ public class TipoEquipoSecuencialDAO implements TipoEquipoDAO {
 	}
 
 	@Override
-	public Map<String, TipoEquipo> buscarTodos() {
+	public TreeMap<String, TipoEquipo> buscarTodos() {
 		if (update) {
 			map = readFromFile(name);
 			update = false;

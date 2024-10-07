@@ -14,7 +14,7 @@ import modelo.Ubicacion;
 
 public class UbicacionSecuencialDAO implements UbicacionDAO {
 
-	private Map<String, Ubicacion> map;
+	private TreeMap<String, Ubicacion> map;
 	private String name;
 	private boolean update;
 
@@ -24,7 +24,7 @@ public class UbicacionSecuencialDAO implements UbicacionDAO {
 		update = true;
 	}
 
-	private Map<String, Ubicacion> readFromFile(String file) {
+	private TreeMap<String, Ubicacion> readFromFile(String file) {
 
 		TreeMap<String, Ubicacion> ubicacion = new TreeMap<String, Ubicacion>();
 
@@ -44,7 +44,7 @@ public class UbicacionSecuencialDAO implements UbicacionDAO {
 		return ubicacion;
 	}
 
-	private void writeToFile(Map<String, Ubicacion> map, String file) {
+	private void writeToFile(TreeMap<String, Ubicacion> map, String file) {
 		Formatter outFile = null;
 		try {
 			outFile = new Formatter(file);
@@ -83,7 +83,7 @@ public class UbicacionSecuencialDAO implements UbicacionDAO {
 	}
 
 	@Override
-	public Map<String, Ubicacion> buscarTodos() {
+	public TreeMap<String, Ubicacion> buscarTodos() {
 		if (update) {
 			map = readFromFile(name);
 			update = false;
