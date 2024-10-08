@@ -29,6 +29,14 @@ public class Equipo {
 		this.estado = estado;
 	}
 
+	public void agregarPuerto(int cantidad, TipoPuerto tipoPuerto) {
+		this.puertos.add(new Puerto(cantidad, tipoPuerto));
+	}
+	
+	public void agregarIP(String direccion) {
+		this.direccionesIP.add(direccion);
+	}
+	
 	public String getDescripcion() {
 		return descripcion;
 	}
@@ -118,11 +126,13 @@ public class Equipo {
 		return Objects.equals(codigo, other.codigo);
 	}
 
-	public void agregarPuerto(int cantidad, TipoPuerto tipoPuerto) {
-		this.puertos.add(new Puerto(cantidad, tipoPuerto));
+	@Override
+	public String toString() {
+		return "Equipo [codigo=" + codigo + ", descripcion=" + descripcion + ", marca=" + marca + ", modelo=" + modelo
+				+ ", tipoEquipo=" + tipoEquipo + ", ubicacion=" + ubicacion + ", puertos=" + puertos
+				+ ", direccionesIP=" + direccionesIP + ", estado=" + estado + "]" + "\n\n";
 	}
 
-	// *//
 	private class Puerto {
 
 		private int cantidad;
@@ -149,13 +159,6 @@ public class Equipo {
 			return "Puerto [cantidad=" + cantidad + ", tipoPuerto=" + tipoPuerto + "]";
 		}
 		// **//
-	}
-
-	@Override
-	public String toString() {
-		return "Equipo [codigo=" + codigo + ", descripcion=" + descripcion + ", marca=" + marca + ", modelo=" + modelo
-				+ ", tipoEquipo=" + tipoEquipo + ", ubicacion=" + ubicacion + ", puertos=" + puertos
-				+ ", direccionesIP=" + direccionesIP + ", estado=" + estado + "]";
 	}
 
 }
