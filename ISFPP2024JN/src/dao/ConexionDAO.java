@@ -1,5 +1,6 @@
 package dao;
 
+import java.util.List;
 import java.util.TreeMap;
 
 import modelo.Conexion;
@@ -11,6 +12,6 @@ public interface ConexionDAO {
 
 	void borrar(Conexion conexion);
 
-	TreeMap<String, Conexion> buscarTodos();
+	List<Conexion> buscarTodos();
 
 }
