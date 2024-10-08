@@ -11,6 +11,6 @@ public interface EquipoDAO {
 
 	void borrar(Equipo equipo);
 
-	TreeMap<String, Equipo> buscarTodos();
+	TreeMap<String,Equipo> buscarTodos();
 
 }

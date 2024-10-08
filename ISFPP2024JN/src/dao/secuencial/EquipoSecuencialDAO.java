@@ -1,9 +1,7 @@
 package dao.secuencial;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.util.List;
+import java.util.Collections;
 import java.util.TreeMap;
 import java.util.ResourceBundle;
 import java.util.Scanner;
@@ -30,42 +28,43 @@ public class EquipoSecuencialDAO implements EquipoDAO {
 
 	}
 
-	private TreeMap<String, Equipo> readFromFile(String archivoEquipo) {
+	private TreeMap<String, Equipo> readFromFile(String file) {
 
 		Scanner read;
-		TreeMap<String, Equipo> equipo = new TreeMap<String, Equipo>();
+		TreeMap<String, Equipo> map = new TreeMap<String, Equipo>();
 
-		read = new Scanner(new File(archivoEquipo));
-		read.useDelimiter("\\s*;\\s*");
+		try {
+			read = new Scanner(new File(file));
+			read.useDelimiter("\\s*;\\s*");
 
-		String codigo, descripcion, marca, modelo;
-		String[] puertos;
-		String[] direccionesIP;
-		TipoEquipo tipoEquipo;
-		Ubicacion ubicacion;
-		boolean estado;
-		while (read.hasNext()) {
-			codigo = read.next();
-			descripcion = read.next();
-			marca = read.next();
-			modelo = read.next();
-			tipoEquipo = tiposEquipos.get(read.next());
-			ubicacion = ubicaciones.get(read.next());
-			puertos = read.next().split(",");
-			direccionesIP = read.next().split(",");
-			estado = read.nextBoolean();
-			equipo.put(codigo, new Equipo(codigo, descripcion, marca, modelo, tipoEquipo, ubicacion, estado));
-			
-			for (int i = 0; i < puertos.length; i+=2) {
-				
+			while (read.hasNext()) {
+				String codigo = read.next();
+				String descripcion = read.next();
+				String marca = read.next();
+				String modelo = read.next();
+				TipoEquipo tipoEquipo = tipoEquipos.get(read.next());
+				Ubicacion ubicacion = ubicaciones.get(read.next());
+				String[] puertos = read.next().split(",");
+				String[] direccionesIP = read.next().split(",");
+				Boolean estado = read.nextBoolean();
+				Equipo equipo = new Equipo(codigo, descripcion, marca, modelo, tipoEquipo, ubicacion, estado);
+
+				for (int i = 0; i < puertos.length; i += 2) {
+					TipoPuerto tipoPuerto = tipoPuertos.get(puertos[i]);
+					int cantidad = Integer.parseInt(puertos[i + 1]);
+					equipo.agregarPuerto(cantidad, tipoPuerto);
+				}
+				Collections.addAll(equipo.getDireccionesIP(), direccionesIP);
+				map.put(codigo, equipo);
 			}
+		} catch (Exception ex) {
+			System.out.println("Error al leer el archivo");
 		}
-		read.close();	// System.out.println(tipoEquipo.toString());
-
-	return equipo;
+		return map;
 	}
 
 	private void writeToFile(TreeMap<String, Equipo> map, String file) {
+
 	}
 
 	@Override
@@ -90,10 +89,11 @@ public class EquipoSecuencialDAO implements EquipoDAO {
 	}
 
 	@Override
-	public TreeMap<String, Equipo> buscarTodos() {
-		if (update)
+	public TreeMap<String,Equipo> buscarTodos() {
+		if (update) {
 			map = readFromFile(name);
-		update = false;
+			update = false;
+		}
 		return map;
 	}
 
@@ -126,6 +126,5 @@ public class EquipoSecuencialDAO implements EquipoDAO {
 			tipoPuerto.put(tp.getCodigo(), tp);
 
 		return tipoPuerto;
-
 	}
 }
