@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Formatter;
 import java.util.FormatterClosedException;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
 
@@ -63,9 +62,12 @@ public class UbicacionSecuencialDAO implements UbicacionDAO {
 
 	@Override
 	public void insertar(Ubicacion ubicacion) {
-		map.put(ubicacion.getCodigo(), ubicacion);
-		writeToFile(map, name);
-		update = true;}
+		if (!map.containsKey(ubicacion.getCodigo())) {
+			map.put(ubicacion.getCodigo(), ubicacion);
+			writeToFile(map, name);
+			update = true;
+		}
+	}
 
 	@Override
 	public void actualizar(Ubicacion ubicacion) {
