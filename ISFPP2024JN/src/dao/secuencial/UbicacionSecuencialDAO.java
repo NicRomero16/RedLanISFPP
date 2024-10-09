@@ -19,7 +19,7 @@ public class UbicacionSecuencialDAO implements UbicacionDAO {
 
 	public UbicacionSecuencialDAO() {
 		ResourceBundle rb = ResourceBundle.getBundle("secuencial");
-		name = rb.getString("Ubicacion");
+		name = rb.getString("ubicacion");
 		update = true;
 	}
 

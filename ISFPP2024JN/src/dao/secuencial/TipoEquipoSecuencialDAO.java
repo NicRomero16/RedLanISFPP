@@ -8,12 +8,14 @@ import java.util.FormatterClosedException;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
 
+import Excepciones.NoExisteException;
 import dao.TipoEquipoDAO;
+import modelo.Equipo;
 import modelo.TipoEquipo;
 
 public class TipoEquipoSecuencialDAO implements TipoEquipoDAO {
 
-	private TreeMap<String,TipoEquipo> map;
+	private TreeMap<String, TipoEquipo> map;
 	private String name;
 	private boolean update;
 
@@ -68,10 +70,10 @@ public class TipoEquipoSecuencialDAO implements TipoEquipoDAO {
 	}
 
 	@Override
-	public void actualizar(TipoEquipo tipoEquipo) {
+	public void actualizar(TipoEquipo tipoEquipo) throws NoExisteException{
+		if (!map.containsKey(tipoEquipo.getCodigo()))
+			throw new NoExisteException("El tipo de equipo no existe");
 		map.put(tipoEquipo.getCodigo(), tipoEquipo);
-		writeToFile(map, name);
-		update = true;
 	}
 
 	@Override

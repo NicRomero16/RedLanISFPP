@@ -6,6 +6,9 @@ import java.util.Collections;
 import java.util.Formatter;
 import java.util.FormatterClosedException;
 import java.util.TreeMap;
+
+import Excepciones.NoExisteException;
+
 import java.util.ResourceBundle;
 import java.util.Scanner;
 import modelo.*;
@@ -71,7 +74,8 @@ public class EquipoSecuencialDAO implements EquipoDAO {
 			outFile = new Formatter(file);
 			for (Equipo e : map.values()) {
 				outFile.format("%s;%s;%s;%s;%s;%s;%s;%s;\n", e.getCodigo(), e.getDescripcion(), e.getMarca(),
-						e.getModelo(), e.getTipoEquipo(), e.getUbicacion(), e.getPuertos(), e.getDireccionesIP());
+						e.getModelo(), e.getTipoEquipo().toString(), e.getUbicacion().toString(),
+						e.getPuertos().toString(), e.getDireccionesIP().toString());
 			}
 		} catch (FileNotFoundException fileNotFoundException) {
 			System.err.println("Error creating file.");
@@ -91,10 +95,10 @@ public class EquipoSecuencialDAO implements EquipoDAO {
 	}
 
 	@Override
-	public void actualizar(Equipo equipo) {
+	public void actualizar(Equipo equipo) throws NoExisteException {
+		if (!map.containsKey(equipo.getCodigo()))
+			throw new NoExisteException("El equipo no existe");
 		map.put(equipo.getCodigo(), equipo);
-		writeToFile(map, name);
-		update = true;
 	}
 
 	@Override

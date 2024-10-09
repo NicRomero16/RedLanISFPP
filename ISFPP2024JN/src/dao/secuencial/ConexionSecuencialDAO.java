@@ -63,7 +63,8 @@ public class ConexionSecuencialDAO implements ConexionDAO {
 		try {
 			outFile = new Formatter(file);
 			for (Conexion c : list)
-				outFile.format("%s;%s;%s\n", c.getEquipo1(), c.getEquipo2(), c.getTipoCable());
+				outFile.format("%s;%s;%s\n", c.getEquipo1().toString(), c.getEquipo2().toString(),
+						c.getTipoCable().toString());
 
 		} catch (FileNotFoundException fileNotFoundException) {
 			System.err.println("Error creating file.");
