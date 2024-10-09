@@ -81,18 +81,11 @@ public class Conexion {
 				&& Objects.equals(tipoPuerto2, other.tipoPuerto2);
 	}
 
-	public void leerConexiones() {
-		System.out.println("Equipo1=" + equipo1);
-		System.out.println("Tipo de puerto 1=" + tipoPuerto1);
-		System.out.println("Equipo2=" + equipo2);
-		System.out.println("Tipo de puerto 2=" + tipoPuerto2);
-		System.out.println("Tipo de cable=" + tipoCable);
-	}
-
 	@Override
 	public String toString() {
-		return "\nConexion [\n --equipo1=" + equipo1 + ", tipoPuerto1=" + tipoPuerto1 + ", \n --equipo2=" + equipo2
-				+ ", tipoPuerto2=" + tipoPuerto2 + ", \n --tipoCable=" + tipoCable + "]\n";
+		return "Conexion [equipo1=" + equipo1 + ", tipoPuerto1=" + tipoPuerto1 + ", equipo2=" + equipo2
+				+ ", tipoPuerto2=" + tipoPuerto2 + ", tipoCable=" + tipoCable + "]";
 	}
+
 
 }
