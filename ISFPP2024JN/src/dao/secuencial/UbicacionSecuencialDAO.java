@@ -8,6 +8,8 @@ import java.util.FormatterClosedException;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
 
+import excepciones.ArchivoExistenteException;
+import excepciones.ArchivoInexisteException;
 import dao.UbicacionDAO;
 import modelo.Ubicacion;
 
@@ -61,25 +63,28 @@ public class UbicacionSecuencialDAO implements UbicacionDAO {
 	}
 
 	@Override
-	public void insertar(Ubicacion ubicacion) {
+	public void insertar(Ubicacion ubicacion) throws ArchivoInexisteException {
+		if (map.containsKey(ubicacion.getCodigo()))
+			throw new ArchivoExistenteException("El tipo de ubicacion existe");
+		map.put(ubicacion.getCodigo(), ubicacion);
+		writeToFile(map, name);
+		update = true;
+	}
+
+	@Override
+	public void actualizar(Ubicacion ubicacion) throws ArchivoInexisteException {
 		if (!map.containsKey(ubicacion.getCodigo()))
-			map.put(ubicacion.getCodigo(), ubicacion);
+			throw new ArchivoExistenteException("El tipo de ubicacion no existe");
+		map.put(ubicacion.getCodigo(), ubicacion);
 		writeToFile(map, name);
 		update = true;
 	}
 
 	@Override
-	public void actualizar(Ubicacion ubicacion) {
-		if (map.containsKey(ubicacion.getCodigo()))
-			map.put(ubicacion.getCodigo(), ubicacion);
-		writeToFile(map, name);
-		update = true;
-	}
-
-	@Override
-	public void borrar(Ubicacion ubicacion) {
-		if (map.containsKey(ubicacion.getCodigo()))
-			map.remove(ubicacion.getCodigo());
+	public void borrar(Ubicacion ubicacion) throws ArchivoInexisteException {
+		if (!map.containsKey(ubicacion.getCodigo()))
+			throw new ArchivoExistenteException("El tipo de ubicacion ya existe");
+		map.remove(ubicacion.getCodigo());
 		writeToFile(map, name);
 		update = true;
 	}

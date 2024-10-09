@@ -8,6 +8,8 @@ import java.util.FormatterClosedException;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
 
+import excepciones.ArchivoExistenteException;
+import excepciones.ArchivoInexisteException;
 import dao.TipoPuertoDAO;
 import modelo.TipoPuerto;
 
@@ -62,25 +64,28 @@ public class TipoPuertoSecuencialDAO implements TipoPuertoDAO {
 	}
 
 	@Override
-	public void insertar(TipoPuerto tipoPuerto) {
+	public void insertar(TipoPuerto tipoPuerto) throws ArchivoInexisteException {
+		if (map.containsKey(tipoPuerto.getCodigo()))
+			throw new ArchivoExistenteException("El tipo de puerto ya existe");
+		map.put(tipoPuerto.getCodigo(), tipoPuerto);
+		writeToFile(map, name);
+		update = true;
+	}
+
+	@Override
+	public void actualizar(TipoPuerto tipoPuerto) throws ArchivoInexisteException {
 		if (!map.containsKey(tipoPuerto.getCodigo()))
-			map.put(tipoPuerto.getCodigo(), tipoPuerto);
+			throw new ArchivoInexisteException("El tipo de puerto no existe");
+		map.put(tipoPuerto.getCodigo(), tipoPuerto);
 		writeToFile(map, name);
 		update = true;
 	}
 
 	@Override
-	public void actualizar(TipoPuerto tipoPuerto) {
-		if (map.containsKey(tipoPuerto.getCodigo()))
-			map.put(tipoPuerto.getCodigo(), tipoPuerto);
-		writeToFile(map, name);
-		update = true;
-	}
-
-	@Override
-	public void borrar(TipoPuerto tipoPuerto) {
-		if (map.containsKey(tipoPuerto.getCodigo()))
-			map.remove(tipoPuerto.getCodigo());
+	public void borrar(TipoPuerto tipoPuerto) throws ArchivoInexisteException {
+		if (!map.containsKey(tipoPuerto.getCodigo()))
+			throw new ArchivoInexisteException("El tipo de puerto no existe");
+		map.remove(tipoPuerto.getCodigo());
 		writeToFile(map, name);
 		update = true;
 	}

@@ -10,6 +10,8 @@ import java.util.ResourceBundle;
 import java.util.Scanner;
 import java.util.TreeMap;
 
+import excepciones.ArchivoExistenteException;
+import excepciones.ArchivoInexisteException;
 import dao.ConexionDAO;
 import dao.EquipoDAO;
 import dao.TipoCableDAO;
@@ -77,26 +79,32 @@ public class ConexionSecuencialDAO implements ConexionDAO {
 	}
 
 	@Override
-	public void insertar(Conexion conexion) {
-		if (!list.contains(conexion))
-			list.add(conexion);
-		writeToFile(list, name);
-		update = true;
-	}
-
-	@Override
-	public void actualizar(Conexion conexion) {
-		int pos = list.indexOf(conexion);
-		if (pos != -1)
-			list.set(pos, conexion);
-		writeToFile(list, name);
-		update = true;
-	}
-
-	@Override
-	public void borrar(Conexion conexion) {
+	public void insertar(Conexion conexion) throws ArchivoInexisteException {
 		if (list.contains(conexion))
-			list.remove(conexion);
+			throw new ArchivoExistenteException("El tipo de conexion ya existe");
+
+		list.add(conexion);
+		writeToFile(list, name);
+		update = true;
+	}
+
+	@Override
+	public void actualizar(Conexion conexion) throws ArchivoInexisteException {
+		int pos = list.indexOf(conexion);
+		if (pos == -1)
+			throw new ArchivoInexisteException("La conexión a actualizar no existe.");
+
+		list.set(pos, conexion);
+		writeToFile(list, name);
+		update = true;
+	}
+
+	@Override
+	public void borrar(Conexion conexion) throws ArchivoInexisteException {
+		if (!list.contains(conexion))
+			throw new ArchivoExistenteException("El tipo de conexion no existe");
+
+		list.remove(conexion);
 		writeToFile(list, name);
 		update = true;
 
