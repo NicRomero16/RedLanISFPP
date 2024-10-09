@@ -18,6 +18,18 @@ public class Red {
 		this.equipos = new ArrayList<Equipo>();
 		this.conexiones = new ArrayList<Conexion>();
 	}
+	
+	public void agregarEquipo(Equipo equipo) {
+		equipos.add(equipo);
+	}
+	
+	public void agregarUbicacion(Ubicacion ubicacion) {
+		ubicaciones.add(ubicacion);
+	}
+	
+	public void agregarConexion(Conexion conexion) {
+		conexiones.add(conexion);
+	}
 
 	public String getNombre() {
 		return nombre;
