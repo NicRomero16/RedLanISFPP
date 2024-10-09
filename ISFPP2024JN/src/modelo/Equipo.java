@@ -124,9 +124,9 @@ public class Equipo {
 
 	@Override
 	public String toString() {
-		return "Equipo [codigo=" + codigo + ", descripcion=" + descripcion + ", marca=" + marca + ", modelo=" + modelo
-				+ ", tipoEquipo=" + tipoEquipo + ", ubicacion=" + ubicacion + ", puertos=" + puertos
-				+ ", direccionesIP=" + direccionesIP + ", estado=" + estado + "]" + "\n\n";
+		return "Equipo [\n codigo=" + codigo + ", \n descripcion=" + descripcion + ", \n marca=" + marca + ", \n modelo=" + modelo
+				+ ", \n tipoEquipo=" + tipoEquipo + ", \n ubicacion=" + ubicacion + ", \n puertos=" + puertos
+				+ ", \n direccionesIP=" + direccionesIP + ", \n estado=" + estado + "]" + "\n\n";
 	}
 
 	private class Puerto {
