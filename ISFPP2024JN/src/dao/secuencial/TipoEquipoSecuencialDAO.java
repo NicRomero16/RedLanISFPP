@@ -8,9 +8,9 @@ import java.util.FormatterClosedException;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
 
-import Excepciones.NoExisteException;
+import Excepciones.ArchivoExistenteException;
+import Excepciones.ArchivoInexisteException;
 import dao.TipoEquipoDAO;
-import modelo.Equipo;
 import modelo.TipoEquipo;
 
 public class TipoEquipoSecuencialDAO implements TipoEquipoDAO {
@@ -54,34 +54,39 @@ public class TipoEquipoSecuencialDAO implements TipoEquipoDAO {
 			}
 		} catch (FileNotFoundException fileNotFoundException) {
 			System.err.println("Error creating file.");
+			return;
 		} catch (FormatterClosedException formatterClosedException) {
 			System.err.println("Error writing to file.");
+			return;
 		} finally {
 			if (outFile != null)
 				outFile.close();
 		}
-	}
-
-	@Override
-	public void insertar(TipoEquipo tipoEquipo) {
-		map.put(tipoEquipo.getCodigo(), tipoEquipo);
-		writeToFile(map, name);
 		update = true;
 	}
 
 	@Override
-	public void actualizar(TipoEquipo tipoEquipo) throws NoExisteException{
-		if (!map.containsKey(tipoEquipo.getCodigo()))
-			throw new NoExisteException("El tipo de equipo no existe");
+	public void insertar(TipoEquipo tipoEquipo) throws ArchivoExistenteException {
+		if (map.containsKey(tipoEquipo.getCodigo()))
+			throw new ArchivoExistenteException("El tipo de equipo ya existe");
 		map.put(tipoEquipo.getCodigo(), tipoEquipo);
+		writeToFile(map, name);
 	}
 
 	@Override
-	public void borrar(TipoEquipo tipoEquipo) {
+	public void actualizar(TipoEquipo tipoEquipo) throws ArchivoInexisteException {
+		if (!map.containsKey(tipoEquipo.getCodigo()))
+			throw new ArchivoInexisteException("El tipo de equipo no existe");
+		map.put(tipoEquipo.getCodigo(), tipoEquipo);
+		writeToFile(map, name);
+	}
+
+	@Override
+	public void borrar(TipoEquipo tipoEquipo) throws ArchivoInexisteException {
+		if (!map.containsKey(tipoEquipo.getCodigo()))
+			throw new ArchivoInexisteException("El tipo de equipo no existe");
 		map.remove(tipoEquipo.getCodigo());
 		writeToFile(map, name);
-		update = true;
-
 	}
 
 	@Override

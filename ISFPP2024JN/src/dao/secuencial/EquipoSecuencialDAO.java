@@ -7,7 +7,8 @@ import java.util.Formatter;
 import java.util.FormatterClosedException;
 import java.util.TreeMap;
 
-import Excepciones.NoExisteException;
+import Excepciones.ArchivoExistenteException;
+import Excepciones.ArchivoInexisteException;
 
 import java.util.ResourceBundle;
 import java.util.Scanner;
@@ -79,33 +80,39 @@ public class EquipoSecuencialDAO implements EquipoDAO {
 			}
 		} catch (FileNotFoundException fileNotFoundException) {
 			System.err.println("Error creating file.");
+			return;
 		} catch (FormatterClosedException formatterClosedException) {
 			System.err.println("Error writing to file.");
+			return;
 		} finally {
 			if (outFile != null)
 				outFile.close();
 		}
-	}
-
-	@Override
-	public void insertar(Equipo equipo) {
-		map.put(equipo.getCodigo(), equipo);
-		writeToFile(map, name);
 		update = true;
 	}
 
 	@Override
-	public void actualizar(Equipo equipo) throws NoExisteException{
-		if (!map.containsKey(equipo.getCodigo())) 
-			throw new NoExisteException("El equipo no existe");
+	public void insertar(Equipo equipo) throws ArchivoExistenteException {
+		if (map.containsKey(equipo.getCodigo()))
+			throw new ArchivoExistenteException("El equipo ya existe");
 		map.put(equipo.getCodigo(), equipo);
+		writeToFile(map, name);
 	}
 
 	@Override
-	public void borrar(Equipo equipo) {
+	public void actualizar(Equipo equipo) throws ArchivoInexisteException {
+		if (!map.containsKey(equipo.getCodigo()))
+			throw new ArchivoInexisteException("El equipo no existe");
+		map.put(equipo.getCodigo(), equipo);
+		writeToFile(map, name);
+	}
+
+	@Override
+	public void borrar(Equipo equipo) throws ArchivoInexisteException {
+		if (!map.containsKey(equipo.getCodigo()))
+			throw new ArchivoInexisteException("El equipo no existe");
 		map.remove(equipo.getCodigo());
 		writeToFile(map, name);
-		update = true;
 	}
 
 	@Override
