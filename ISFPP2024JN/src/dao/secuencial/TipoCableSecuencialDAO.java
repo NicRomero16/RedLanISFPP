@@ -8,9 +8,9 @@ import java.util.FormatterClosedException;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
 
-import Excepciones.NoExisteException;
+import Excepciones.ArchivoExistenteException;
+import Excepciones.ArchivoInexisteException;
 import dao.TipoCableDAO;
-import modelo.Equipo;
 import modelo.TipoCable;
 
 public class TipoCableSecuencialDAO implements TipoCableDAO {
@@ -54,34 +54,39 @@ public class TipoCableSecuencialDAO implements TipoCableDAO {
 			}
 		} catch (FileNotFoundException fileNotFoundException) {
 			System.err.println("Error creating file.");
+			return;
 		} catch (FormatterClosedException formatterClosedException) {
 			System.err.println("Error writing to file.");
+			return;
 		} finally {
 			if (outFile != null)
 				outFile.close();
 		}
-	}
-
-	@Override
-	public void insertar(TipoCable tipoCable) {
-		map.put(tipoCable.getCodigo(), tipoCable);
-		writeToFile(map, name);
 		update = true;
 	}
 
 	@Override
-	public void actualizar(TipoCable tipoCable) throws NoExisteException {
+	public void insertar(TipoCable tipoCable) throws ArchivoExistenteException{
 		if (map.containsKey(tipoCable.getCodigo()))
-			throw new NoExisteException("El tipo de cable no existe");
+			throw new ArchivoExistenteException("El tipo de cable ya existe");
 		map.put(tipoCable.getCodigo(), tipoCable);
+		writeToFile(map, name);
 	}
 
 	@Override
-	public void borrar(TipoCable tipoCable) {
+	public void actualizar(TipoCable tipoCable) throws ArchivoInexisteException{
+		if (!map.containsKey(tipoCable.getCodigo()))
+			throw new ArchivoInexisteException("El tipo de cable no existe");
+		map.put(tipoCable.getCodigo(), tipoCable);
+		writeToFile(map,name);
+	}
+
+	@Override
+	public void borrar(TipoCable tipoCable) throws ArchivoInexisteException{
+		if (!map.containsKey(tipoCable.getCodigo()))
+			throw new ArchivoInexisteException("El tipo de cable no existe");
 		map.remove(tipoCable.getCodigo());
 		writeToFile(map, name);
-		update = true;
-
 	}
 
 	@Override
