@@ -1,7 +1,7 @@
 package controlador;
 
 import java.util.List;
-import interfaz.interfaz;
+import interfaz.Interfaz;
 import negocio.Calculo;
 import negocio.Empresa;
 
@@ -12,7 +12,7 @@ public class AplicacionConsultas {
 	private Calculo calculo;
 
 	// vista
-	private interfaz interfaz;
+	private Interfaz interfaz;
 
 	private Coordinador coordinador;
 

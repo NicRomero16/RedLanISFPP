@@ -37,11 +37,10 @@ public class ConexionSecuencialDAO implements ConexionDAO {
 	}
 
 	private List<Conexion> readFromFile(String file) {
-		Scanner read;
 		List<Conexion> conexiones = new ArrayList<Conexion>();
 
-		try {
-			read = new Scanner(new File(file));
+		try (Scanner read = new Scanner(new File(file))){
+
 			read.useDelimiter("\\s*;\\s*");
 			Equipo e1, e2;
 			TipoCable tc;

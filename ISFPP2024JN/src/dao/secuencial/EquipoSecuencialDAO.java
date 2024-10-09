@@ -45,7 +45,11 @@ public class EquipoSecuencialDAO implements EquipoDAO {
 				String codigo = read.next();
 				String descripcion = read.next();
 				String marca = read.next();
+				if (marca.isEmpty()) //para evitar problemas cuando lee un campo vacio, le asignamos el valor null
+					marca = null;
 				String modelo = read.next();
+				if (modelo.isEmpty()) 
+					modelo = null;
 				TipoEquipo tipoEquipo = tipoEquipos.get(read.next());
 				Ubicacion ubicacion = ubicaciones.get(read.next());
 				String[] puertos = read.next().split(",");
