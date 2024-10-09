@@ -1,17 +1,20 @@
 package modelo;
 
+import java.util.List;
 import java.util.Objects;
 
 public class Conexion {
 
 	private Equipo equipo1;
-	private Equipo equipo2;
-	private TipoCable tipoCable;
-	private TipoPuerto tipoPuerto1;
-	private TipoPuerto tipoPuerto2;
 
-	public Conexion(Equipo equipo1, Equipo equipo2, TipoCable tipoCable, TipoPuerto tipoPuerto1,
-			TipoPuerto tipoPuerto2) {
+	private TipoPuerto tipoPuerto1;
+	private Equipo equipo2;
+
+	private TipoPuerto tipoPuerto2;
+	private TipoCable tipoCable;
+
+	public Conexion(Equipo equipo1, TipoPuerto tipoPuerto1, Equipo equipo2, TipoPuerto tipoPuerto2,
+			TipoCable tipoCable) {
 		super();
 		this.equipo1 = equipo1;
 		this.equipo2 = equipo2;
@@ -82,15 +85,18 @@ public class Conexion {
 	public void leerConexiones() {
 		System.out.println("Equipo1=" + equipo1);
 		System.out.println("Equipo2=" + equipo2);
-		System.out.println("Tipo de cable="+ tipoCable);
-		System.out.println("Tipo de puerto 1="+tipoPuerto1);
-		System.out.println("Tipo de puerto 2="+tipoPuerto2);
+		System.out.println("Tipo de cable=" + tipoCable);
+		System.out.println("Tipo de puerto 1=" + tipoPuerto1);
+		System.out.println("Tipo de puerto 2=" + tipoPuerto2);
+		// return "Equipo1=" + equipo1 + "Equipo2=" + equipo2 + "Tipo de cable=" +
+		// tipoCable + "Tipo de puerto 1="
+		// + tipoPuerto1 + "Tipo de puerto 2" + tipoPuerto2;
 	}
 
 	@Override
 	public String toString() {
-		return "\nConexion [\n equipo1=" + equipo1 + ", \n equipo2=" + equipo2 + ", \n tipoCable=" + tipoCable
-				+ ", \n tipoPuerto1=" + tipoPuerto1 + ", \n tipoPuerto2=" + tipoPuerto2 + "]";
+		return "\nConexion [\n equipo1=" + equipo1 + ", tipoPuerto1=" + tipoPuerto1 + ", \n equipo2=" + equipo2
+				+ ", tipoPuerto2=" + tipoPuerto2 + ", \n tipoCable=" + tipoCable + "]\n";
 	}
 
 }

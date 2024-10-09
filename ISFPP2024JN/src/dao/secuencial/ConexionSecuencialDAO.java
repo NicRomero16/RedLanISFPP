@@ -43,20 +43,20 @@ public class ConexionSecuencialDAO implements ConexionDAO {
 	private List<Conexion> readFromFile(String file) {
 		List<Conexion> conexiones = new ArrayList<Conexion>();
 
-		try (Scanner read = new Scanner(new File(file))){
+		try (Scanner read = new Scanner(new File(file))) {
 
 			read.useDelimiter("\\s*;\\s*");
 			Equipo e1, e2;
 			TipoCable tc;
-			TipoPuerto tp1,tp2;
+			TipoPuerto tp1, tp2;
 
 			while (read.hasNext()) {
 				e1 = equipos.get(read.next());
-				e2 = equipos.get(read.next());
-				tc = tipoCables.get(read.next());
 				tp1 = tiposPuertos.get(read.next());
+				e2 = equipos.get(read.next());
 				tp2 = tiposPuertos.get(read.next());
-				conexiones.add(new Conexion(e1, e2, tc, tp1, tp2));
+				tc = tipoCables.get(read.next());
+				conexiones.add(new Conexion(e1, tp1, e2, tp2, tc));
 			}
 			read.close();
 
@@ -64,7 +64,6 @@ public class ConexionSecuencialDAO implements ConexionDAO {
 			System.out.println("Error al leer el archivo ");
 		}
 		return conexiones;
-
 	}
 
 	private void writeToFile(List<Conexion> list, String file) {
@@ -149,10 +148,10 @@ public class ConexionSecuencialDAO implements ConexionDAO {
 	}
 
 	private TreeMap<String, TipoPuerto> cargarTipoPuerto() {
-		TreeMap<String, TipoPuerto> tipoPuerto = new TreeMap<String,TipoPuerto>();
+		TreeMap<String, TipoPuerto> tipoPuerto = new TreeMap<String, TipoPuerto>();
 		TipoPuertoDAO tipoPuertoDAO = new TipoPuertoSecuencialDAO();
 		TreeMap<String, TipoPuerto> ds = tipoPuertoDAO.buscarTodos();
-		for (TipoPuerto tp: ds.values()) 
+		for (TipoPuerto tp : ds.values())
 			tipoPuerto.put(tp.getCodigo(), tp);
 		return tipoPuerto;
 	}
