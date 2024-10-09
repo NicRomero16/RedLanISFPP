@@ -7,7 +7,7 @@ import java.util.Formatter;
 import java.util.FormatterClosedException;
 import java.util.TreeMap;
 
-import Excepciones.EquipoInexistenteException;
+import Excepciones.NoExisteException;
 
 import java.util.ResourceBundle;
 import java.util.Scanner;
@@ -95,9 +95,9 @@ public class EquipoSecuencialDAO implements EquipoDAO {
 	}
 
 	@Override
-	public void actualizar(Equipo equipo) throws EquipoInexistenteException{
-		if (map.containsKey(equipo.getCodigo())) 
-			System.out.println("No se encontro el equipo");
+	public void actualizar(Equipo equipo) throws NoExisteException{
+		if (!map.containsKey(equipo.getCodigo())) 
+			throw new NoExisteException("El equipo no existe");
 		map.put(equipo.getCodigo(), equipo);
 	}
 

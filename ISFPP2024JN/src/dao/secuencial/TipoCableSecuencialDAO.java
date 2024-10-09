@@ -8,11 +8,12 @@ import java.util.FormatterClosedException;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
 
+import Excepciones.NoExisteException;
 import dao.TipoCableDAO;
 import modelo.Equipo;
 import modelo.TipoCable;
 
-public class TipoCableSecuencialDAO implements TipoCableDAO{
+public class TipoCableSecuencialDAO implements TipoCableDAO {
 
 	private TreeMap<String, TipoCable> map;
 	private String name;
@@ -33,8 +34,7 @@ public class TipoCableSecuencialDAO implements TipoCableDAO{
 			String linea;
 			while ((linea = br.readLine()) != null) {
 				String[] atributos = linea.split(";");
-				tipoCable.put(atributos[0],
-						new TipoCable(atributos[0], atributos[1], Integer.parseInt(atributos[2])));
+				tipoCable.put(atributos[0], new TipoCable(atributos[0], atributos[1], Integer.parseInt(atributos[2])));
 
 			}
 			// System.out.println(tipoCable.toString());
@@ -61,21 +61,19 @@ public class TipoCableSecuencialDAO implements TipoCableDAO{
 				outFile.close();
 		}
 	}
-	
+
 	@Override
 	public void insertar(TipoCable tipoCable) {
 		map.put(tipoCable.getCodigo(), tipoCable);
 		writeToFile(map, name);
 		update = true;
 	}
-	
+
 	@Override
-	public void actualizar(TipoCable tipoCable) {
-		if(map.containsKey(tipoCable.getCodigo())) {
-			map.put(tipoCable.getCodigo(), tipoCable);
-			return;
-		}
-		System.out.println("No se encontro el equipo");
+	public void actualizar(TipoCable tipoCable) throws NoExisteException {
+		if (map.containsKey(tipoCable.getCodigo()))
+			throw new NoExisteException("El tipo de cable no existe");
+		map.put(tipoCable.getCodigo(), tipoCable);
 	}
 
 	@Override

@@ -32,9 +32,15 @@ public class TestCompilacion {
 		List<Conexion> conexion = dao4.buscarTodos();
 		System.out.println(conexion);
 		System.out.println();
-		TreeMap<String,Equipo> equipo = dao5.buscarTodos();
+		TreeMap<String, Equipo> equipo = dao5.buscarTodos();
 		System.out.println(equipo);
 
+		/*
+		 * private String codigo; private String descripcion; private String marca;
+		 * private String modelo; private TipoEquipo tipoEquipo; private Ubicacion
+		 * ubicacion; private List<Puerto> puertos; private List<String> direccionesIP;
+		 * private boolean estado;
+		 */
 	}
 
 }
