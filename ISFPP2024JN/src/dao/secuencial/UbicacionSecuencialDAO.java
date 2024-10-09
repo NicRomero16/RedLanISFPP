@@ -62,26 +62,26 @@ public class UbicacionSecuencialDAO implements UbicacionDAO {
 
 	@Override
 	public void insertar(Ubicacion ubicacion) {
-		if (!map.containsKey(ubicacion.getCodigo())) {
+		if (!map.containsKey(ubicacion.getCodigo()))
 			map.put(ubicacion.getCodigo(), ubicacion);
-			writeToFile(map, name);
-			update = true;
-		}
+		writeToFile(map, name);
+		update = true;
 	}
 
 	@Override
 	public void actualizar(Ubicacion ubicacion) {
-		map.put(ubicacion.getCodigo(), ubicacion);
+		if (map.containsKey(ubicacion.getCodigo()))
+			map.put(ubicacion.getCodigo(), ubicacion);
 		writeToFile(map, name);
 		update = true;
 	}
 
 	@Override
 	public void borrar(Ubicacion ubicacion) {
-		map.remove(ubicacion.getCodigo());
+		if (map.containsKey(ubicacion.getCodigo()))
+			map.remove(ubicacion.getCodigo());
 		writeToFile(map, name);
 		update = true;
-
 	}
 
 	@Override

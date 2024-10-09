@@ -78,7 +78,8 @@ public class ConexionSecuencialDAO implements ConexionDAO {
 
 	@Override
 	public void insertar(Conexion conexion) {
-		list.add(conexion);
+		if (!list.contains(conexion))
+			list.add(conexion);
 		writeToFile(list, name);
 		update = true;
 	}
@@ -86,22 +87,26 @@ public class ConexionSecuencialDAO implements ConexionDAO {
 	@Override
 	public void actualizar(Conexion conexion) {
 		int pos = list.indexOf(conexion);
-		list.set(pos, conexion);
+		if (pos != -1)
+			list.set(pos, conexion);
 		writeToFile(list, name);
 		update = true;
 	}
 
 	@Override
 	public void borrar(Conexion conexion) {
-		list.remove(conexion);
+		if (list.contains(conexion))
+			list.remove(conexion);
 		writeToFile(list, name);
 		update = true;
+
 	}
 
 	@Override
 	public List<Conexion> buscarTodos() {
-		if (update)
+		if (update) {
 			list = readFromFile(name);
+		}
 		update = false;
 		return list;
 	}

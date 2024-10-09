@@ -63,30 +63,26 @@ public class TipoPuertoSecuencialDAO implements TipoPuertoDAO {
 
 	@Override
 	public void insertar(TipoPuerto tipoPuerto) {
-		if (!map.containsKey(tipoPuerto.getCodigo())) {
+		if (!map.containsKey(tipoPuerto.getCodigo()))
 			map.put(tipoPuerto.getCodigo(), tipoPuerto);
-			writeToFile(map, name);
-			update = true;
-		}
+		writeToFile(map, name);
+		update = true;
 	}
 
 	@Override
 	public void actualizar(TipoPuerto tipoPuerto) {
-		if (map.containsKey(tipoPuerto.getCodigo())) {
+		if (map.containsKey(tipoPuerto.getCodigo()))
 			map.put(tipoPuerto.getCodigo(), tipoPuerto);
-			writeToFile(map, name);
-			update = true;
-		}
+		writeToFile(map, name);
+		update = true;
 	}
 
 	@Override
 	public void borrar(TipoPuerto tipoPuerto) {
-		if (map.containsKey(tipoPuerto.getCodigo())) {
+		if (map.containsKey(tipoPuerto.getCodigo()))
 			map.remove(tipoPuerto.getCodigo());
-			writeToFile(map, name);
-			update = true;
-		}
-
+		writeToFile(map, name);
+		update = true;
 	}
 
 	@Override
