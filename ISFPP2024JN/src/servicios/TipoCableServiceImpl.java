@@ -6,11 +6,11 @@ import dao.TipoCableDAO;
 import dao.secuencial.TipoCableSecuencialDAO;
 import modelo.TipoCable;
 
-public class TipoCableServiceImp implements TipoCableService{
+public class TipoCableServiceImpl implements TipoCableService{
 
 	private TipoCableDAO tipoCableDAO;
 	
-	public TipoCableServiceImp(){
+	public TipoCableServiceImpl(){
 		tipoCableDAO = new TipoCableSecuencialDAO();
 	}
 	

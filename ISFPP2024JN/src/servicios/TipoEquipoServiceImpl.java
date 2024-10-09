@@ -6,11 +6,11 @@ import dao.TipoEquipoDAO;
 import dao.secuencial.TipoEquipoSecuencialDAO;
 import modelo.TipoEquipo;
 
-public class TipoEquipoServiceImp implements TipoEquipoService {
+public class TipoEquipoServiceImpl implements TipoEquipoService {
 
 	private TipoEquipoDAO tipoEquipoDAO;
 
-	public TipoEquipoServiceImp() {
+	public TipoEquipoServiceImpl() {
 		tipoEquipoDAO = new TipoEquipoSecuencialDAO();
 	}
 

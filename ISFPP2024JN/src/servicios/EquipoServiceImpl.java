@@ -6,11 +6,11 @@ import modelo.Equipo;
 import dao.EquipoDAO;
 import dao.secuencial.EquipoSecuencialDAO;
 
-public class EquipoServiceImp implements EquipoService{
+public class EquipoServiceImpl implements EquipoService{
 	
 	private EquipoDAO equipoDAO;
 	
-	public EquipoServiceImp(){
+	public EquipoServiceImpl(){
 		equipoDAO = new EquipoSecuencialDAO();
 	}
 	@Override
