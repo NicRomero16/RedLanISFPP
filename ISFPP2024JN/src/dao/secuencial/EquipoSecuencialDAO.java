@@ -89,15 +89,9 @@ public class EquipoSecuencialDAO implements EquipoDAO {
 	}
 
 	@Override
-<<<<<<< HEAD
-	public void actualizar(Equipo equipo) throws NoExisteException {
-		if (!map.containsKey(equipo.getCodigo()))
-			throw new NoExisteException("El equipo no existe");
-=======
 	public void insertar(Equipo equipo) throws ArchivoExistenteException {
 		if (map.containsKey(equipo.getCodigo()))
 			throw new ArchivoExistenteException("El equipo ya existe");
->>>>>>> 51e9a60c7597e33d572690bfe69240d12530face
 		map.put(equipo.getCodigo(), equipo);
 		writeToFile(map, name);
 		update = true;
