@@ -5,17 +5,16 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Formatter;
 import java.util.FormatterClosedException;
-import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
 
 import dao.TipoEquipoDAO;
+import modelo.Equipo;
 import modelo.TipoEquipo;
 
 public class TipoEquipoSecuencialDAO implements TipoEquipoDAO {
 
-	private TreeMap<String,TipoEquipo> map;
+	private TreeMap<String, TipoEquipo> map;
 	private String name;
 	private boolean update;
 
@@ -71,9 +70,9 @@ public class TipoEquipoSecuencialDAO implements TipoEquipoDAO {
 
 	@Override
 	public void actualizar(TipoEquipo tipoEquipo) {
+		if (!map.containsKey(tipoEquipo.getCodigo()))
+			System.out.println("No se encontro el equipo");
 		map.put(tipoEquipo.getCodigo(), tipoEquipo);
-		writeToFile(map, name);
-		update = true;
 	}
 
 	@Override

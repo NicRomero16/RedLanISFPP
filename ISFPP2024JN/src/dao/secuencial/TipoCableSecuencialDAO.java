@@ -5,11 +5,11 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Formatter;
 import java.util.FormatterClosedException;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
 
 import dao.TipoCableDAO;
+import modelo.Equipo;
 import modelo.TipoCable;
 
 public class TipoCableSecuencialDAO implements TipoCableDAO{
@@ -71,9 +71,11 @@ public class TipoCableSecuencialDAO implements TipoCableDAO{
 	
 	@Override
 	public void actualizar(TipoCable tipoCable) {
-		map.put(tipoCable.getCodigo(), tipoCable);
-		writeToFile(map, name);
-		update = true;
+		if(map.containsKey(tipoCable.getCodigo())) {
+			map.put(tipoCable.getCodigo(), tipoCable);
+			return;
+		}
+		System.out.println("No se encontro el equipo");
 	}
 
 	@Override

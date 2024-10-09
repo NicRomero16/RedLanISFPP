@@ -33,10 +33,6 @@ public class Equipo {
 		this.puertos.add(new Puerto(cantidad, tipoPuerto));
 	}
 	
-	public void agregarIP(String direccion) {
-		this.direccionesIP.add(direccion);
-	}
-	
 	public String getDescripcion() {
 		return descripcion;
 	}

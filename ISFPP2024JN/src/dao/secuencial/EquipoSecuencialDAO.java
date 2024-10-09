@@ -1,11 +1,16 @@
 package dao.secuencial;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Collections;
+import java.util.Formatter;
+import java.util.FormatterClosedException;
 import java.util.TreeMap;
+
+import Excepciones.EquipoInexistenteException;
+
 import java.util.ResourceBundle;
 import java.util.Scanner;
-
 import modelo.*;
 import dao.*;
 
@@ -64,7 +69,22 @@ public class EquipoSecuencialDAO implements EquipoDAO {
 	}
 
 	private void writeToFile(TreeMap<String, Equipo> map, String file) {
-
+		Formatter outFile = null;
+		try {
+			outFile = new Formatter(file);
+			for (Equipo e : map.values()) {
+				outFile.format("%s;%s;%s;%s;%s;%s;%s;%s;\n", e.getCodigo(), e.getDescripcion(), e.getMarca(),
+						e.getModelo(), e.getTipoEquipo().toString(), e.getUbicacion().toString(),
+						e.getPuertos().toString(), e.getDireccionesIP().toString());
+			}
+		} catch (FileNotFoundException fileNotFoundException) {
+			System.err.println("Error creating file.");
+		} catch (FormatterClosedException formatterClosedException) {
+			System.err.println("Error writing to file.");
+		} finally {
+			if (outFile != null)
+				outFile.close();
+		}
 	}
 
 	@Override
@@ -75,10 +95,10 @@ public class EquipoSecuencialDAO implements EquipoDAO {
 	}
 
 	@Override
-	public void actualizar(Equipo equipo) {
+	public void actualizar(Equipo equipo) throws EquipoInexistenteException{
+		if (map.containsKey(equipo.getCodigo())) 
+			System.out.println("No se encontro el equipo");
 		map.put(equipo.getCodigo(), equipo);
-		writeToFile(map, name);
-		update = true;
 	}
 
 	@Override
@@ -89,7 +109,7 @@ public class EquipoSecuencialDAO implements EquipoDAO {
 	}
 
 	@Override
-	public TreeMap<String,Equipo> buscarTodos() {
+	public TreeMap<String, Equipo> buscarTodos() {
 		if (update) {
 			map = readFromFile(name);
 			update = false;
