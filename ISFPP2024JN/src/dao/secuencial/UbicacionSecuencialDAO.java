@@ -20,6 +20,7 @@ public class UbicacionSecuencialDAO implements UbicacionDAO {
 	private boolean update;
 
 	public UbicacionSecuencialDAO() {
+		map = new TreeMap<String, Ubicacion>();
 		ResourceBundle rb = ResourceBundle.getBundle("secuencial");
 		name = rb.getString("ubicacion");
 		update = true;

@@ -20,6 +20,7 @@ public class TipoPuertoSecuencialDAO implements TipoPuertoDAO {
 	private boolean update;// (actualizar)
 
 	public TipoPuertoSecuencialDAO() {
+		map = new TreeMap<String, TipoPuerto>();
 		ResourceBundle rb = ResourceBundle.getBundle("secuencial");
 		this.name = rb.getString("tipoPuerto");
 		this.update = true;

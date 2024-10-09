@@ -28,6 +28,7 @@ public class ConexionSecuencialDAO implements ConexionDAO {
 	private boolean update;
 
 	public ConexionSecuencialDAO() {
+		list = new ArrayList<Conexion>();
 		equipos = cargarEquipos();
 		tipoCables = cargarTipoCables();
 		ResourceBundle rb = ResourceBundle.getBundle("secuencial");
