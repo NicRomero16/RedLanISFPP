@@ -29,8 +29,8 @@ public class EquipoSecuencialDAO implements EquipoDAO {
 		ubicaciones = cargarUbicaciones();
 		tipoPuertos = cargarTipoPuerto();
 		ResourceBundle rb = ResourceBundle.getBundle("secuencial");
-		name = rb.getString("equipo");
-		update = true;
+		this.name = rb.getString("equipo");
+		this.update = true;
 
 	}
 
@@ -80,15 +80,12 @@ public class EquipoSecuencialDAO implements EquipoDAO {
 			}
 		} catch (FileNotFoundException fileNotFoundException) {
 			System.err.println("Error creating file.");
-			return;
 		} catch (FormatterClosedException formatterClosedException) {
 			System.err.println("Error writing to file.");
-			return;
 		} finally {
 			if (outFile != null)
 				outFile.close();
 		}
-		update = true;
 	}
 
 	@Override
@@ -103,6 +100,7 @@ public class EquipoSecuencialDAO implements EquipoDAO {
 >>>>>>> 51e9a60c7597e33d572690bfe69240d12530face
 		map.put(equipo.getCodigo(), equipo);
 		writeToFile(map, name);
+		update = true;
 	}
 
 	@Override
@@ -111,6 +109,7 @@ public class EquipoSecuencialDAO implements EquipoDAO {
 			throw new ArchivoInexisteException("El equipo no existe");
 		map.put(equipo.getCodigo(), equipo);
 		writeToFile(map, name);
+		update = true;
 	}
 
 	@Override
@@ -119,6 +118,7 @@ public class EquipoSecuencialDAO implements EquipoDAO {
 			throw new ArchivoInexisteException("El equipo no existe");
 		map.remove(equipo.getCodigo());
 		writeToFile(map, name);
+		update = true;
 	}
 
 	@Override

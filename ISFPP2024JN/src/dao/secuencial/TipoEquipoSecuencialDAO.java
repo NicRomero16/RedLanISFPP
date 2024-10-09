@@ -20,6 +20,7 @@ public class TipoEquipoSecuencialDAO implements TipoEquipoDAO {
 	private boolean update;
 
 	public TipoEquipoSecuencialDAO() {
+		map = new TreeMap<String, TipoEquipo>();
 		ResourceBundle rb = ResourceBundle.getBundle("secuencial");
 		name = rb.getString("tipoEquipo");
 		update = true;
@@ -54,15 +55,12 @@ public class TipoEquipoSecuencialDAO implements TipoEquipoDAO {
 			}
 		} catch (FileNotFoundException fileNotFoundException) {
 			System.err.println("Error creating file.");
-			return;
 		} catch (FormatterClosedException formatterClosedException) {
 			System.err.println("Error writing to file.");
-			return;
 		} finally {
 			if (outFile != null)
 				outFile.close();
 		}
-		update = true;
 	}
 
 	@Override
@@ -71,6 +69,7 @@ public class TipoEquipoSecuencialDAO implements TipoEquipoDAO {
 			throw new ArchivoExistenteException("El tipo de equipo ya existe");
 		map.put(tipoEquipo.getCodigo(), tipoEquipo);
 		writeToFile(map, name);
+		update = true;
 	}
 
 	@Override
@@ -79,6 +78,7 @@ public class TipoEquipoSecuencialDAO implements TipoEquipoDAO {
 			throw new ArchivoInexisteException("El tipo de equipo no existe");
 		map.put(tipoEquipo.getCodigo(), tipoEquipo);
 		writeToFile(map, name);
+		update = true;
 	}
 
 	@Override
@@ -87,6 +87,7 @@ public class TipoEquipoSecuencialDAO implements TipoEquipoDAO {
 			throw new ArchivoInexisteException("El tipo de equipo no existe");
 		map.remove(tipoEquipo.getCodigo());
 		writeToFile(map, name);
+		update = true;
 	}
 
 	@Override

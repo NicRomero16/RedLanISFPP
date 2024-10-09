@@ -20,6 +20,7 @@ public class TipoCableSecuencialDAO implements TipoCableDAO {
 	private boolean update;// (actualizar)
 
 	public TipoCableSecuencialDAO() {
+		map = new TreeMap<String, TipoCable>();
 		ResourceBundle rb = ResourceBundle.getBundle("secuencial");
 		this.name = rb.getString("tipoCable");
 		this.update = true;
@@ -54,39 +55,39 @@ public class TipoCableSecuencialDAO implements TipoCableDAO {
 			}
 		} catch (FileNotFoundException fileNotFoundException) {
 			System.err.println("Error creating file.");
-			return;
 		} catch (FormatterClosedException formatterClosedException) {
 			System.err.println("Error writing to file.");
-			return;
 		} finally {
 			if (outFile != null)
 				outFile.close();
 		}
-		update = true;
 	}
 
 	@Override
-	public void insertar(TipoCable tipoCable) throws ArchivoExistenteException{
+	public void insertar(TipoCable tipoCable) throws ArchivoExistenteException {
 		if (map.containsKey(tipoCable.getCodigo()))
 			throw new ArchivoExistenteException("El tipo de cable ya existe");
 		map.put(tipoCable.getCodigo(), tipoCable);
 		writeToFile(map, name);
+		update = true;
 	}
 
 	@Override
-	public void actualizar(TipoCable tipoCable) throws ArchivoInexisteException{
+	public void actualizar(TipoCable tipoCable) throws ArchivoInexisteException {
 		if (!map.containsKey(tipoCable.getCodigo()))
 			throw new ArchivoInexisteException("El tipo de cable no existe");
 		map.put(tipoCable.getCodigo(), tipoCable);
-		writeToFile(map,name);
+		writeToFile(map, name);
+		update = true;
 	}
 
 	@Override
-	public void borrar(TipoCable tipoCable) throws ArchivoInexisteException{
+	public void borrar(TipoCable tipoCable) throws ArchivoInexisteException {
 		if (!map.containsKey(tipoCable.getCodigo()))
 			throw new ArchivoInexisteException("El tipo de cable no existe");
 		map.remove(tipoCable.getCodigo());
 		writeToFile(map, name);
+		update = true;
 	}
 
 	@Override
