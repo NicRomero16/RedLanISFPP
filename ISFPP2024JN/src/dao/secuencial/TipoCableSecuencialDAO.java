@@ -8,9 +8,9 @@ import java.util.FormatterClosedException;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
 
-import Excepciones.ArchivoExistenteException;
-import Excepciones.ArchivoInexisteException;
 import dao.TipoCableDAO;
+import excepciones.ArchivoExistenteException;
+import excepciones.ArchivoInexisteException;
 import modelo.TipoCable;
 
 public class TipoCableSecuencialDAO implements TipoCableDAO {

@@ -6,14 +6,12 @@ import java.util.Collections;
 import java.util.Formatter;
 import java.util.FormatterClosedException;
 import java.util.TreeMap;
-
-import Excepciones.ArchivoExistenteException;
-import Excepciones.ArchivoInexisteException;
-
 import java.util.ResourceBundle;
 import java.util.Scanner;
 import modelo.*;
 import dao.*;
+import excepciones.ArchivoExistenteException;
+import excepciones.ArchivoInexisteException;
 
 public class EquipoSecuencialDAO implements EquipoDAO {
 
