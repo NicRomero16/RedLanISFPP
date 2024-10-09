@@ -10,7 +10,18 @@ import modelo.TipoCable;
 import modelo.TipoEquipo;
 import modelo.TipoPuerto;
 import modelo.Ubicacion;
-import servicios.*;
+import servicios.ConexionService;
+import servicios.ConexionServiceImpl;
+import servicios.EquipoService;
+import servicios.EquipoServiceImpl;
+import servicios.TipoCableService;
+import servicios.TipoCableServiceImpl;
+import servicios.TipoEquipoService;
+import servicios.TipoEquipoServiceImpl;
+import servicios.TipoPuertoService;
+import servicios.TipoPuertoServiceImpl;
+import servicios.UbicacionService;
+import servicios.UbicacionServiceImpl;
 
 public class Empresa {
 
@@ -57,6 +68,116 @@ public class Empresa {
 		tiposPuertos = new TreeMap<String, TipoPuerto>();
 		tipoPuertoService = new TipoPuertoServiceImpl();
 		tiposPuertos.putAll(tipoPuertoService.buscarTodos());
+	}
+
+	public void agregarEquipo(Equipo equipo) throws EquipoExistenteException {
+		if (equipos.containsKey(equipo.getCodigo()))
+			throw new EquipoExistenteException("El equipo ya existe");
+		equipos.put(equipo.getCodigo(), equipo);
+		equipoService.insertar(equipo);
+	}
+
+	public void modificarEquipo(Equipo equipo) {
+		buscarEquipo(equipo.getCodigo());
+		equipos.put(equipo.getCodigo(), equipo);
+		equipoService.actualizar(equipo);
+	}
+
+	public void eliminarEquipo(Equipo equipo) {
+		buscarEquipo(equipo.getCodigo());
+		equipos.remove(equipo.getCodigo());
+		equipoService.borrar(equipo);
+	}
+
+	public Equipo buscarEquipo(String codigo) throws EquipoInexistenteException {
+		if (!equipos.containsKey(codigo))
+			throw new EquipoInexistenteException("El equipo no existe");
+		return equipos.get(codigo);
+
+	}
+
+	public void agregarConexion(Conexion conexion) throws ConexionExistenteException {
+		if (conexiones.contains(conexion))
+			throw new ConexionExistenteException("La conexion ya existe");
+		conexionService.insertar(conexion);
+		conexiones.add(conexion);
+	}
+
+	public void modificarConexion(Conexion conexion) throws ConexionInexistenteException {
+		int pos = conexiones.indexOf(conexion);
+		if (pos == -1)
+			throw new ConexionInexistenteException("La conexion no existe");
+		conexiones.set(pos, conexion);
+		conexionService.actualizar(conexion);
+	}
+
+	public void borrarConexion(Conexion conexion) throws ConexionInexistenteException {
+		Conexion emp = buscarConexion(conexion);
+		conexiones.remove(emp);
+		conexionService.borrar(conexion);
+	}
+
+	public Conexion buscarConexion(Conexion conexion) throws ConexionInexistenteException {
+		int pos = conexiones.indexOf(conexion);
+		if (pos == -1)
+			throw new ConexionInexistenteException("La conexion no existe");
+		return conexiones.get(pos);
+	}
+	public void agregarUbicacion(Ubicacion ubicacion) throws UbicacionExistenteException{
+		if (ubicaciones.containsKey(ubicacion.getCodigo()))
+			throw new UbicacionExistenteException("La ubicacion ya existe");
+		ubicaciones.put(ubicacion.getCodigo(), ubicacion);
+		ubicacionService.insertar(ubicacion);
+	}
+
+	public Ubicacion buscarUbicacion(String codigo) throws UbicacionInexistenteException {
+		if (!ubicaciones.containsKey(codigo))
+			throw new UbicacionInexistenteException("La ubicacion no existe");
+		return ubicaciones.get(codigo);
+	}
+	
+	public void eliminarUbicacion(Ubicacion ubicacion) throws UbicacionInexistenteException {
+		buscarUbicacion(ubicacion.getCodigo());
+		ubicaciones.remove(ubicacion.getCodigo());
+		ubicacionService.borrar(ubicacion);
+	}
+	
+	public void modicarUbicacion(Ubicacion ubicacion) throws UbicacionInexistenteException {
+		buscarUbicacion(ubicacion.getCodigo());
+		ubicaciones.put(ubicacion.getCodigo(), ubicacion);
+		ubicacionService.actualizar(ubicacion);
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public List<Conexion> getConexiones() {
+		return conexiones;
+	}
+
+	public TreeMap<String, Ubicacion> getUbicaciones() {
+		return ubicaciones;
+	}
+
+	public TreeMap<String, Equipo> getEquipos() {
+		return equipos;
+	}
+
+	public TreeMap<String, TipoEquipo> getTiposEquipos() {
+		return tiposEquipos;
+	}
+
+	public TreeMap<String, TipoCable> getTiposCables() {
+		return tiposCables;
+	}
+
+	public TreeMap<String, TipoPuerto> getTiposPuertos() {
+		return tiposPuertos;
 	}
 
 }

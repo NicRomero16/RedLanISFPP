@@ -1,11 +1,8 @@
 package excepciones;
 
 public class ArchivoInexisteException extends RuntimeException {
-
 	private static final long serialVersionUID = 1L;
-	
-	public ArchivoInexisteException(String mensaje) {
-		super(mensaje);
+	public ArchivoInexisteException(String msg) {
+		super(msg);
 	}
-	
 }
