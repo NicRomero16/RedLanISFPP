@@ -15,9 +15,11 @@ import excepciones.ArchivoInexisteException;
 import dao.ConexionDAO;
 import dao.EquipoDAO;
 import dao.TipoCableDAO;
+import dao.TipoPuertoDAO;
 import modelo.Conexion;
 import modelo.Equipo;
 import modelo.TipoCable;
+import modelo.TipoPuerto;
 
 public class ConexionSecuencialDAO implements ConexionDAO {
 
@@ -25,12 +27,14 @@ public class ConexionSecuencialDAO implements ConexionDAO {
 	private String name;
 	private TreeMap<String, Equipo> equipos;
 	private TreeMap<String, TipoCable> tipoCables;
+	private TreeMap<String, TipoPuerto> tiposPuertos;
 	private boolean update;
 
 	public ConexionSecuencialDAO() {
 		list = new ArrayList<Conexion>();
 		equipos = cargarEquipos();
 		tipoCables = cargarTipoCables();
+		tiposPuertos = cargarTipoPuerto();
 		ResourceBundle rb = ResourceBundle.getBundle("secuencial");
 		name = rb.getString("conexion");
 		update = true;
@@ -44,12 +48,15 @@ public class ConexionSecuencialDAO implements ConexionDAO {
 			read.useDelimiter("\\s*;\\s*");
 			Equipo e1, e2;
 			TipoCable tc;
+			TipoPuerto tp1,tp2;
 
 			while (read.hasNext()) {
 				e1 = equipos.get(read.next());
 				e2 = equipos.get(read.next());
 				tc = tipoCables.get(read.next());
-				conexiones.add(new Conexion(e1, e2, tc));
+				tp1 = tiposPuertos.get(read.next());
+				tp2 = tiposPuertos.get(read.next());
+				conexiones.add(new Conexion(e1, e2, tc, tp1, tp2));
 			}
 			read.close();
 
@@ -141,4 +148,12 @@ public class ConexionSecuencialDAO implements ConexionDAO {
 		return tipoCable;
 	}
 
+	private TreeMap<String, TipoPuerto> cargarTipoPuerto() {
+		TreeMap<String, TipoPuerto> tipoPuerto = new TreeMap<String,TipoPuerto>();
+		TipoPuertoDAO tipoPuertoDAO = new TipoPuertoSecuencialDAO();
+		TreeMap<String, TipoPuerto> ds = tipoPuertoDAO.buscarTodos();
+		for (TipoPuerto tp: ds.values()) 
+			tipoPuerto.put(tp.getCodigo(), tp);
+		return tipoPuerto;
+	}
 }
