@@ -9,13 +9,13 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 
 import controlador.Coordinador;
 import modelo.Conexion;
-import modelo.Equipo;
+import modelo.*;
 
 public class Calculo {
 
 	private Coordinador coordinador;
 
-	private Graph<Equipo, DefaultWeightedEdge> red;
+	private Graph<Equipo, Conexion> red;
 	private TreeMap<String, Equipo> vertices;
 
 	public Calculo() {
@@ -24,7 +24,7 @@ public class Calculo {
 
 	public void cargarEquipos(TreeMap<String, Equipo> eq, List<Conexion> conexiones) throws EquipoExistenteException {
 
-		red = new DefaultUndirectedWeightedGraph<>(DefaultWeightedEdge.class);
+		red = new DefaultUndirectedWeightedGraph<>(Conexion.class);
 
 		// Cargar equipos (vértices)
 		for (Equipo equipo : eq.values()) {
@@ -36,16 +36,19 @@ public class Calculo {
 		for (Conexion conexion : conexiones) {
 			Equipo equipo1 = conexion.getEquipo1();
 			Equipo equipo2 = conexion.getEquipo2();
-			double peso = conexion.getTipoCable().getVelocidad();
+			TipoPuerto puertoDeEquipo1 = conexion.getTipoPuerto1();
+			TipoPuerto puertoDeEquipo2 = conexion.getTipoPuerto1();
+
+			double velocidadDe = conexion.getTipoCable().getVelocidad();
 
 			// Verificar que ambos equipos existan en el grafo
 			if (red.containsVertex(equipo1) && red.containsVertex(equipo2)) {
 				// verificar si el equipo1 es = al equipo1
-				if (red.containsVertex(equipo1) != red.containsVertex(equipo2)) {
+				if (equipo1.equals(equipo2)) {
 					// Verificar si la arista ya existe
 					if (red.getEdge(equipo1, equipo2) == null) {
 						// Agregar la arista y establecer el peso
-						DefaultWeightedEdge edge = red.addEdge(equipo1, equipo2);
+						Conexion edge = red.addEdge(equipo1, equipo2);
 						red.setEdgeWeight(edge, peso);
 					} else {
 						throw new EquipoExistenteException("La conexion entre los dos equipos ya existe");
@@ -58,8 +61,6 @@ public class Calculo {
 			}
 		}
 	}
-	
-	
 
 	public void setCoordinador(Coordinador coordinador) {
 		this.coordinador = coordinador;
