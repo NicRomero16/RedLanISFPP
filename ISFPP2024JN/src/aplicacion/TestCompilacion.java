@@ -84,10 +84,6 @@ public class TestCompilacion {
 		for (Ubicacion ubi : ubicaciones.values()) {
 			System.out.println(ubi);
 		}*/
-		
-		Calculo calc = new Calculo();
-		calc.cargarEquipos(equipos, conexiones);
-		System.out.println(calc);
 	}
 
 }
