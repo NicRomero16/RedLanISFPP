@@ -58,6 +58,8 @@ public class Calculo {
 			}
 		}
 	}
+	
+	
 
 	public void setCoordinador(Coordinador coordinador) {
 		this.coordinador = coordinador;
