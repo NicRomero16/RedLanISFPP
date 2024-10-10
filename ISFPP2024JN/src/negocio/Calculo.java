@@ -1,5 +1,6 @@
 package negocio;
 
+import org.jgrapht.Graph;
 import org.jgrapht.graph.*;
 
 import controlador.Coordinador;
@@ -13,7 +14,7 @@ public class Calculo {
 
 	private Coordinador coordinador;
 
-	private SimpleGraph<Equipo, Conexion> red;
+	private Graph<Equipo, Conexion> red;
 	private TreeMap<String, Equipo> vertices;
 
 	public Calculo() {
@@ -46,8 +47,8 @@ public class Calculo {
 		return vertices;
 	}
 
-	public SimpleGraph<Equipo, Conexion> getRed() {
-		return red;
+	public Graph<Equipo, Conexion> getRed() {
+		return red ;
 	}
 
 }
