@@ -35,7 +35,7 @@ public class TestCompilacion {
 //		System.out.println(ubicacion);
 //		System.out.println();
 		List<Conexion> conexion = dao4.buscarTodos();
-		System.out.println(conexion);
+		//System.out.println(conexion);
 		//TreeMap<String, Equipo> equipo = dao5.buscarTodos();
 		//System.out.println(equipo);
 		TreeMap<String, TipoEquipo> tipoEquipos = dao.buscarTodos();
@@ -44,7 +44,7 @@ public class TestCompilacion {
 		TreeMap<String, Ubicacion> ubicaciones = dao3.buscarTodos();
 		List<Conexion> conexiones = dao4.buscarTodos();
 		TreeMap<String, Equipo> equipos = dao5.buscarTodos();
-
+/*
 		System.out.println("Equipos cargados:");
 		for (Equipo equipo : equipos.values()) {
 			System.out.println(equipo);
@@ -83,7 +83,11 @@ public class TestCompilacion {
 		System.out.println("Ubicaciones cargadas:");
 		for (Ubicacion ubi : ubicaciones.values()) {
 			System.out.println(ubi);
-		}
+		}*/
+		
+		Calculo calc = new Calculo();
+		calc.cargarEquipos(equipos, conexiones);
+		System.out.println(calc);
 	}
 
 }
