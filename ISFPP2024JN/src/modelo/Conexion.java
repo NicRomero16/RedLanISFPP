@@ -1,6 +1,5 @@
 package modelo;
 
-import java.util.List;
 import java.util.Objects;
 
 public class Conexion {
@@ -82,21 +81,11 @@ public class Conexion {
 				&& Objects.equals(tipoPuerto2, other.tipoPuerto2);
 	}
 
-	public void leerConexiones() {
-		System.out.println("Equipo1=" + equipo1);
-		System.out.println("Equipo2=" + equipo2);
-		System.out.println("Tipo de cable=" + tipoCable);
-		System.out.println("Tipo de puerto 1=" + tipoPuerto1);
-		System.out.println("Tipo de puerto 2=" + tipoPuerto2);
-		// return "Equipo1=" + equipo1 + "Equipo2=" + equipo2 + "Tipo de cable=" +
-		// tipoCable + "Tipo de puerto 1="
-		// + tipoPuerto1 + "Tipo de puerto 2" + tipoPuerto2;
-	}
-
 	@Override
 	public String toString() {
-		return "\nConexion [\n equipo1=" + equipo1 + ", tipoPuerto1=" + tipoPuerto1 + ", \n equipo2=" + equipo2
-				+ ", tipoPuerto2=" + tipoPuerto2 + ", \n tipoCable=" + tipoCable + "]\n";
+		return "Conexion [equipo1=" + equipo1 + ", tipoPuerto1=" + tipoPuerto1 + ", equipo2=" + equipo2
+				+ ", tipoPuerto2=" + tipoPuerto2 + ", tipoCable=" + tipoCable + "]";
 	}
+
 
 }

@@ -1,6 +1,5 @@
 package controlador;
 
-import java.util.List;
 import interfaz.Interfaz;
 import negocio.Calculo;
 import negocio.Empresa;
