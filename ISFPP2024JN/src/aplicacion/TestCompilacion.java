@@ -7,6 +7,7 @@ import java.util.TreeMap;
 
 import controlador.Coordinador;
 import negocio.Calculo;
+import negocio.Empresa;
 import dao.*;
 import dao.secuencial.*;
 import modelo.*;
@@ -34,56 +35,68 @@ public class TestCompilacion {
 //		TreeMap<String, Ubicacion> ubicacion = dao3.buscarTodos();
 //		System.out.println(ubicacion);
 //		System.out.println();
-		List<Conexion> conexion = dao4.buscarTodos();
+//		List<Conexion> conexion = dao4.buscarTodos();
 		//System.out.println(conexion);
 		//TreeMap<String, Equipo> equipo = dao5.buscarTodos();
 		//System.out.println(equipo);
-		TreeMap<String, TipoEquipo> tipoEquipos = dao.buscarTodos();
-		TreeMap<String, TipoCable> tipoCables = dao1.buscarTodos();
-		TreeMap<String, TipoPuerto> tipoPuertos = dao2.buscarTodos();
-		TreeMap<String, Ubicacion> ubicaciones = dao3.buscarTodos();
-		List<Conexion> conexiones = dao4.buscarTodos();
-		TreeMap<String, Equipo> equipos = dao5.buscarTodos();
-/*
-		System.out.println("Equipos cargados:");
-		for (Equipo equipo : equipos.values()) {
-			System.out.println(equipo);
-		}
+//		TreeMap<String, TipoEquipo> tipoEquipos = dao.buscarTodos();
+//		TreeMap<String, TipoCable> tipoCables = dao1.buscarTodos();
+//		TreeMap<String, TipoPuerto> tipoPuertos = dao2.buscarTodos();
+//		TreeMap<String, Ubicacion> ubicaciones = dao3.buscarTodos();
+//		List<Conexion> conexiones = dao4.buscarTodos();
+//		TreeMap<String, Equipo> equipos = dao5.buscarTodos();
+//
+//		System.out.println("Equipos cargados:");
+//		for (Equipo equipo : equipos.values()) {
+//			System.out.println(equipo);
+//		}
+//		
+//		System.out.println();
+//
+//		System.out.println("Conexiones cargadas:");
+//		for (Conexion conexion1 : conexiones) {
+//			System.out.println(conexion1);
+//		}
+//		
+//		System.out.println();
+//
+//		System.out.println("Tipos de equipos cargados:");
+//		for (TipoEquipo tipoEquipo : tipoEquipos.values()) {
+//			System.out.println(tipoEquipo);
+//		}
+//		
+//		System.out.println();
+//		
+//		System.out.println("Tipos de cables cargados:");
+//		for (TipoCable cables : tipoCables.values()) {
+//			System.out.println(cables);
+//		}
+//
+//		System.out.println();
+//		
+//		System.out.println("Tipos de puertos cargados:");
+//		for (TipoPuerto puertos : tipoPuertos.values()) {
+//			System.out.println(puertos);
+//		}
+//
+//		System.out.println();
+//		
+//		System.out.println("Ubicaciones cargadas:");
+//		for (Ubicacion ubi : ubicaciones.values()) {
+//			System.out.println(ubi);
+//		}
+//		
+//		Coordinador coordinador = new Coordinador();
+//		Empresa empresa = Empresa.getEmpresa();
+//		coordinador.setEmpresa(empresa);
+//		Calculo calculo = new Calculo();
+//		coordinador.setCalculo(calculo);
+//		coordinador.cargarEquipos();
+//		
 		
-		System.out.println();
-
-		System.out.println("Conexiones cargadas:");
-		for (Conexion conexion1 : conexiones) {
-			System.out.println(conexion1);
-		}
 		
-		System.out.println();
-
-		System.out.println("Tipos de equipos cargados:");
-		for (TipoEquipo tipoEquipo : tipoEquipos.values()) {
-			System.out.println(tipoEquipo);
-		}
 		
-		System.out.println();
 		
-		System.out.println("Tipos de cables cargados:");
-		for (TipoCable cables : tipoCables.values()) {
-			System.out.println(cables);
-		}
-
-		System.out.println();
-		
-		System.out.println("Tipos de puertos cargados:");
-		for (TipoPuerto puertos : tipoPuertos.values()) {
-			System.out.println(puertos);
-		}
-
-		System.out.println();
-		
-		System.out.println("Ubicaciones cargadas:");
-		for (Ubicacion ubi : ubicaciones.values()) {
-			System.out.println(ubi);
-		}*/
 	}
 
 }

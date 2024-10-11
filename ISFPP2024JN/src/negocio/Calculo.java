@@ -1,11 +1,9 @@
 package negocio;
 
 import java.util.List;
-import java.util.TreeMap;
 
 import org.jgrapht.*;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
-import org.jgrapht.graph.DefaultWeightedEdge;
 
 import controlador.Coordinador;
 import modelo.Conexion;
@@ -16,48 +14,40 @@ public class Calculo {
 	private Coordinador coordinador;
 
 	private Graph<Equipo, Conexion> red;
-	private TreeMap<String, Equipo> vertices;
 
 	public Calculo() {
-		this.vertices = new TreeMap<>();
 	}
 
-	public void cargarEquipos(TreeMap<String, Equipo> eq, List<Conexion> conexiones) throws EquipoExistenteException {
+	public void iniciar(List<Conexion> conexiones) throws EquipoExistenteException {
 
 		red = new DefaultUndirectedWeightedGraph<>(Conexion.class);
 
-		// Cargar equipos (vértices)
-		for (Equipo equipo : eq.values()) {
-			red.addVertex(equipo);
-			vertices.put(equipo.getCodigo(), equipo); // Crea un mapa temporal para almacenar los equipos por código
-		}
-
-		// Cargar conexiones
+		//
 		for (Conexion conexion : conexiones) {
 			Equipo equipo1 = conexion.getEquipo1();
 			Equipo equipo2 = conexion.getEquipo2();
-			TipoPuerto puertoDeEquipo1 = conexion.getTipoPuerto1();
-			TipoPuerto puertoDeEquipo2 = conexion.getTipoPuerto1();
-
-			double velocidadDe = conexion.getTipoCable().getVelocidad();
+			double velocidadEntre = conexion.getTipoCable().getVelocidad();
+			red.addVertex(equipo1);
+			red.addVertex(equipo2);
 
 			// Verificar que ambos equipos existan en el grafo
-			if (red.containsVertex(equipo1) && red.containsVertex(equipo2)) {
-				// verificar si el equipo1 es = al equipo1
-				if (equipo1.equals(equipo2)) {
-					// Verificar si la arista ya existe
-					if (red.getEdge(equipo1, equipo2) == null) {
-						// Agregar la arista y establecer el peso
-						Conexion edge = red.addEdge(equipo1, equipo2);
-						red.setEdgeWeight(edge, peso);
-					} else {
-						throw new EquipoExistenteException("La conexion entre los dos equipos ya existe");
-					}
-				} else {
-					throw new EquipoExistenteException("equipo no puede estar conectado a si mismo");
-				}
+			if (!red.containsVertex(equipo1)) {
+				throw new EquipoInexistenteException("El equipo " + equipo1 + " no existe");
+			}
+			if (!red.containsVertex(equipo2)) {
+				throw new EquipoInexistenteException("El equipo " + equipo2 + " no existe");
+			}
+			// Verificar que los equipos no sean el mismo
+			if (equipo1.equals(equipo2)) {
+				throw new EquipoExistenteException("El equipo no puede estar conectado a sí mismo");
+			}
+			// Verificar si la arista ya existe
+			if (red.getEdge(equipo1, equipo2) == null) {
+				// Agregar la arista y establecer la velocidad
+				Conexion edge = red.addEdge(equipo1, equipo2);
+				red.setEdgeWeight(edge, velocidadEntre);
 			} else {
-				throw new EquipoInexistenteException("Uno o ambos equipos no existen");
+				throw new EquipoExistenteException("La conexión entre los dos equipos ya existe");
 			}
 		}
 	}

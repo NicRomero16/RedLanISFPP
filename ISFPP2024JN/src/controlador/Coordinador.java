@@ -2,6 +2,7 @@ package controlador;
 
 import negocio.Calculo;
 import negocio.Empresa;
+import negocio.EquipoExistenteException;
 
 import java.util.List;
 import java.util.TreeMap;
@@ -18,6 +19,15 @@ public class Coordinador {
 
 	public Empresa getEmpresa() {
 		return empresa;
+	}
+	
+	public void iniciar() {
+		try {
+			calculo.iniciar(empresa.getConexiones());
+		} catch (EquipoExistenteException e) {
+			System.out.println("pinchó");
+			e.printStackTrace();
+		}
 	}
 
 	public void setEmpresa(Empresa empresa) {
