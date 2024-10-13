@@ -2,6 +2,7 @@ package controlador;
 
 import negocio.Calculo;
 import negocio.Empresa;
+import negocio.EquipoExistenteException;
 
 import java.util.List;
 import java.util.TreeMap;
@@ -18,6 +19,15 @@ public class Coordinador {
 
 	public Empresa getEmpresa() {
 		return empresa;
+	}
+	
+	public void iniciar() { //creo q no es necesario este metodo, porq ya esta en AplicacionConsultas
+		try {
+			calculo.cargarDatos(empresa.getConexiones());
+		} catch (EquipoExistenteException e) {
+			System.out.println("pinchó");
+			e.printStackTrace();
+		}
 	}
 
 	public void setEmpresa(Empresa empresa) {
@@ -55,5 +65,4 @@ public class Coordinador {
 	public TreeMap<String, Ubicacion> listarUbicaciones() {
 		return empresa.getUbicaciones();
 	}
-
 }

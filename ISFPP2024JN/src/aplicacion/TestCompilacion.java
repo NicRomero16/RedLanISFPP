@@ -1,19 +1,19 @@
 package aplicacion;
 
-import java.io.IOException;
-
-import java.util.List;
-import java.util.TreeMap;
-
-import controlador.Coordinador;
-import negocio.Calculo;
-import dao.*;
 import dao.secuencial.*;
+import dao.*;
 import modelo.*;
+import java.util.TreeMap;
+import java.util.List;
+import controlador.Coordinador;
+import interfaz.Interfaz;
+import negocio.Calculo;
+import negocio.Empresa;
+import negocio.EquipoExistenteException;
 
 public class TestCompilacion {
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws EquipoExistenteException {
 
 		TipoEquipoSecuencialDAO dao = new TipoEquipoSecuencialDAO();
 		TipoCableSecuencialDAO dao1 = new TipoCableSecuencialDAO();
@@ -22,68 +22,66 @@ public class TestCompilacion {
 		ConexionSecuencialDAO dao4 = new ConexionSecuencialDAO();
 		EquipoSecuencialDAO dao5 = new EquipoSecuencialDAO();
 
-//		TreeMap<String, TipoEquipo> tipoEquipo = dao.buscarTodos();
-//		System.out.println(tipoEquipo);
-//		System.out.println();
-//		TreeMap<String, TipoCable> tipoCable = dao1.buscarTodos();
-//		System.out.println(tipoCable);
-//		System.out.println();
-//		TreeMap<String, TipoPuerto> tipoPuerto = dao2.buscarTodos();
-//		System.out.println(tipoPuerto);
-//		System.out.println();
-//		TreeMap<String, Ubicacion> ubicacion = dao3.buscarTodos();
-//		System.out.println(ubicacion);
-//		System.out.println();
-		List<Conexion> conexion = dao4.buscarTodos();
-		//System.out.println(conexion);
-		//TreeMap<String, Equipo> equipo = dao5.buscarTodos();
-		//System.out.println(equipo);
-		TreeMap<String, TipoEquipo> tipoEquipos = dao.buscarTodos();
-		TreeMap<String, TipoCable> tipoCables = dao1.buscarTodos();
-		TreeMap<String, TipoPuerto> tipoPuertos = dao2.buscarTodos();
-		TreeMap<String, Ubicacion> ubicaciones = dao3.buscarTodos();
+		TreeMap<String, TipoEquipo> tipoEquipo = dao.buscarTodos();
+		TreeMap<String, TipoCable> tipoCable = dao1.buscarTodos();
+		TreeMap<String, TipoPuerto> tipoPuerto = dao2.buscarTodos();
+		TreeMap<String, Ubicacion> ubicacion = dao3.buscarTodos();
 		List<Conexion> conexiones = dao4.buscarTodos();
 		TreeMap<String, Equipo> equipos = dao5.buscarTodos();
-/*
-		System.out.println("Equipos cargados:");
-		for (Equipo equipo : equipos.values()) {
-			System.out.println(equipo);
-		}
-		
-		System.out.println();
+		/*
+		 * System.out.println("Equipos cargados:"); for (Equipo e : equipos.values()) {
+		 * System.out.println(e); }
+		 * 
+		 * System.out.println(); System.out.println("Conexiones cargadas:"); for
+		 * (Conexion conexion1 : conexiones) { System.out.println(conexion1); }
+		 * 
+		 * System.out.println();
+		 * 
+		 * System.out.println("Tipos de equipos cargados:"); for (TipoEquipo te :
+		 * tipoEquipos.values()) { System.out.println(te); }
+		 * 
+		 * System.out.println();
+		 * 
+		 * System.out.println("Tipos de cables cargados:"); for (TipoCable cables :
+		 * tipoCables.values()) { System.out.println(cables); } System.out.println();
+		 * 
+		 * System.out.println("Tipos de puertos cargados:"); for (TipoPuerto puertos :
+		 * tipoPuertos.values()) { System.out.println(puertos); }
+		 * 
+		 * System.out.println();
+		 * 
+		 * System.out.println("Ubicaciones cargadas:"); for (Ubicacion ubi :
+		 * ubicaciones.values()) { System.out.println(ubi); }
+		 */
+		// Coordinador coordinador = new Coordinador();
+		// Empresa empresa = Empresa.getEmpresa();
+		// coordinador.setEmpresa(empresa);
+		// Calculo calculo = new Calculo();
+		// coordinador.setCalculo(calculo);
+		// coordinador.listarEquipos();
 
-		System.out.println("Conexiones cargadas:");
-		for (Conexion conexion1 : conexiones) {
-			System.out.println(conexion1);
-		}
-		
-		System.out.println();
+		// l�gica
+		// Empresa empresa;
+		// Calculo calculo;
 
-		System.out.println("Tipos de equipos cargados:");
-		for (TipoEquipo tipoEquipo : tipoEquipos.values()) {
-			System.out.println(tipoEquipo);
-		}
-		
-		System.out.println();
-		
-		System.out.println("Tipos de cables cargados:");
-		for (TipoCable cables : tipoCables.values()) {
-			System.out.println(cables);
-		}
+		// vista
+		// Interfaz interfaz;
 
-		System.out.println();
-		
-		System.out.println("Tipos de puertos cargados:");
-		for (TipoPuerto puertos : tipoPuertos.values()) {
-			System.out.println(puertos);
-		}
+		// controlador
+		// Coordinador coordinador;
 
-		System.out.println();
-		
-		System.out.println("Ubicaciones cargadas:");
-		for (Ubicacion ubi : ubicaciones.values()) {
-			System.out.println(ubi);
-		}*/
+		// empresa = Empresa.getEmpresa();
+		Calculo calculo = new Calculo();
+		// coordinador = new Coordinador();
+		// interfaz = new Interfaz();
+		// Se establecen las relaciones entre clases
+		// calculo.setCoordinador(coordinador);
+		// interfaz.setCoordinador(coordinador);
+		// Se establecen relaciones con la clase coordinador
+		// coordinador.setEmpresa(empresa);
+		// coordinador.setCalculo(calculo);
+		// calculo.cargarDatos(coordinador.listarConexiones());
+		System.out.print(calculo.cargarDatos(conexiones));
 	}
 
 }

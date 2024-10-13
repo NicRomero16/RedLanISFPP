@@ -21,6 +21,10 @@ public class Conexion {
 		this.tipoPuerto1 = tipoPuerto1;
 		this.tipoPuerto2 = tipoPuerto2;
 	}
+	
+	public Conexion() {
+		
+	}
 
 	public Equipo getEquipo1() {
 		return equipo1;

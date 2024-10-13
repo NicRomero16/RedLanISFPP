@@ -123,30 +123,6 @@ public class Empresa {
 			throw new ConexionInexistenteException("La conexion no existe");
 		return conexiones.get(pos);
 	}
-	public void agregarUbicacion(Ubicacion ubicacion) throws UbicacionExistenteException{
-		if (ubicaciones.containsKey(ubicacion.getCodigo()))
-			throw new UbicacionExistenteException("La ubicacion ya existe");
-		ubicaciones.put(ubicacion.getCodigo(), ubicacion);
-		ubicacionService.insertar(ubicacion);
-	}
-
-	public Ubicacion buscarUbicacion(String codigo) throws UbicacionInexistenteException {
-		if (!ubicaciones.containsKey(codigo))
-			throw new UbicacionInexistenteException("La ubicacion no existe");
-		return ubicaciones.get(codigo);
-	}
-	
-	public void eliminarUbicacion(Ubicacion ubicacion) throws UbicacionInexistenteException {
-		buscarUbicacion(ubicacion.getCodigo());
-		ubicaciones.remove(ubicacion.getCodigo());
-		ubicacionService.borrar(ubicacion);
-	}
-	
-	public void modicarUbicacion(Ubicacion ubicacion) throws UbicacionInexistenteException {
-		buscarUbicacion(ubicacion.getCodigo());
-		ubicaciones.put(ubicacion.getCodigo(), ubicacion);
-		ubicacionService.actualizar(ubicacion);
-	}
 
 	public String getNombre() {
 		return nombre;

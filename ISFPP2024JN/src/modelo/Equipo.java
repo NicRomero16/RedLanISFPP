@@ -154,7 +154,6 @@ public class Equipo {
 		public String toString() {
 			return "Puerto [cantidad=" + cantidad + ", tipoPuerto=" + tipoPuerto + "]";
 		}
-		// **//
 	}
 
 }
