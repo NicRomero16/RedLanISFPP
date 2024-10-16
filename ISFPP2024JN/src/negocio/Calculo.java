@@ -1,7 +1,6 @@
 package negocio;
 
 import java.util.List;
-import java.util.Set;
 import java.util.TreeMap;
 
 import org.jgrapht.Graph;
@@ -44,6 +43,21 @@ public class Calculo {
 		return red;
 	}
 
+	public List<Equipo> mostrarEquiposIntermedios(Equipo origen, Equipo destino) {
+		// Verificar si ambos equipos están en la red
+		if (!red.containsVertex(origen) || !red.containsVertex(destino)) {
+			throw new EquipoInexistenteException("Uno de los equipos no existe en la red.");
+		}
+		// Busca el camino mas corto entre los dos vertices
+		List<Equipo> camino = DijkstraShortestPath.findPathBetween(red, origen, destino).getVertexList();
+
+		if (camino.size() > 1) {
+			List<Equipo> verticesIntermedios = camino.subList(1, camino.size() - 1);
+			return verticesIntermedios;
+		}
+		return null;
+	}
+	
 	// metodo para calcular la velocidad de conexion mas rapida entre dos equipos
 	public double velocidadMaxima(Equipo origen, Equipo destino) throws ConexionInexistenteException {
 
@@ -91,26 +105,10 @@ public class Calculo {
 		return velocidadMaxima; // Devolver el recorrido para ser mostrado por la interfaz
 	}
 
-	public TreeMap<String, Equipo> mostrarPing(TreeMap<String, Equipo> equipos) {
+	public TreeMap<String, Equipo> ping(TreeMap<String, Equipo> equipos) {
 		TreeMap<String, Equipo> rango = new TreeMap<String, Equipo>();
 		return rango;
 	}
-	
-	public List<Equipo> mostrarEquiposIntermedios(Equipo origen, Equipo destino) {
-		// Verificar si ambos equipos están en la red
-		if (!red.containsVertex(origen) || !red.containsVertex(destino)) {
-			throw new EquipoInexistenteException("Uno de los equipos no existe en la red.");
-		}
-		// Busca el camino mas corto entre los dos vertices
-		List<Equipo> camino = DijkstraShortestPath.findPathBetween(red, origen, destino).getVertexList();
-
-		if (camino.size() > 1) {
-			List<Equipo> verticesIntermedios = camino.subList(1, camino.size() - 1);
-			return verticesIntermedios;
-		}
-		return null;
-	}
-
 
 	public void setCoordinador(Coordinador coordinador) {
 		this.coordinador = coordinador;
