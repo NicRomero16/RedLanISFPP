@@ -21,9 +21,9 @@ public class Coordinador {
 		return empresa;
 	}
 	
-	public void iniciar() {
+	public void iniciar() { //creo q no es necesario este metodo, porq ya esta en AplicacionConsultas
 		try {
-			calculo.iniciar(empresa.getConexiones());
+			calculo.cargarDatos(empresa.getConexiones());
 		} catch (EquipoExistenteException e) {
 			System.out.println("pinchó");
 			e.printStackTrace();
@@ -65,5 +65,4 @@ public class Coordinador {
 	public TreeMap<String, Ubicacion> listarUbicaciones() {
 		return empresa.getUbicaciones();
 	}
-
 }

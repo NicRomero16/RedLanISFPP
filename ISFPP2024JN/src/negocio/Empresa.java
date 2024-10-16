@@ -50,24 +50,30 @@ public class Empresa {
 
 	private Empresa() {
 		super();
-		conexiones = new ArrayList<Conexion>();
-		conexionService = new ConexionServiceImpl();
-		conexiones.addAll(conexionService.buscarTodos());
-		ubicaciones = new TreeMap<String, Ubicacion>();
-		ubicacionService = new UbicacionServiceImpl();
-		ubicaciones.putAll(ubicacionService.buscarTodos());
-		equipos = new TreeMap<String, Equipo>();
-		equipoService = new EquipoServiceImpl();
-		equipos.putAll(equipoService.buscarTodos());
 		tiposEquipos = new TreeMap<String, TipoEquipo>();
 		tipoEquipoService = new TipoEquipoServiceImpl();
 		tiposEquipos.putAll(tipoEquipoService.buscarTodos());
+		
 		tiposCables = new TreeMap<String, TipoCable>();
 		tipoCableService = new TipoCableServiceImpl();
 		tiposCables.putAll(tipoCableService.buscarTodos());
+		
 		tiposPuertos = new TreeMap<String, TipoPuerto>();
 		tipoPuertoService = new TipoPuertoServiceImpl();
 		tiposPuertos.putAll(tipoPuertoService.buscarTodos());
+		
+		ubicaciones = new TreeMap<String, Ubicacion>();
+		ubicacionService = new UbicacionServiceImpl();
+		ubicaciones.putAll(ubicacionService.buscarTodos());		
+		
+		equipos = new TreeMap<String, Equipo>();
+		equipoService = new EquipoServiceImpl();
+		equipos.putAll(equipoService.buscarTodos());
+		
+		conexiones = new ArrayList<Conexion>();
+		conexionService = new ConexionServiceImpl();
+		conexiones.addAll(conexionService.buscarTodos());
+		
 	}
 
 	public void agregarEquipo(Equipo equipo) throws EquipoExistenteException {

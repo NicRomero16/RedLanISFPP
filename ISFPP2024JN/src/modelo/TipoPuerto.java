@@ -58,7 +58,7 @@ public class TipoPuerto {
 
 	@Override
 	public String toString() {
-		return "TipoPuerto [codigo=" + codigo + ", descripcion=" + descripcion + ", velocidad=" + velocidad + "]";
+		return "Tipo de puerto [codigo=" + codigo + ", descripcion=" + descripcion + ", velocidad=" + velocidad + "]";
 	}
 
 }

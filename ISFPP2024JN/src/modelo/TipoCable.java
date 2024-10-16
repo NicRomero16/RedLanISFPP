@@ -59,7 +59,7 @@ public class TipoCable {
 
 	@Override
 	public String toString() {
-		return "TipoCable [codigo=" + codigo + ", descripcion=" + descripcion + ", velocidad=" + velocidad + "]";
+		return "Tipo de cable [codigo=" + codigo + ", descripcion=" + descripcion + ", velocidad=" + velocidad + "]";
 	}
 
 }
