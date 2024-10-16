@@ -97,7 +97,7 @@ public class Equipo {
 		this.direccionesIP = direccionesIP;
 	}
 
-	public boolean isEstado() {
+	public boolean getEstado() {
 		return estado;
 	}
 
@@ -122,11 +122,15 @@ public class Equipo {
 		return Objects.equals(codigo, other.codigo);
 	}
 
+	public boolean contieneIp(String ip) {
+		return direccionesIP.contains(ip);
+	}
+
 	@Override
 	public String toString() {
 		return "Equipo [\n codigo=" + codigo + ", \n descripcion=" + descripcion + ", \n marca=" + marca
-				+ ", \n modelo=" + modelo + " \n " + tipoEquipo + ", \n " + ubicacion + ", \n "
-				+ puertos + ", \n DireccionesIP=" + direccionesIP + ", \n estado=" + estado + "]" + "\n\n";
+				+ ", \n modelo=" + modelo + " \n " + tipoEquipo + ", \n " + ubicacion + ", \n " + puertos
+				+ ", \n DireccionesIP=" + direccionesIP + ", \n estado=" + estado + "]" + "\n\n";
 	}
 
 	private class Puerto {
@@ -152,7 +156,7 @@ public class Equipo {
 
 		@Override
 		public String toString() {
-			return "Puertos [cantidad=" + cantidad + ", "+ tipoPuerto + "]";
+			return "Puertos [cantidad=" + cantidad + ", " + tipoPuerto + "]";
 		}
 	}
 

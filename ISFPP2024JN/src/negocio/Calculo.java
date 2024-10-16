@@ -45,7 +45,7 @@ public class Calculo {
 	}
 
 	// metodo para calcular la velocidad de conexion mas rapida entre dos equipos
-	public List<Conexion> velocidadMaxima(Equipo origen, Equipo destino) throws ConexionInexistenteException {
+	public double velocidadMaxima(Equipo origen, Equipo destino) throws ConexionInexistenteException {
 
 		// Verificar si ambos equipos están en la red
 		if (!red.containsVertex(origen) || !red.containsVertex(destino)) {
@@ -87,43 +87,31 @@ public class Calculo {
 			// Actualizar la velocidad máxima considerando el cuello de botella
 			velocidadMaxima = Math.min(velocidadMaxima, velocidadConexion);
 		}
-		// Imprimir el resultado
-		System.out.println("Velocidad máxima entre " + origen.getCodigo() + " y " + destino.getCodigo() + ": "
-				+ velocidadMaxima + " Mbps");
 
-		return recorrido; // Devolver el recorrido para ser mostrado por la interfaz
+		return velocidadMaxima; // Devolver el recorrido para ser mostrado por la interfaz
 	}
-	
+
 	public TreeMap<String, Equipo> mostrarPing(TreeMap<String, Equipo> equipos) {
 		TreeMap<String, Equipo> rango = new TreeMap<String, Equipo>();
-		for (Equipo equipo : equipos.values())
-			rango.put(equipo.getCodigo(), equipo.getDireccionesIP());
 		return rango;
 	}
-
-	public void imprimirGrafo() {
-		Set<Conexion> edges = red.edgeSet();
-
-		// Iterar sobre todas las aristas
-		for (Conexion edge : edges) {
-			System.out.println("Conexion: ");
-			System.out.println("Equipo origen: \n Codigo: " + edge.getEquipo1().getCodigo() + "\n Decripcion: "
-					+ edge.getEquipo1().getDescripcion() + "\n Marca: " + edge.getEquipo1().getMarca() + "\n Modelo: "
-					+ edge.getEquipo1().getModelo() + "\n " + edge.getEquipo1().getTipoEquipo() + "\n "
-					+ edge.getEquipo1().getUbicacion() + "\n " + edge.getEquipo1().getPuertos() + "\n Direciones IP: "
-					+ edge.getEquipo1().getDireccionesIP() + "\n " + edge.getTipoPuerto1() + "\n");
-			System.out.println("Equipo destino: \n Codigo: " + edge.getEquipo2().getCodigo() + "\n Decripcion: "
-					+ edge.getEquipo2().getDescripcion() + "\n Marca: " + edge.getEquipo2().getMarca() + "\n Modelo: "
-					+ edge.getEquipo2().getModelo() + "\n " + edge.getEquipo2().getTipoEquipo() + "\n "
-					+ edge.getEquipo2().getUbicacion() + "\n " + edge.getEquipo2().getPuertos() + "\n Direciones IP: "
-					+ edge.getEquipo2().getDireccionesIP() + "\n " + edge.getTipoPuerto2() + "\n");
-			System.out.println(" Tipo de cable de la conexion: \n " + edge.getTipoCable());
-			System.out.println(
-					"=========================================================================================================");
-
-		}
-	}
 	
+	public List<Equipo> mostrarEquiposIntermedios(Equipo origen, Equipo destino) {
+		// Verificar si ambos equipos están en la red
+		if (!red.containsVertex(origen) || !red.containsVertex(destino)) {
+			throw new EquipoInexistenteException("Uno de los equipos no existe en la red.");
+		}
+		// Busca el camino mas corto entre los dos vertices
+		List<Equipo> camino = DijkstraShortestPath.findPathBetween(red, origen, destino).getVertexList();
+
+		if (camino.size() > 1) {
+			List<Equipo> verticesIntermedios = camino.subList(1, camino.size() - 1);
+			return verticesIntermedios;
+		}
+		return null;
+	}
+
+
 	public void setCoordinador(Coordinador coordinador) {
 		this.coordinador = coordinador;
 	}

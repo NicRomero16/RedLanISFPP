@@ -1,10 +1,12 @@
 package controlador;
 
 import negocio.Calculo;
+import negocio.ConexionInexistenteException;
 import negocio.Empresa;
 import negocio.EquipoExistenteException;
 
 import java.util.List;
+import java.util.Set;
 import java.util.TreeMap;
 
 import interfaz.Interfaz;
@@ -20,14 +22,42 @@ public class Coordinador {
 	public Empresa getEmpresa() {
 		return empresa;
 	}
-	
-	public void iniciar() { //creo q no es necesario este metodo, porq ya esta en AplicacionConsultas
+
+	public void velocidadMax(Equipo origen, Equipo destino) {
 		try {
-			calculo.cargarDatos(empresa.getConexiones());
-		} catch (EquipoExistenteException e) {
-			System.out.println("pinchó");
+			String resultado = "la velocidad maxima entre el " + origen.getCodigo() + " y " + destino.getCodigo()
+					+ " es de " + calculo.velocidadMaxima(origen, destino) + " Mbps ";
+			interfaz.resultado1(resultado);
+		} catch (ConexionInexistenteException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void ping(String ip) {
+		TreeMap<String, Equipo> equipos = empresa.getEquipos();
+		for (Equipo equipo : equipos.values()) {
+			if (equipo.contieneIp(ip)) {
+				interfaz.imprimirEquipo(equipo);
+				if (equipo.getEstado()) {
+					interfaz.imprimirPing("el equipo " + equipo.getCodigo() + " con la IP " + equipo.getDireccionesIP()
+							+ "esta en estado activo (" + equipo.getEstado() + ")");
+				} else {
+					interfaz.imprimirPing("el equipo " + equipo.getCodigo() + " con la IP " + equipo.getDireccionesIP()
+							+ "esta en estado inactivo (" + equipo.getEstado() + ")");
+				}
+			}
+		}
+	}
+
+	public void imprimirGrafo() {
+		Set<Conexion> edges = calculo.getRed().edgeSet(); 
+		interfaz.imprimirGrafo(edges);
+	}
+	public void mostrarEquipos(Equipo origen, Equipo destino) {
+		calculo.mostrarEquiposIntermedios(origen, destino);
+		String resultado = "Los equipos intermedios entre " + origen.getCodigo() + " y " + destino.getCodigo()
+				+ " son: \n" + calculo.mostrarEquiposIntermedios(origen, destino);
+		interfaz.resultado2(resultado);
 	}
 
 	public void setEmpresa(Empresa empresa) {
@@ -60,9 +90,5 @@ public class Coordinador {
 
 	public List<Conexion> listarConexiones() {
 		return empresa.getConexiones();
-	}
-
-	public TreeMap<String, Ubicacion> listarUbicaciones() {
-		return empresa.getUbicaciones();
 	}
 }
