@@ -21,58 +21,27 @@ public class Calculo {
 	public Calculo() {
 	}
 
-	public void iniciar(List<Conexion> conexiones) throws EquipoExistenteException {
-	}
-
 	public Graph<Equipo, Conexion> cargarDatos(List<Conexion> conexiones) throws EquipoExistenteException {
 
 		// Inicializar el grafo no dirigido y ponderado
 		red = new DefaultUndirectedWeightedGraph<>(Conexion.class);
 
-		//
+		// Procesar cada conexión
 		for (Conexion conexion : conexiones) {
 			Equipo equipo1 = conexion.getEquipo1();
 			Equipo equipo2 = conexion.getEquipo2();
-			double velocidadEntre = conexion.getTipoCable().getVelocidad();
+			int velocidadEntre = conexion.getTipoCable().getVelocidad();
+
+			// Agregar los equipos al grafo
 			red.addVertex(equipo1);
 			red.addVertex(equipo2);
+			// Agrega la conexion entre los equipos
+			red.addEdge(equipo1, equipo2, conexion);
+			// Se asigna una velocidad a la conexion
+			red.setEdgeWeight(conexion, velocidadEntre);
 
-			// Verificar que ambos equipos existan en el grafo
-			if (!red.containsVertex(equipo1)) {
-				throw new EquipoInexistenteException("El equipo " + equipo1 + " no existe");
-			}
-			if (!red.containsVertex(equipo2)) {
-				throw new EquipoInexistenteException("El equipo " + equipo2 + " no existe");
-			}
-			// Verificar que los equipos no sean el mismo
-			if (equipo1.equals(equipo2)) {
-				throw new EquipoExistenteException("El equipo no puede estar conectado a sí mismo");
-			}
-			// Verificar si la arista ya existe
-			if (red.getEdge(equipo1, equipo2) == null) {
-				// Agregar la arista y establecer la velocidad
-				Conexion edge = red.addEdge(equipo1, equipo2);
-				red.setEdgeWeight(edge, velocidadEntre);
-			} else {
-				throw new EquipoExistenteException("La conexión entre los dos equipos ya existe");
-			}
-			// Procesar cada conexión
-			for (Conexion conexion : conexiones) {
-				Equipo equipo1 = conexion.getEquipo1();
-				Equipo equipo2 = conexion.getEquipo2();
-				int velocidadEntre = conexion.getTipoCable().getVelocidad();
-
-				// Agregar los equipos al grafo
-				red.addVertex(equipo1);
-				red.addVertex(equipo2);
-				// Agrega la conexion entre los equipos
-				red.addEdge(equipo1, equipo2, conexion);
-				// Se asigna una velocidad a la conexion
-				red.setEdgeWeight(conexion, velocidadEntre);
-
-			}
-			return red;
 		}
+		return red;
 	}
 
 	// metodo para calcular la velocidad de conexion mas rapida entre dos equipos
@@ -124,7 +93,7 @@ public class Calculo {
 
 		return recorrido; // Devolver el recorrido para ser mostrado por la interfaz
 	}
-
+	
 	public TreeMap<String, Equipo> mostrarPing(TreeMap<String, Equipo> equipos) {
 		TreeMap<String, Equipo> rango = new TreeMap<String, Equipo>();
 		for (Equipo equipo : equipos.values())
@@ -154,7 +123,7 @@ public class Calculo {
 
 		}
 	}
-
+	
 	public void setCoordinador(Coordinador coordinador) {
 		this.coordinador = coordinador;
 	}
