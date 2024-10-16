@@ -1,6 +1,8 @@
 package negocio;
 
 import java.util.List;
+import java.util.Set;
+import java.util.TreeMap;
 
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
@@ -33,27 +35,11 @@ public class Calculo {
 			// Agregar los equipos al grafo
 			red.addVertex(equipo1);
 			red.addVertex(equipo2);
+			// Agrega la conexion entre los equipos
+			red.addEdge(equipo1, equipo2, conexion);
+			// Se asigna una velocidad a la conexion
+			red.setEdgeWeight(conexion, velocidadEntre);
 
-			// Verificar que ambos equipos existan en el grafo
-			if (!red.containsVertex(equipo1)) {
-				throw new EquipoInexistenteException("El equipo " + equipo1 + " no existe");
-			}
-			if (!red.containsVertex(equipo2)) {
-				throw new EquipoInexistenteException("El equipo " + equipo2 + " no existe");
-			}
-
-			// Verificar que los equipos no sean el mismo
-			if (!equipo1.equals(equipo2)) {
-
-				// Verificar si la conexión ya existe
-				if (red.getEdge(equipo1, equipo2) == null) {
-					// Agrega la conexion entre los equipos
-					Conexion edge = red.addEdge(equipo1, equipo2);
-					if (edge != null)
-						// Se asigna una velocidad a la conexion
-						red.setEdgeWeight(edge, velocidadEntre);
-				}
-			}
 		}
 		return red;
 	}
@@ -102,19 +88,42 @@ public class Calculo {
 			velocidadMaxima = Math.min(velocidadMaxima, velocidadConexion);
 		}
 		// Imprimir el resultado
-		System.out.println("Velocidad máxima entre " + origen + " y " + destino + ": " + velocidadMaxima + " Mbps");
+		System.out.println("Velocidad máxima entre " + origen.getCodigo() + " y " + destino.getCodigo() + ": "
+				+ velocidadMaxima + " Mbps");
 
 		return recorrido; // Devolver el recorrido para ser mostrado por la interfaz
 	}
-
-	// metodo para q otra clase puedan usar el grafo, no creo q sea necesario.
-	public Graph<Equipo, Conexion> getGrafo() {
-		if (red == null) {
-			throw new IllegalStateException("El grafo no ha sido inicializado. Llama a cargarDatos primero.");
-		}
-		return red;
+	
+	public TreeMap<String, Equipo> mostrarPing(TreeMap<String, Equipo> equipos) {
+		TreeMap<String, Equipo> rango = new TreeMap<String, Equipo>();
+		for (Equipo equipo : equipos.values())
+			rango.put(equipo.getCodigo(), equipo.getDireccionesIP());
+		return rango;
 	}
 
+	public void imprimirGrafo() {
+		Set<Conexion> edges = red.edgeSet();
+
+		// Iterar sobre todas las aristas
+		for (Conexion edge : edges) {
+			System.out.println("Conexion: ");
+			System.out.println("Equipo origen: \n Codigo: " + edge.getEquipo1().getCodigo() + "\n Decripcion: "
+					+ edge.getEquipo1().getDescripcion() + "\n Marca: " + edge.getEquipo1().getMarca() + "\n Modelo: "
+					+ edge.getEquipo1().getModelo() + "\n " + edge.getEquipo1().getTipoEquipo() + "\n "
+					+ edge.getEquipo1().getUbicacion() + "\n " + edge.getEquipo1().getPuertos() + "\n Direciones IP: "
+					+ edge.getEquipo1().getDireccionesIP() + "\n " + edge.getTipoPuerto1() + "\n");
+			System.out.println("Equipo destino: \n Codigo: " + edge.getEquipo2().getCodigo() + "\n Decripcion: "
+					+ edge.getEquipo2().getDescripcion() + "\n Marca: " + edge.getEquipo2().getMarca() + "\n Modelo: "
+					+ edge.getEquipo2().getModelo() + "\n " + edge.getEquipo2().getTipoEquipo() + "\n "
+					+ edge.getEquipo2().getUbicacion() + "\n " + edge.getEquipo2().getPuertos() + "\n Direciones IP: "
+					+ edge.getEquipo2().getDireccionesIP() + "\n " + edge.getTipoPuerto2() + "\n");
+			System.out.println(" Tipo de cable de la conexion: \n " + edge.getTipoCable());
+			System.out.println(
+					"=========================================================================================================");
+
+		}
+	}
+	
 	public void setCoordinador(Coordinador coordinador) {
 		this.coordinador = coordinador;
 	}

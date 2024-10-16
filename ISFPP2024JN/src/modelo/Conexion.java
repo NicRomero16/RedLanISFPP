@@ -87,8 +87,8 @@ public class Conexion {
 
 	@Override
 	public String toString() {
-		return "Conexion [equipo1=" + equipo1 + ", tipoPuerto1=" + tipoPuerto1 + ", equipo2=" + equipo2
-				+ ", tipoPuerto2=" + tipoPuerto2 + ", tipoCable=" + tipoCable + "]";
+		return "Conexion. \n [Equipo origen: \n " + equipo1 + ", Tipo de puerto del equipo origen: \n " + tipoPuerto1 + ", \n Equipo destino: \n " + equipo2
+				+ ", Tipo puerto del equipo destino: \n " + tipoPuerto2 + ", \n " + tipoCable + "] \n";
 	}
 
 

@@ -53,35 +53,12 @@ public class TestCompilacion {
 		 * System.out.println("Ubicaciones cargadas:"); for (Ubicacion ubi :
 		 * ubicaciones.values()) { System.out.println(ubi); }
 		 */
-		// Coordinador coordinador = new Coordinador();
+		/*/ Coordinador coordinador = new Coordinador();
 		// Empresa empresa = Empresa.getEmpresa();
 		// coordinador.setEmpresa(empresa);
 		// Calculo calculo = new Calculo();
 		// coordinador.setCalculo(calculo);
 		// coordinador.listarEquipos();
-
-		// l�gica
-		// Empresa empresa;
-		// Calculo calculo;
-
-		// vista
-		// Interfaz interfaz;
-
-		// controlador
-		// Coordinador coordinador;
-
-		// empresa = Empresa.getEmpresa();
-		Calculo calculo = new Calculo();
-		// coordinador = new Coordinador();
-		// interfaz = new Interfaz();
-		// Se establecen las relaciones entre clases
-		// calculo.setCoordinador(coordinador);
-		// interfaz.setCoordinador(coordinador);
-		// Se establecen relaciones con la clase coordinador
-		// coordinador.setEmpresa(empresa);
-		// coordinador.setCalculo(calculo);
-		// calculo.cargarDatos(coordinador.listarConexiones());
-		System.out.print(calculo.cargarDatos(conexiones));
+		 */
 	}
-
 }

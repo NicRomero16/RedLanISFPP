@@ -48,7 +48,7 @@ public class TipoEquipo {
 
 	@Override
 	public String toString() {
-		return "TipoEquipo [codigo=" + codigo + ", descripcion=" + descripcion + "]";
+		return "Tipo de equipo [codigo=" + codigo + ", descripcion=" + descripcion + "]";
 	}
 
 }

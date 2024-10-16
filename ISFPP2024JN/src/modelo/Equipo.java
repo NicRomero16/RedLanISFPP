@@ -32,7 +32,7 @@ public class Equipo {
 	public void agregarPuerto(int cantidad, TipoPuerto tipoPuerto) {
 		this.puertos.add(new Puerto(cantidad, tipoPuerto));
 	}
-	
+
 	public String getDescripcion() {
 		return descripcion;
 	}
@@ -124,9 +124,9 @@ public class Equipo {
 
 	@Override
 	public String toString() {
-		return "Equipo [\n codigo=" + codigo + ", \n descripcion=" + descripcion + ", \n marca=" + marca + ", \n modelo=" + modelo
-				+ ", \n tipoEquipo=" + tipoEquipo + ", \n ubicacion=" + ubicacion + ", \n puertos=" + puertos
-				+ ", \n direccionesIP=" + direccionesIP + ", \n estado=" + estado + "]" + "\n\n";
+		return "Equipo [\n codigo=" + codigo + ", \n descripcion=" + descripcion + ", \n marca=" + marca
+				+ ", \n modelo=" + modelo + " \n " + tipoEquipo + ", \n " + ubicacion + ", \n "
+				+ puertos + ", \n DireccionesIP=" + direccionesIP + ", \n estado=" + estado + "]" + "\n\n";
 	}
 
 	private class Puerto {
@@ -152,7 +152,7 @@ public class Equipo {
 
 		@Override
 		public String toString() {
-			return "Puerto [cantidad=" + cantidad + ", tipoPuerto=" + tipoPuerto + "]";
+			return "Puertos [cantidad=" + cantidad + ", "+ tipoPuerto + "]";
 		}
 	}
 
