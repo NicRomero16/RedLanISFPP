@@ -30,7 +30,7 @@ public class Coordinador {
 		interfaz.imprimirGrafo(edges);
 	}
 
-	public void mostrarEquiposIntermedios(Equipo origen, Equipo destino) throws Exception {
+	public void mostrarEquiposIntermedios(Equipo origen, Equipo destino) {
 		String resultado = "Los equipos intermedios entre " + origen.getCodigo() + " y " + destino.getCodigo()
 				+ " son: \n" + calculo.mostrarEquiposIntermedios(origen, destino);
 		interfaz.mostrarEquiposIntermedios(resultado);
@@ -44,7 +44,7 @@ public class Coordinador {
 		} catch (ConexionInexistenteException e) {
 			e.printStackTrace();
 		}
-	}
+	}	   
 
 	public void ping(String ip) {
 		TreeMap<String, Equipo> equipos = empresa.getEquipos();

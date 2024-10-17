@@ -13,28 +13,23 @@ import negocio.Empresa;
 
 public class AplicacionConsultas {
 
-	// l�gica
 	private Empresa empresa;
 	private Calculo calculo;
-
-	// vista
 	private Interfaz interfaz;
-
-	// controlador
 	private Coordinador coordinador;
 
 	public static void main(String[] args) throws EquipoExistenteException {
 		AplicacionConsultas miAplicacion = new AplicacionConsultas();
 		miAplicacion.iniciar();
-		//miAplicacion.consultar1();
-		//miAplicacion.consultar2();
-		//miAplicacion.consultar3();
-		//miAplicacion.consultar4();
-		//miAplicacion.consultar5();
+		miAplicacion.consultar1();
+		miAplicacion.consultar2();
+		miAplicacion.consultar3();
+		miAplicacion.consultar4();
+		miAplicacion.consultar5();
+		miAplicacion.consultar6();
 	}
 
 	private void iniciar() throws EquipoExistenteException {
-		/* Se instancian las clases */
 		empresa = Empresa.getEmpresa();
 		calculo = new Calculo();
 		coordinador = new Coordinador();
@@ -45,7 +40,6 @@ public class AplicacionConsultas {
 		coordinador.setCalculo(calculo);
 		coordinador.setInterfaz(interfaz);
 		calculo.cargarDatos(coordinador.listarConexiones());
-
 	}
 
 	// Imprimir el grafo en pantalla
@@ -53,38 +47,34 @@ public class AplicacionConsultas {
 		coordinador.imprimirGrafo();
 	}
 
-	// Metodo para mostrar los equipos intermedios entre dos equipos conectados
+	// Dado dos equipos mostrar todos los equipos intermedios y sus conexiones.
 	private void consultar2() {
 		Equipo[] equipos = interfaz.solicitarEquipos();
-		try {
 			coordinador.mostrarEquiposIntermedios(equipos[0], equipos[1]);
-		} catch (EquipoInexistenteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 	}
 
-	// Mostrar equipos intermedios entre dos equipos conectados
+	// Calcular la velocidad máxima de acuerdo al tipo de puerto y cables por donde
+	// se transmiten los datos.
 	private void consultar3() {
 		Equipo[] equipos = interfaz.solicitarEquipos();
 		coordinador.velocidadMaxima(equipos[0], equipos[1]);
 	}
 
-	// Mostrar el estado de un equipo
+	// Realizar un ping a un equipo.
 	private void consultar4() {
 		String ip = interfaz.ingresarIP();
 		coordinador.ping(ip);
 	}
 
-	// Ver estado de los equipos conectados a la red
+	// Realizar un ping a un rango de IP.
 	private void consultar5() {
+
+	}
+
+	// Realizar un mapa del estado actual de los equipos conectados a la red.
+	private void consultar6() {
 		TreeMap<String, Equipo> map = interfaz.recibirMapEquipos();
 		coordinador.estadoEquipos(map);
-	}
-	
-	private void consultar6() {
 	}
 }

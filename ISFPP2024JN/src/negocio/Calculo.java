@@ -1,9 +1,6 @@
 package negocio;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.List;
-import java.util.TreeMap;
 
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
@@ -15,7 +12,8 @@ import controlador.Coordinador;
 import excepciones.ConexionInexistenteException;
 import excepciones.EquipoExistenteException;
 import excepciones.EquipoInexistenteException;
-import modelo.*;
+import modelo.Conexion;
+import modelo.Equipo;
 
 public class Calculo {
 
@@ -45,8 +43,7 @@ public class Calculo {
 		return red;
 	}
 
-	public List<Equipo> mostrarEquiposIntermedios(Equipo origen, Equipo destino)
-			throws Exception, EquipoInexistenteException {
+	public List<Equipo> mostrarEquiposIntermedios(Equipo origen, Equipo destino) throws EquipoInexistenteException {
 
 		List<Equipo> camino = DijkstraShortestPath.findPathBetween(red, origen, destino).getVertexList();
 
@@ -54,7 +51,7 @@ public class Calculo {
 			List<Equipo> verticesIntermedios = camino.subList(1, camino.size() - 1);
 			return verticesIntermedios;
 		} else
-			throw new Exception("Los equipos no tienen equipos intermedios");
+			throw new EquipoInexistenteException("Los equipos no tienen equipos intermedios");
 	}
 
 	public double velocidadMaxima(Equipo origen, Equipo destino) throws ConexionInexistenteException {
@@ -87,11 +84,6 @@ public class Calculo {
 		return velocidadMaxima;
 	}
 
-	public TreeMap<String, Equipo> ping(TreeMap<String, Equipo> equipos) {
-		TreeMap<String, Equipo> rango = new TreeMap<String, Equipo>();
-		return rango;
-	}
-
 	public Coordinador getCoordinador() {
 		return coordinador;
 	}
@@ -107,5 +99,4 @@ public class Calculo {
 	public void setRed(Graph<Equipo, Conexion> red) {
 		this.red = red;
 	}
-
 }

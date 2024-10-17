@@ -1,6 +1,5 @@
 package interfaz;
 
-import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -24,6 +23,14 @@ public class Interfaz {
 
 	public String ingresarIP() {
 		return Constantes.PING;
+	}
+
+	public String EquipoIpOrigen(String ipOrigen) {
+		return "192.168.16.115";
+	}
+
+	public String EquipoIpDestino(String ipDestino) {
+		return "192.168.16.120";
 	}
 
 	public Equipo ingresarEquipoOrigen(TreeMap<String, Equipo> equipos) {
