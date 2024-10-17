@@ -1,14 +1,17 @@
 package interfaz;
 
+import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 
+import controlador.Constantes;
 import controlador.Coordinador;
+import excepciones.EquipoInexistenteException;
 import modelo.Conexion;
 import modelo.Equipo;
 
 public class Interfaz {
-	// main->controlador->calculo->controlador->interfaz->consola
+
 	private Coordinador coordinador;
 
 	public Interfaz() {
@@ -20,21 +23,30 @@ public class Interfaz {
 	}
 
 	public String ingresarIP() {
-		return "192.168.16.126";
+		return Constantes.PING;
 	}
 
-	public Equipo ingresarEquipoOrigen(TreeMap<String, Equipo> listarEquipos) {
-		return listarEquipos.get("SWAM");
+	public Equipo ingresarEquipoOrigen(TreeMap<String, Equipo> equipos) {
+		return equipos.get("AP01");
 	}
 
-	public Equipo ingresarEquipoDestino(TreeMap<String, Equipo> listarEquipos) {
-		return listarEquipos.get("AP09");
+	public Equipo ingresarEquipoDestino(TreeMap<String, Equipo> equipos) {
+		return equipos.get("SWL0");
+	}
+
+	public Equipo[] solicitarEquipos() {
+		Equipo origen = ingresarEquipoOrigen(coordinador.listarEquipos());
+		if (origen == null)
+			throw new EquipoInexistenteException("El equipo origen no existe");
+		Equipo destino = ingresarEquipoDestino(coordinador.listarEquipos());
+		if (destino == null)
+			throw new EquipoInexistenteException("El equipo destino no existe");
+		return new Equipo[] { origen, destino };
 	}
 
 	public void imprimirGrafo(Set<Conexion> edges) {
 		StringBuilder resultado = new StringBuilder();
 
-		// Iterar sobre todas las aristas
 		for (Conexion edge : edges) {
 			resultado.append("Conexion:  \n");
 
@@ -42,12 +54,14 @@ public class Interfaz {
 					+ edge.getEquipo1().getDescripcion() + "\n Marca: " + edge.getEquipo1().getMarca() + "\n Modelo: "
 					+ edge.getEquipo1().getModelo() + "\n " + edge.getEquipo1().getTipoEquipo() + "\n "
 					+ edge.getEquipo1().getUbicacion() + "\n " + edge.getEquipo1().getPuertos() + "\n Direciones IP: "
-					+ edge.getEquipo1().getDireccionesIP() + "\n " + edge.getTipoPuerto1() + "\n");
+					+ edge.getEquipo1().getDireccionesIP() + "\n Estado: " + edge.getEquipo1().getEstado() + "\n "
+					+ edge.getTipoPuerto1() + "\n");
 			resultado.append("\nEquipo destino: \n Codigo: " + edge.getEquipo2().getCodigo() + "\n Decripcion: "
 					+ edge.getEquipo2().getDescripcion() + "\n Marca: " + edge.getEquipo2().getMarca() + "\n Modelo: "
 					+ edge.getEquipo2().getModelo() + "\n " + edge.getEquipo2().getTipoEquipo() + "\n "
 					+ edge.getEquipo2().getUbicacion() + "\n " + edge.getEquipo2().getPuertos() + "\n Direciones IP: "
-					+ edge.getEquipo2().getDireccionesIP() + "\n " + edge.getTipoPuerto2() + "\n");
+					+ edge.getEquipo2().getDireccionesIP() + "\n Estado: " + edge.getEquipo2().getEstado() + "\n "
+					+ edge.getTipoPuerto2() + "\n");
 			resultado.append(" \nTipo de cable de la conexion: \n " + edge.getTipoCable() + "\n");
 			resultado.append(
 					"=========================================================================================================");
@@ -62,8 +76,6 @@ public class Interfaz {
 				"=========================================================================================================");
 	}
 
-	// imprime en pantalla la conexion entre dos equipos
-	// junto con la velocidad que tiene de una a la otra(que seria el resultado)
 	public void mostrarVelocidadMaxima(String resultado) {
 		System.out.println(resultado);
 		System.out.println(
@@ -83,5 +95,4 @@ public class Interfaz {
 	public void setCoordinador(Coordinador coordinador) {
 		this.coordinador = coordinador;
 	}
-
 }

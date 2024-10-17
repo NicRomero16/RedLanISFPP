@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+import excepciones.ConexionExistenteException;
+import excepciones.ConexionInexistenteException;
+import excepciones.EquipoExistenteException;
+import excepciones.EquipoInexistenteException;
 import modelo.Conexion;
 import modelo.Equipo;
 import modelo.TipoCable;

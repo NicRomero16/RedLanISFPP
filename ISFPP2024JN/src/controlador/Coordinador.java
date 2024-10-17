@@ -1,13 +1,13 @@
 package controlador;
 
 import negocio.Calculo;
-import negocio.ConexionInexistenteException;
 import negocio.Empresa;
 
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 
+import excepciones.ConexionInexistenteException;
 import interfaz.Interfaz;
 import modelo.Conexion;
 import modelo.Equipo;
@@ -17,23 +17,26 @@ public class Coordinador {
 	private Calculo calculo;
 	private Interfaz interfaz;
 
+	public Coordinador() {
+		calculo = new Calculo();
+	}
+
 	public Empresa getEmpresa() {
 		return empresa;
 	}
-	
+
 	public void imprimirGrafo() {
-		Set<Conexion> edges = calculo.getRed().edgeSet(); 
+		Set<Conexion> edges = calculo.getRed().edgeSet();
 		interfaz.imprimirGrafo(edges);
 	}
 
-	public void mostrarEquiposIntermedios(Equipo origen, Equipo destino) {
-		calculo.mostrarEquiposIntermedios(origen, destino);
+	public void mostrarEquiposIntermedios(Equipo origen, Equipo destino) throws Exception {
 		String resultado = "Los equipos intermedios entre " + origen.getCodigo() + " y " + destino.getCodigo()
 				+ " son: \n" + calculo.mostrarEquiposIntermedios(origen, destino);
 		interfaz.mostrarEquiposIntermedios(resultado);
 	}
-	
-	public void velocidadMax(Equipo origen, Equipo destino) {
+
+	public void velocidadMaxima(Equipo origen, Equipo destino) {
 		try {
 			String resultado = "la velocidad maxima entre el " + origen.getCodigo() + " y " + destino.getCodigo()
 					+ " es de " + calculo.velocidadMaxima(origen, destino) + " Mbps ";
@@ -58,21 +61,20 @@ public class Coordinador {
 			}
 		}
 	}
-	
-	public void estadoEquipos(TreeMap<String,Equipo> eq) {
-		TreeMap<String,Equipo> equipos = eq;
+
+	public void estadoEquipos(TreeMap<String, Equipo> eq) {
+		TreeMap<String, Equipo> equipos = eq;
 		for (Equipo equipo : equipos.values()) {
-				interfaz.imprimirEquipo(equipo);
-				if (equipo.getEstado()) {
-					interfaz.imprimirPing("el equipo " + equipo.getCodigo() + " con la IP " + equipo.getDireccionesIP()
-							+ " esta en estado activo (" + equipo.getEstado() + ")");
-				} else {
-					interfaz.imprimirPing("el equipo " + equipo.getCodigo() + " con la IP: " + equipo.getDireccionesIP()
-							+ " esta en estado inactivo (" + equipo.getEstado() + ")");
-				}	
+			if (equipo.getEstado()) {
+				interfaz.imprimirPing("el equipo " + equipo.getCodigo() + " con la IP " + equipo.getDireccionesIP()
+						+ " esta en estado activo (" + equipo.getEstado() + ")");
+			} else {
+				interfaz.imprimirPing("el equipo " + equipo.getCodigo() + " con la IP: " + equipo.getDireccionesIP()
+						+ " esta en estado inactivo (" + equipo.getEstado() + ")");
+			}
 		}
 	}
-	
+
 	public void setEmpresa(Empresa empresa) {
 		this.empresa = empresa;
 	}
