@@ -3,7 +3,6 @@ package controlador;
 import java.util.TreeMap;
 
 import excepciones.EquipoExistenteException;
-import excepciones.EquipoInexistenteException;
 
 import interfaz.Interfaz;
 import modelo.Equipo;
