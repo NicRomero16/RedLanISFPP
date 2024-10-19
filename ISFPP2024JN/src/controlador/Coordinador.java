@@ -1,7 +1,7 @@
 package controlador;
 
 import negocio.Calculo;
-import negocio.Empresa;
+import negocio.Red;
 
 import java.util.List;
 import java.util.Set;
@@ -13,7 +13,7 @@ import modelo.Conexion;
 import modelo.Equipo;
 
 public class Coordinador {
-	private Empresa empresa;
+	private Red empresa;
 	private Calculo calculo;
 	private Interfaz interfaz;
 
@@ -21,7 +21,7 @@ public class Coordinador {
 		calculo = new Calculo();
 	}
 
-	public Empresa getEmpresa() {
+	public Red getEmpresa() {
 		return empresa;
 	}
 
@@ -75,7 +75,7 @@ public class Coordinador {
 		}
 	}
 
-	public void setEmpresa(Empresa empresa) {
+	public void setEmpresa(Red empresa) {
 		this.empresa = empresa;
 	}
 
@@ -99,6 +99,9 @@ public class Coordinador {
 		return empresa.buscarEquipo(equipo.getCodigo());
 	}
 
+	public Equipo EliminarEquipo(Equipo equipo) {
+		return empresa.eliminarEquipo(equipo);
+	}
 	public TreeMap<String, Equipo> listarEquipos() {
 		return empresa.getEquipos();
 	}

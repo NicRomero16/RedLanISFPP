@@ -27,9 +27,9 @@ import servicios.TipoPuertoServiceImpl;
 import servicios.UbicacionService;
 import servicios.UbicacionServiceImpl;
 
-public class Empresa {
+public class Red {
 
-	private static Empresa empresa = null;
+	private static Red empresa = null;
 
 	private String nombre;
 	private List<Conexion> conexiones;
@@ -45,14 +45,14 @@ public class Empresa {
 	private TreeMap<String, TipoPuerto> tiposPuertos;
 	private TipoPuertoService tipoPuertoService;
 
-	public static Empresa getEmpresa() {
+	public static Red getEmpresa() {
 		if (empresa == null) {
-			empresa = new Empresa();
+			empresa = new Red();
 		}
 		return empresa;
 	}
 
-	private Empresa() {
+	private Red() {
 		super();
 		tiposEquipos = new TreeMap<String, TipoEquipo>();
 		tipoEquipoService = new TipoEquipoServiceImpl();
@@ -93,10 +93,11 @@ public class Empresa {
 		equipoService.actualizar(equipo);
 	}
 
-	public void eliminarEquipo(Equipo equipo) {
+	public Equipo eliminarEquipo(Equipo equipo) {
 		buscarEquipo(equipo.getCodigo());
 		equipos.remove(equipo.getCodigo());
 		equipoService.borrar(equipo);
+		return equipo;
 	}
 
 	public Equipo buscarEquipo(String codigo) throws EquipoInexistenteException {

@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"controlador"},{"l":"dao"},{"l":"dao.secuencial"},{"l":"excepciones"},{"l":"interfaz"},{"l":"modelo"},{"l":"negocio"},{"l":"servicios"}];updateSearchResults();

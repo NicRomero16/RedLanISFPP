@@ -1,4 +1,4 @@
-package negocio;
+package test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,8 +19,9 @@ import modelo.TipoCable;
 import modelo.TipoEquipo;
 import modelo.TipoPuerto;
 import modelo.Ubicacion;
+import negocio.Calculo;
 
-class CalculoTest {
+class TestJunit {
 
 	private Calculo calculo;
 	private Coordinador coordinador;
