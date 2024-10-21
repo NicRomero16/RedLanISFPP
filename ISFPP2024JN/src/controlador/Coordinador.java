@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import excepciones.ConexionInexistenteException;
+import excepciones.EquipoExistenteException;
 import interfaz.Interfaz;
 import modelo.Conexion;
 import modelo.Equipo;
@@ -28,6 +29,36 @@ public class Coordinador {
 	public void imprimirGrafo() {
 		Set<Conexion> edges = calculo.getRed().edgeSet();
 		interfaz.imprimirGrafo(edges);
+	}
+	
+	public String imprimirGrafo2() {
+		
+		Set<Conexion> edges = calculo.getRed().edgeSet();
+		
+		StringBuilder resultado = new StringBuilder();
+
+		for (Conexion edge : edges) {
+			resultado.append("Conexion:  \n");
+
+			resultado.append("Equipo origen: \n Codigo: " + edge.getEquipo1().getCodigo() + "\n Decripcion: "
+					+ edge.getEquipo1().getDescripcion() + "\n Marca: " + edge.getEquipo1().getMarca() + "\n Modelo: "
+					+ edge.getEquipo1().getModelo() + "\n " + edge.getEquipo1().getTipoEquipo() + "\n "
+					+ edge.getEquipo1().getUbicacion() + "\n " + edge.getEquipo1().getPuertos() + "\n Direciones IP: "
+					+ edge.getEquipo1().getDireccionesIP() + "\n Estado: " + edge.getEquipo1().getEstado() + "\n "
+					+ edge.getTipoPuerto1() + "\n");
+			resultado.append("\nEquipo destino: \n Codigo: " + edge.getEquipo2().getCodigo() + "\n Decripcion: "
+					+ edge.getEquipo2().getDescripcion() + "\n Marca: " + edge.getEquipo2().getMarca() + "\n Modelo: "
+					+ edge.getEquipo2().getModelo() + "\n " + edge.getEquipo2().getTipoEquipo() + "\n "
+					+ edge.getEquipo2().getUbicacion() + "\n " + edge.getEquipo2().getPuertos() + "\n Direciones IP: "
+					+ edge.getEquipo2().getDireccionesIP() + "\n Estado: " + edge.getEquipo2().getEstado() + "\n "
+					+ edge.getTipoPuerto2() + "\n");
+			resultado.append(" \nTipo de cable de la conexion: \n " + edge.getTipoCable() + "\n");
+			resultado.append(
+					"================================================================\n");
+
+		}
+		
+		return resultado.toString();
 	}
 
 	public void mostrarEquiposIntermedios(Equipo origen, Equipo destino) {
@@ -99,14 +130,21 @@ public class Coordinador {
 		return empresa.buscarEquipo(equipo.getCodigo());
 	}
 
-	public Equipo EliminarEquipo(Equipo equipo) {
-		return empresa.eliminarEquipo(equipo);
-	}
 	public TreeMap<String, Equipo> listarEquipos() {
 		return empresa.getEquipos();
 	}
 
 	public List<Conexion> listarConexiones() {
 		return empresa.getConexiones();
+	}
+	
+	public void agregarEquipo(Equipo equipo) {
+		try {
+			empresa.agregarEquipo(equipo);
+		} catch (EquipoExistenteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		calculo.update();
 	}
 }

@@ -3,7 +3,7 @@ package controlador;
 import java.util.TreeMap;
 
 import excepciones.EquipoExistenteException;
-
+import gui.AplicacionGui;
 import interfaz.Interfaz;
 import modelo.Equipo;
 
@@ -19,17 +19,20 @@ public class AplicacionConsultas {
 
 	public static void main(String[] args) throws EquipoExistenteException {
 		AplicacionConsultas miAplicacion = new AplicacionConsultas();
+		
 		miAplicacion.iniciar();
-	//miAplicacion.consultar1();
-//		miAplicacion.consultar2();
-//		miAplicacion.consultar3();
-//		miAplicacion.consultar4();
-//		miAplicacion.consultar5();
-//		miAplicacion.consultar6();
+		/*
+		miAplicacion.consultar1();
+		miAplicacion.consultar2();
+		miAplicacion.consultar3();
+		miAplicacion.consultar4();
+		miAplicacion.consultar5();
+		miAplicacion.consultar6();
+		*/
 	}
 
 	private void iniciar() throws EquipoExistenteException {
-		empresa = Red.getEmpresa();
+		empresa = Red.getRed();
 		calculo = new Calculo();
 		coordinador = new Coordinador();
 		interfaz = new Interfaz();
@@ -38,14 +41,14 @@ public class AplicacionConsultas {
 		coordinador.setEmpresa(empresa);
 		coordinador.setCalculo(calculo);
 		coordinador.setInterfaz(interfaz);
-		coordinador.EliminarEquipo(null);
-		coordinador.getCalculo().cargarDatos(coordinador.listarConexiones()); //en cada metodo inicializar el grafo iniciar()
+		calculo.cargarDatos(coordinador.listarConexiones());
+		AplicacionGui appGui = new AplicacionGui(coordinador);
+		
 	}
 
 	// Imprimir el grafo en pantalla
 	private void consultar1() {
 		coordinador.imprimirGrafo();
-		
 	}
 
 	// Dado dos equipos mostrar todos los equipos intermedios y sus conexiones.

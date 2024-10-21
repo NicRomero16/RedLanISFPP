@@ -20,13 +20,15 @@ public class Calculo {
 	private Coordinador coordinador;
 
 	private Graph<Equipo, Conexion> red;
-
+	private boolean actualizar;
+	
 	public Calculo() {
 		red = new DefaultUndirectedGraph<>(Conexion.class);
 	}
 
 	public Graph<Equipo, Conexion> cargarDatos(List<Conexion> conexiones) throws EquipoExistenteException {
-
+		
+		this.actualizar = false;
 		red = new DefaultUndirectedWeightedGraph<>(Conexion.class);
 
 		for (Conexion conexion : conexiones) {
@@ -44,7 +46,13 @@ public class Calculo {
 	}
 
 	public List<Equipo> mostrarEquiposIntermedios(Equipo origen, Equipo destino) throws EquipoInexistenteException {
-
+		if(this.actualizar)
+			try {
+				this.cargarDatos(coordinador.listarConexiones());
+			} catch (EquipoExistenteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		List<Equipo> camino = DijkstraShortestPath.findPathBetween(red, origen, destino).getVertexList();
 
 		if (camino.size() > 2) {
@@ -55,7 +63,12 @@ public class Calculo {
 	}
 
 	public double velocidadMaxima(Equipo origen, Equipo destino) throws ConexionInexistenteException {
-
+		if(this.actualizar)
+			try {
+				this.cargarDatos(coordinador.listarConexiones()); //al avanzar el codigo tenemos q hacer el patron de diseño observer
+			} catch (EquipoExistenteException e) {
+				e.printStackTrace();
+			}
 		DijkstraShortestPath<Equipo, Conexion> dijkstraAlg = new DijkstraShortestPath<>(red);
 		GraphPath<Equipo, Conexion> path = dijkstraAlg.getPath(origen, destino);
 
@@ -93,10 +106,19 @@ public class Calculo {
 	}
 
 	public Graph<Equipo, Conexion> getRed() {
+		if(this.actualizar)
+			try {
+				this.cargarDatos(coordinador.listarConexiones());
+			} catch (EquipoExistenteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		return red;
 	}
 
-	public void setRed(Graph<Equipo, Conexion> red) {
-		this.red = red;
+	
+	public void update() {
+		this.actualizar = true;
 	}
+	
 }

@@ -29,7 +29,7 @@ import servicios.UbicacionServiceImpl;
 
 public class Red {
 
-	private static Red empresa = null;
+	private static Red red = null;
 
 	private String nombre;
 	private List<Conexion> conexiones;
@@ -45,11 +45,11 @@ public class Red {
 	private TreeMap<String, TipoPuerto> tiposPuertos;
 	private TipoPuertoService tipoPuertoService;
 
-	public static Red getEmpresa() {
-		if (empresa == null) {
-			empresa = new Red();
+	public static Red getRed() {
+		if (red == null) {
+			red = new Red();
 		}
-		return empresa;
+		return red;
 	}
 
 	private Red() {
@@ -57,27 +57,27 @@ public class Red {
 		tiposEquipos = new TreeMap<String, TipoEquipo>();
 		tipoEquipoService = new TipoEquipoServiceImpl();
 		tiposEquipos.putAll(tipoEquipoService.buscarTodos());
-		
+
 		tiposCables = new TreeMap<String, TipoCable>();
 		tipoCableService = new TipoCableServiceImpl();
 		tiposCables.putAll(tipoCableService.buscarTodos());
-		
+
 		tiposPuertos = new TreeMap<String, TipoPuerto>();
 		tipoPuertoService = new TipoPuertoServiceImpl();
 		tiposPuertos.putAll(tipoPuertoService.buscarTodos());
-		
+
 		ubicaciones = new TreeMap<String, Ubicacion>();
 		ubicacionService = new UbicacionServiceImpl();
-		ubicaciones.putAll(ubicacionService.buscarTodos());		
-		
+		ubicaciones.putAll(ubicacionService.buscarTodos());
+
 		equipos = new TreeMap<String, Equipo>();
 		equipoService = new EquipoServiceImpl();
 		equipos.putAll(equipoService.buscarTodos());
-		
+
 		conexiones = new ArrayList<Conexion>();
 		conexionService = new ConexionServiceImpl();
 		conexiones.addAll(conexionService.buscarTodos());
-		
+
 	}
 
 	public void agregarEquipo(Equipo equipo) throws EquipoExistenteException {
@@ -93,11 +93,10 @@ public class Red {
 		equipoService.actualizar(equipo);
 	}
 
-	public Equipo eliminarEquipo(Equipo equipo) {
+	public void eliminarEquipo(Equipo equipo) {
 		buscarEquipo(equipo.getCodigo());
 		equipos.remove(equipo.getCodigo());
 		equipoService.borrar(equipo);
-		return equipo;
 	}
 
 	public Equipo buscarEquipo(String codigo) throws EquipoInexistenteException {
