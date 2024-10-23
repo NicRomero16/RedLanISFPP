@@ -8,6 +8,8 @@ import controlador.Coordinador;
 import excepciones.EquipoInexistenteException;
 import modelo.Conexion;
 import modelo.Equipo;
+import modelo.TipoEquipo;
+import modelo.Ubicacion;
 
 public class Interfaz {
 
@@ -39,6 +41,12 @@ public class Interfaz {
 
 	public Equipo ingresarEquipoDestino(TreeMap<String, Equipo> equipos) {
 		return equipos.get("SWL0");
+	}
+
+	public Equipo agregarNuevoEquipo() {
+		Equipo equipo = new Equipo("REQW", "eLjota", null, null, new TipoEquipo("RE", "jota"),
+				new Ubicacion("A01", "Aula 1"), false);
+		return equipo;
 	}
 
 	public Equipo[] solicitarEquipos() {

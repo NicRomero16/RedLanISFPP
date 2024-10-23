@@ -7,14 +7,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 
+import excepciones.ConexionExistenteException;
 import excepciones.ConexionInexistenteException;
 import excepciones.EquipoExistenteException;
+import excepciones.EquipoInexistenteException;
 import interfaz.Interfaz;
 import modelo.Conexion;
 import modelo.Equipo;
 
 public class Coordinador {
-	private Red empresa;
+	private Red red;
 	private Calculo calculo;
 	private Interfaz interfaz;
 
@@ -22,19 +24,75 @@ public class Coordinador {
 		calculo = new Calculo();
 	}
 
-	public Red getEmpresa() {
-		return empresa;
+	public void agregarEquipo(Equipo equipo) {
+		try {
+			red.agregarEquipo(equipo);
+		} catch (EquipoExistenteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		calculo.update();
+	}
+
+	public void eliminarEquipo(Equipo equipo) {
+		try {
+			red.eliminarEquipo(equipo);
+		} catch (EquipoInexistenteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		calculo.update();
+	}
+
+	public void modificarEquipo(Equipo equipo) {
+		try {
+			red.modificarEquipo(equipo);
+		} catch (EquipoInexistenteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		calculo.update();
+	}
+
+	public void agregarConexion(Conexion conexion) {
+		try {
+			red.agregarConexion(conexion);
+		} catch (ConexionExistenteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		calculo.update();
+	}
+
+	public void eliminarConexion(Conexion conexion) {
+		try {
+			red.borrarConexion(conexion);
+		} catch (ConexionInexistenteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		calculo.update();
+	}
+
+	public void modificarConexion(Conexion conexion) {
+		try {
+			red.modificarConexion(conexion);
+		} catch (ConexionInexistenteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		calculo.update();
 	}
 
 	public void imprimirGrafo() {
 		Set<Conexion> edges = calculo.getRed().edgeSet();
 		interfaz.imprimirGrafo(edges);
 	}
-	
+
 	public String imprimirGrafo2() {
-		
+
 		Set<Conexion> edges = calculo.getRed().edgeSet();
-		
+
 		StringBuilder resultado = new StringBuilder();
 
 		for (Conexion edge : edges) {
@@ -53,11 +111,10 @@ public class Coordinador {
 					+ edge.getEquipo2().getDireccionesIP() + "\n Estado: " + edge.getEquipo2().getEstado() + "\n "
 					+ edge.getTipoPuerto2() + "\n");
 			resultado.append(" \nTipo de cable de la conexion: \n " + edge.getTipoCable() + "\n");
-			resultado.append(
-					"================================================================\n");
+			resultado.append("================================================================\n");
 
 		}
-		
+
 		return resultado.toString();
 	}
 
@@ -75,10 +132,10 @@ public class Coordinador {
 		} catch (ConexionInexistenteException e) {
 			e.printStackTrace();
 		}
-	}	   
+	}
 
 	public void ping(String ip) {
-		TreeMap<String, Equipo> equipos = empresa.getEquipos();
+		TreeMap<String, Equipo> equipos = red.getEquipos();
 		for (Equipo equipo : equipos.values()) {
 			if (equipo.contieneIp(ip)) {
 				interfaz.imprimirEquipo(equipo);
@@ -106,8 +163,12 @@ public class Coordinador {
 		}
 	}
 
-	public void setEmpresa(Red empresa) {
-		this.empresa = empresa;
+	public Red getRed() {
+		return red;
+	}
+	
+	public void setRed(Red red) {
+		this.red = red;
 	}
 
 	public Calculo getCalculo() {
@@ -127,24 +188,14 @@ public class Coordinador {
 	}
 
 	public Equipo buscarEquipo(Equipo equipo) {
-		return empresa.buscarEquipo(equipo.getCodigo());
+		return red.buscarEquipo(equipo.getCodigo());
 	}
 
 	public TreeMap<String, Equipo> listarEquipos() {
-		return empresa.getEquipos();
+		return red.getEquipos();
 	}
 
 	public List<Conexion> listarConexiones() {
-		return empresa.getConexiones();
-	}
-	
-	public void agregarEquipo(Equipo equipo) {
-		try {
-			empresa.agregarEquipo(equipo);
-		} catch (EquipoExistenteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		calculo.update();
+		return red.getConexiones();
 	}
 }

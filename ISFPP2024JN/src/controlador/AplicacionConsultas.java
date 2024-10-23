@@ -6,44 +6,47 @@ import excepciones.EquipoExistenteException;
 import gui.AplicacionGui;
 import interfaz.Interfaz;
 import modelo.Equipo;
-
+import modelo.TipoEquipo;
+import modelo.Ubicacion;
 import negocio.Calculo;
 import negocio.Red;
 
 public class AplicacionConsultas {
 
-	private Red empresa;
+	private Red red;
 	private Calculo calculo;
 	private Interfaz interfaz;
 	private Coordinador coordinador;
 
 	public static void main(String[] args) throws EquipoExistenteException {
 		AplicacionConsultas miAplicacion = new AplicacionConsultas();
-		
+
 		miAplicacion.iniciar();
-		/*
 		miAplicacion.consultar1();
-		miAplicacion.consultar2();
-		miAplicacion.consultar3();
-		miAplicacion.consultar4();
-		miAplicacion.consultar5();
-		miAplicacion.consultar6();
-		*/
+
+		/*
+		 miAplicacion.consultar2(); 
+		 miAplicacion.consultar3();
+		 miAplicacion.consultar4(); 
+		 miAplicacion.consultar5();
+		 miAplicacion.consultar6();
+		 miAplicacion.consultar7();
+		 */
 	}
 
 	private void iniciar() throws EquipoExistenteException {
-		empresa = Red.getRed();
+		red = Red.getRed();
 		calculo = new Calculo();
 		coordinador = new Coordinador();
 		interfaz = new Interfaz();
 		calculo.setCoordinador(coordinador);
 		interfaz.setCoordinador(coordinador);
-		coordinador.setEmpresa(empresa);
+		coordinador.setRed(red);
 		coordinador.setCalculo(calculo);
 		coordinador.setInterfaz(interfaz);
 		calculo.cargarDatos(coordinador.listarConexiones());
-		AplicacionGui appGui = new AplicacionGui(coordinador);
-		
+		//AplicacionGui appGui = new AplicacionGui(coordinador);
+
 	}
 
 	// Imprimir el grafo en pantalla
@@ -54,8 +57,8 @@ public class AplicacionConsultas {
 	// Dado dos equipos mostrar todos los equipos intermedios y sus conexiones.
 	private void consultar2() {
 		Equipo[] equipos = interfaz.solicitarEquipos();
-			coordinador.mostrarEquiposIntermedios(equipos[0], equipos[1]);
-		
+		coordinador.mostrarEquiposIntermedios(equipos[0], equipos[1]);
+
 	}
 
 	// Calcular la velocidad máxima de acuerdo al tipo de puerto y cables por donde
@@ -81,4 +84,10 @@ public class AplicacionConsultas {
 		TreeMap<String, Equipo> map = interfaz.recibirMapEquipos();
 		coordinador.estadoEquipos(map);
 	}
+
+	private void consultar7() {
+		Equipo equipo = interfaz.agregarNuevoEquipo();
+		coordinador.agregarEquipo(equipo);
+	}
+
 }
