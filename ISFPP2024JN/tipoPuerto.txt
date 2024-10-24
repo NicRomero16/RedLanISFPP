@@ -1,2 +1,5 @@
 100M;100 Mbps;100;
-1G;1Gbps;1000;
+1G;1G bps;1000;
+8G;20 Mbps;200;
+RMA;3 Mbps;10;
+RL3;20 Mbps;10

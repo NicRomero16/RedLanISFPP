@@ -3,14 +3,14 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeMap;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -18,10 +18,14 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
 import org.jgrapht.Graph;
 
@@ -40,7 +44,7 @@ public class AplicacionGui extends JFrame {
 	private JPanel paneles; // Contenedor para intercambiar paneles
 	private JTextArea textAreaGrafo; // Nueva área de texto para mostrar el grafo en la nueva pantalla
 	private JPanel panelGrafico;
-   // private JComboBox<String> comboBoxEquipos;
+	// private JComboBox<String> comboBoxEquipos;
 	private static final int ANCHO_VENTANA_PRINCIPAL = 800;
 	private static final int LARGO_VENTANA_PRINCIPAL = 650;
 
@@ -139,6 +143,7 @@ public class AplicacionGui extends JFrame {
 				cardLayout.show(paneles, "panelEquipo");
 			}
 		});
+
 		JMenuItem itemConexion = new JMenuItem("Conexion");
 		itemConexion.addActionListener(new ActionListener() {
 			@Override
@@ -172,7 +177,7 @@ public class AplicacionGui extends JFrame {
 		JPanel panelConexion = crearPanelConexion(neonGreen, neonGray, neonBlack, neonWhite);
 		paneles.add(panelConexion, "panelConexion");
 
-		JPanel panelEquipo = crearPanelEquipo(neonGreen, neonGray, neonBlack, neonWhite);
+		JPanel panelEquipo = crearPanelEquipo(neonGreen, neonBlack);
 		paneles.add(panelEquipo, "panelEquipo");
 
 		setJMenuBar(menuBar);
@@ -208,7 +213,7 @@ public class AplicacionGui extends JFrame {
 		scrollPequeno.setBounds(540, 70, 200, 150); // Posición y tamaño
 		scrollPequeno.setBorder(new LineBorder(neonGreen, 2));
 		panelCentral.add(scrollPequeno);
-		
+
 //        // Crear un JComboBox para seleccionar el equipo
 //        comboBoxEquipos = new JComboBox<>();
 //        comboBoxEquipos.setBounds(20, 20, 160, 30);
@@ -286,8 +291,8 @@ public class AplicacionGui extends JFrame {
 		botonRealizarPingEquipo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//String equipoSeleccionado = (String) comboBoxEquipos.getSelectedItem();
-			//	coordinador.RealizarPingAEquipo(equipoSeleccionado);
+				// String equipoSeleccionado = (String) comboBoxEquipos.getSelectedItem();
+				// coordinador.RealizarPingAEquipo(equipoSeleccionado);
 			}
 		});
 
@@ -395,39 +400,136 @@ public class AplicacionGui extends JFrame {
 		return panel;
 	}
 
-	private JPanel crearPanelEquipo(Color neonGreen, Color neonGray, Color neonBlack, Color neonWhite) {
+	private JPanel crearPanelEquipo(Color neonGreen, Color neonBlack) {
+		// Crear el panel
 		JPanel panelEquipo = new JPanel();
-		panelEquipo.setBackground(neonBlack);
-		panelEquipo.setLayout(null); // Layout nulo para colocación absoluta
+		panelEquipo.setLayout(new BorderLayout());
 
-		// Crear botones con opciones adicionales
-		JButton botonAgregarEquipo = new JButton("Agregar Equipo");
-		botonAgregarEquipo.setBounds(ANCHO_VENTANA_PRINCIPAL / 3, ANCHO_VENTANA_PRINCIPAL / 8, 200, 40);
-		botonAgregarEquipo.setBackground(neonBlack);
-		botonAgregarEquipo.setForeground(neonGreen);
-		botonAgregarEquipo.setBorder(new LineBorder(neonGreen, 2));
-		panelEquipo.add(botonAgregarEquipo);
+		// Crear panel de formulario
+		JPanel panelFormulario = new JPanel();
+		panelFormulario.setLayout(new BoxLayout(panelFormulario, BoxLayout.X_AXIS)); // Usar BoxLayout para disposición
+																						// vertical
+		panelFormulario.setBackground(neonBlack);
 
-		JButton botonEliminarEquipo = new JButton("Eliminar Equipo");
-		botonEliminarEquipo.setBounds(ANCHO_VENTANA_PRINCIPAL / 3, (ANCHO_VENTANA_PRINCIPAL / 5), 200, 40);
-		botonEliminarEquipo.setBackground(neonBlack);
-		botonEliminarEquipo.setForeground(neonGreen);
-		botonEliminarEquipo.setBorder(new LineBorder(neonGreen, 2));
-		panelEquipo.add(botonEliminarEquipo);
+		// Crear un panel para etiquetas y campos de texto
+		JPanel panelCampos = new JPanel();
+		panelCampos.setLayout(new GridLayout(9, 2, 5, 5)); // Usar GridLayout para los campos
+		panelCampos.setBackground(neonBlack);
 
-		JButton botonModificarEquipo = new JButton("Modificar Equipo");
-		botonModificarEquipo.setBounds(ANCHO_VENTANA_PRINCIPAL / 3, (int) (ANCHO_VENTANA_PRINCIPAL / 3.6), 200, 40);
-		botonModificarEquipo.setBackground(neonBlack);
-		botonModificarEquipo.setForeground(neonGreen);
-		botonModificarEquipo.setBorder(new LineBorder(neonGreen, 2));
-		panelEquipo.add(botonModificarEquipo);
+		// Etiquetas y campos de texto
+		JLabel lblCodigoEquipo = new JLabel("Código de equipo:");
+		lblCodigoEquipo.setForeground(neonGreen);
+		panelCampos.add(lblCodigoEquipo);
+
+		JTextField txtCodigoEquipo = new JTextField(10);
+		txtCodigoEquipo.setBackground(neonGreen);
+		panelCampos.add(txtCodigoEquipo);
+
+		JLabel lblDescripcion = new JLabel("Descripción:");
+		lblDescripcion.setForeground(neonGreen);
+		panelCampos.add(lblDescripcion);
+
+		JTextField txtDescripcion = new JTextField(10);
+		txtDescripcion.setBackground(neonGreen);
+		panelCampos.add(txtDescripcion);
+
+		JLabel lblMarca = new JLabel("Marca:");
+		lblMarca.setForeground(neonGreen);
+		panelCampos.add(lblMarca);
+
+		JTextField txtMarca = new JTextField(10);
+		txtMarca.setBackground(neonGreen);
+		panelCampos.add(txtMarca);
+
+		JLabel lblModelo = new JLabel("Modelo:");
+		lblModelo.setForeground(neonGreen);
+		panelCampos.add(lblModelo);
+
+		JTextField txtModelo = new JTextField(10);
+		txtModelo.setBackground(neonGreen);
+		panelCampos.add(txtModelo);
+
+		JLabel lblTipoEquipo = new JLabel("Tipo de equipo:");
+		lblTipoEquipo.setForeground(neonGreen);
+		panelCampos.add(lblTipoEquipo);
+
+		JTextField txtTipoEquipo = new JTextField(10);
+		txtTipoEquipo.setBackground(neonGreen);
+		panelCampos.add(txtTipoEquipo);
+
+		JLabel lblUbicacion = new JLabel("Ubicacion:");
+		lblUbicacion.setForeground(neonGreen);
+		panelCampos.add(lblUbicacion);
+
+		JTextField txtUbicacion = new JTextField(10);
+		txtUbicacion.setBackground(neonGreen);
+		panelCampos.add(txtUbicacion);
+
+		JLabel lblPuertos = new JLabel("Puertos:");
+		lblPuertos.setForeground(neonGreen);
+		panelCampos.add(lblPuertos);
+
+		JTextField txtPuertos = new JTextField(10);
+		txtPuertos.setBackground(neonGreen);
+		panelCampos.add(txtPuertos);
+
+		JLabel lblDireccionesIP = new JLabel("Direciones IP:");
+		lblDireccionesIP.setForeground(neonGreen);
+		panelCampos.add(lblDireccionesIP);
+
+		JTextField txtDireccionesIP = new JTextField(10);
+		txtDireccionesIP.setBackground(neonGreen);
+		panelCampos.add(txtDireccionesIP);
+
+		JLabel lblEstado = new JLabel("Estado:");
+		lblEstado.setForeground(neonGreen);
+		panelCampos.add(lblEstado);
+
+		JTextField txtEstado = new JTextField(10);
+		txtEstado.setBackground(neonGreen);
+		panelCampos.add(txtEstado);
+
+		// Añadir los campos al panel de formulario
+		panelFormulario.add(panelCampos);
+
+		// Botón Agregar
+		JButton btnAgregar = new JButton("Agregar");
+		btnAgregar.setBackground(neonGreen);
+		btnAgregar.setForeground(neonBlack);
+		panelFormulario.add(btnAgregar);
 
 		JButton botonRegresar = new JButton("Regresar");
-		botonRegresar.setBounds(ANCHO_VENTANA_PRINCIPAL / 3, ANCHO_VENTANA_PRINCIPAL / 2, 200, 40);
-		botonRegresar.setBackground(neonBlack);
-		botonRegresar.setForeground(neonGreen);
-		botonRegresar.setBorder(new LineBorder(neonGreen, 2));
-		panelEquipo.add(botonRegresar);
+		botonRegresar.setBackground(neonGreen);
+		botonRegresar.setForeground(neonBlack);
+		panelFormulario.add(botonRegresar);
+
+		// Añadir panel de formulario al panelEquipo
+		panelEquipo.add(panelFormulario, BorderLayout.NORTH);
+		panelEquipo.setBackground(neonBlack);
+
+		// Crear la tabla
+		String[] columnas = { "Código", "Descripción", "Marca", "Modelo" };
+		DefaultTableModel tableModel = new DefaultTableModel(columnas, 0);
+
+		JTable table = new JTable(tableModel);
+		JTableHeader header = table.getTableHeader();
+		header.setBackground(neonGreen);
+		header.setForeground(neonBlack);
+
+		table.setBackground(neonBlack);
+		table.setForeground(neonGreen);
+		table.setGridColor(neonGreen);
+		JScrollPane scrollPane = new JScrollPane(table);
+		scrollPane.setBackground(neonBlack); // Color de fondo del JScrollPane
+		scrollPane.getViewport().setBackground(neonBlack); // Color de fondo del viewport
+
+		panelEquipo.add(scrollPane, BorderLayout.CENTER);
+
+		// Configurar el renderer para cambiar el color de fondo y el color del texto
+		DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+		renderer.setBackground(neonBlack); // Color de fondo de las celdas
+		renderer.setForeground(neonGreen); // Color de texto de las celdas
+		table.setDefaultRenderer(Object.class, renderer); // Aplicar el renderer a todas las celdas
 
 		// Acción del botón regresar para volver al panel principal
 		botonRegresar.addActionListener(new ActionListener() {
@@ -437,34 +539,22 @@ public class AplicacionGui extends JFrame {
 			}
 		});
 
-		// Acción del botón 1
-		botonAgregarEquipo.addActionListener(new ActionListener() {
-			String codigo, descripcion, marca, modelo, codigoTE, descripcionTE, codigoU, descripcionU;
-			TipoEquipo tipoEquipo = new TipoEquipo(codigoTE, descripcionTE);
-			Ubicacion ubicacion = new Ubicacion(codigoU, descripcionU);
-			Equipo eq = new Equipo(null, null, null, null, null, null, true);
+		// Acción del botón Agregar
+		btnAgregar.addActionListener(e -> {
+			// Obtener datos del formulario
+			String codigoEquipo = txtCodigoEquipo.getText();
+			String descripcion = txtDescripcion.getText();
+			String marca = txtMarca.getText();
+			String modelo = txtModelo.getText();
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// Crear un nuevo JTextField si no existe
-				if (textField == null) {
-					textField = new JTextField();
+			// Agregar datos a la tabla
+			tableModel.addRow(new Object[] { codigoEquipo, descripcion, marca, modelo });
 
-					// Establecer tamaño y posición del campo de texto
-					textField.setBounds(100, 100, 200, 30); // Ajusta la posición y el tamaño
-
-					// Añadir el JTextField al panel principal
-					panelEquipo.add(textField);
-
-					// Refrescar el panel para que el nuevo JTextField aparezca
-					panelEquipo.revalidate(); // Recalcula el layout
-					panelEquipo.repaint(); // Redibuja el panel
-				}
-
-				// Si deseas mover el foco al JTextField automáticamente
-				textField.requestFocus();
-			}
-
+			// Limpiar los campos
+			txtCodigoEquipo.setText("");
+			txtDescripcion.setText("");
+			txtMarca.setText("");
+			txtModelo.setText("");
 		});
 
 		return panelEquipo;
@@ -514,6 +604,4 @@ public class AplicacionGui extends JFrame {
 
 		return panelConexion;
 	}
-
-
 }

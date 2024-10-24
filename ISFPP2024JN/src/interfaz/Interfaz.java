@@ -27,6 +27,23 @@ public class Interfaz {
 		return Constantes.PING;
 	}
 
+	public Equipo eliminarEquipo() {
+		TreeMap<String, Equipo> equipos = recibirMapEquipos();
+		Equipo equipo = equipos.get(Constantes.ELIMINAR_EQUIPO);
+		return equipo;
+	}
+
+	public void buscarEquipo() {
+		TreeMap<String, Equipo> equipos = recibirMapEquipos();
+		System.out.println(equipos.get(Constantes.BUSCAR_EQUIPO));
+	}
+
+	public Equipo agregarNuevoEquipo() {
+		Equipo equipo = new Equipo("REQW", "eLjota", null, null, new TipoEquipo("RE", "jota"),
+				new Ubicacion("A01", "Aula 1"), false);
+		return equipo;
+	}
+
 	public String EquipoIpOrigen(String ipOrigen) {
 		return "192.168.16.115";
 	}
@@ -105,7 +122,7 @@ public class Interfaz {
 		this.coordinador = coordinador;
 	}
 
-	public Equipo agregarNuevoEquipo() {
+	public Equipo modificarNuevoEquipo() {
 		Equipo equipo = new Equipo("REQW", "eLjota", null, null, new TipoEquipo("RE", "jota"),
 				new Ubicacion("A01", "Aula 1"), false);
 		return equipo;

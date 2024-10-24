@@ -14,11 +14,9 @@ import excepciones.EquipoExistenteException;
 import interfaz.Interfaz;
 import modelo.Conexion;
 import modelo.Equipo;
-import modelo.TipoEquipo;
-import modelo.Ubicacion;
 
 public class Coordinador {
-	private Red empresa;
+	private Red red;
 	private Calculo calculo;
 	private Interfaz interfaz;
 
@@ -27,7 +25,7 @@ public class Coordinador {
 	}
 
 	public Red getEmpresa() {
-		return empresa;
+		return red;
 	}
 
 	public void imprimirGrafo() {
@@ -100,7 +98,7 @@ public class Coordinador {
 	}
 
 	public void ping(String ip) {
-		TreeMap<String, Equipo> equipos = empresa.getEquipos();
+		TreeMap<String, Equipo> equipos = red.getEquipos();
 		for (Equipo equipo : equipos.values()) {
 			if (equipo.contieneIp(ip)) {
 				interfaz.imprimirEquipo(equipo);
@@ -129,7 +127,7 @@ public class Coordinador {
 	}
 
 	public void setEmpresa(Red empresa) {
-		this.empresa = empresa;
+		this.red = empresa;
 	}
 
 	public Calculo getCalculo() {
@@ -149,40 +147,33 @@ public class Coordinador {
 	}
 
 	public Equipo buscarEquipo(Equipo equipo) {
-		return empresa.buscarEquipo(equipo.getCodigo());
+		return red.buscarEquipo(equipo.getCodigo());
 	}
 
 	public TreeMap<String, Equipo> listarEquipos() {
-		return empresa.getEquipos();
+		return red.getEquipos();
 	}
 
 	public List<Conexion> listarConexiones() {
-		return empresa.getConexiones();
-	}
-
-	public void agregarEquipoMock() {
-		Equipo equipo = new Equipo("REQW", "eLjota", null, null, new TipoEquipo("RE", "jota"),
-				new Ubicacion("A01", "Aula 1"), false);
-		try {
-			empresa.agregarEquipo(equipo);
-		} catch (EquipoExistenteException e) {
-			System.out.println("Error al agregar equipo");
-			e.printStackTrace();
-		}
-
+		return red.getConexiones();
 	}
 
 	public void agregarEquipo(Equipo equipo) {
 		try {
-			empresa.agregarEquipo(equipo);
+			red.agregarEquipo(equipo);
 		} catch (EquipoExistenteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		calculo.update();
 	}
+	
+	public void eliminarEquipo(Equipo equipo) {
+		red.eliminarEquipo(equipo);
+		calculo.update();
+	}
 
-//interfaz grafica
+	//interfaz grafica
 	public Graph<Equipo, Conexion> cargarDatos() {
 
 		Graph<Equipo, Conexion> grafo = null;

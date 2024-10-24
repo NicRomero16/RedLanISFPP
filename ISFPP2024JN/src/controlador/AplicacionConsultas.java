@@ -22,16 +22,16 @@ public class AplicacionConsultas {
 		AplicacionConsultas miAplicacion = new AplicacionConsultas();
 		
 		miAplicacion.iniciar();
+		//miAplicacion.consultar1();
 		/*
-		miAplicacion.consultar1();
 		miAplicacion.consultar2();
 		miAplicacion.consultar3();
 		miAplicacion.consultar4();
 		miAplicacion.consultar5();
-		miAplicacion.consultar6();
+		miAplicacion.estadoEquipos();
+		miAplicacion.agregarEquipo();
 		*/
-		//miAplicacion.consultar7();
-		
+		miAplicacion.buscarEquipo();
 	}
 
 	private void iniciar() throws EquipoExistenteException {
@@ -45,11 +45,7 @@ public class AplicacionConsultas {
 		coordinador.setEmpresa(empresa);
 		coordinador.setCalculo(calculo);
 		coordinador.setInterfaz(interfaz);
-		calculo.cargarDatos(coordinador.listarConexiones());
-		//consultar2();
-		//coordinador.agregarEquipoMock();
-
-		
+		calculo.cargarDatos(coordinador.listarConexiones());		
 	}
 
 	// Imprimir el grafo en pantalla
@@ -83,12 +79,26 @@ public class AplicacionConsultas {
 	}
 
 	// Realizar un mapa del estado actual de los equipos conectados a la red.
-	private void consultar6() {
+	private void estadoEquipos() {
 		TreeMap<String, Equipo> map = interfaz.recibirMapEquipos();
 		coordinador.estadoEquipos(map);
 	}
-	private void consultar7() {
+	
+	// Agregar un equipo 
+	private void agregarEquipo() {
 		Equipo equipo = interfaz.agregarNuevoEquipo();
 		coordinador.agregarEquipo(equipo);
 	}
+	
+	// NO FUNCIONA
+	// Eliminar un equipo
+	private void eliminarEquipo() {
+		Equipo equipo = interfaz.eliminarEquipo();
+		coordinador.eliminarEquipo(equipo);
+	}
+	
+	// Buscar un equipo
+	private void buscarEquipo() {
+		interfaz.buscarEquipo();
+		}
 }
