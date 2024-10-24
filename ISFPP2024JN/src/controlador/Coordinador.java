@@ -3,6 +3,7 @@ package controlador;
 import negocio.Calculo;
 import negocio.Red;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
@@ -22,12 +23,9 @@ public class Coordinador {
 	private Calculo calculo;
 	private Interfaz interfaz;
 
-	public Coordinador() {
+	public Coordinador(Red red) {
 		calculo = new Calculo();
-	}
-
-	public Red getEmpresa() {
-		return red;
+		this.red = red;
 	}
 
 	public void imprimirGrafo() {
@@ -169,13 +167,13 @@ public class Coordinador {
 		}
 		calculo.update();
 	}
-	
+
 	public void eliminarEquipo(Equipo equipo) {
 		red.eliminarEquipo(equipo);
 		calculo.update();
 	}
 
-	//interfaz grafica
+	// interfaz grafica
 	public Graph<Equipo, Conexion> cargarDatos() {
 
 		Graph<Equipo, Conexion> grafo = null;
@@ -186,5 +184,14 @@ public class Coordinador {
 			e.printStackTrace();
 		}
 		return grafo;
+	}
+
+	public String[] devolverEquipoping() {
+		TreeMap<String, Equipo> equipos = red.getEquipos();
+		List<String> equipoList = new ArrayList<>();
+		for (Equipo equipo : equipos.values()) {
+			equipoList.add(equipo.getCodigo());
+		}
+		return equipoList.toArray(new String[0]);
 	}
 }

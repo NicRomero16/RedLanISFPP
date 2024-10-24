@@ -38,7 +38,7 @@ public class AplicacionConsultas {
 	private void iniciar() throws EquipoExistenteException {
 		empresa = Red.getRed();
 		calculo = new Calculo();
-		coordinador = new Coordinador();
+		coordinador = new Coordinador(empresa);
 		interfaz = new Interfaz();
 		appGui = new AplicacionGui(coordinador);
 		calculo.setCoordinador(coordinador);
