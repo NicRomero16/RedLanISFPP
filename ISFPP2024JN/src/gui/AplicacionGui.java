@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -44,9 +45,8 @@ public class AplicacionGui extends JFrame {
 	private JPanel paneles; // Contenedor para intercambiar paneles
 	private JTextArea textAreaGrafo; // Nueva área de texto para mostrar el grafo en la nueva pantalla
 	private JPanel panelGrafico;
-	// private JComboBox<String> comboBoxEquipos;
 	private static final int ANCHO_VENTANA_PRINCIPAL = 800;
-	private static final int LARGO_VENTANA_PRINCIPAL = 650;
+	private static final int LARGO_VENTANA_PRINCIPAL = 600;
 
 	public AplicacionGui(Coordinador coordinador) {
 		this.coordinador = coordinador;
@@ -202,67 +202,59 @@ public class AplicacionGui extends JFrame {
 		scrollGrande.setBorder(new LineBorder(neonGreen, 2));
 		panelCentral.add(scrollGrande);
 
-		// Area de texto pequeña (con scroll y borde negro)
-		JTextArea textAreaPequena = new JTextArea();
-		textAreaPequena.setBackground(neonGray);
-		textAreaPequena.setForeground(neonGreen);
-		textAreaPequena.setBorder(new LineBorder(neonGreen, 2));
-		textAreaPequena.setCaretColor(neonWhite); // Cursor blanco
-
-		JScrollPane scrollPequeno = new JScrollPane(textAreaPequena);
-		scrollPequeno.setBounds(540, 70, 200, 150); // Posición y tamaño
-		scrollPequeno.setBorder(new LineBorder(neonGreen, 2));
-		panelCentral.add(scrollPequeno);
-
-//        // Crear un JComboBox para seleccionar el equipo
-//        comboBoxEquipos = new JComboBox<>();
-//        comboBoxEquipos.setBounds(20, 20, 160, 30);
-//        comboBoxEquipos.setBackground(Color.GRAY);
-//        comboBoxEquipos.setForeground(Color.GREEN);
-//        scrollPequeno.add(comboBoxEquipos);
-//        llenarComboBoxConEquipos();
-//        
 		// Botones
 		JButton botonMotrarConexionesGrafo = new JButton("Visualizar Conexiones");
 		botonMotrarConexionesGrafo.setBackground(neonBlack);
 		botonMotrarConexionesGrafo.setForeground(neonGreen);
 		botonMotrarConexionesGrafo.setBorder(new LineBorder(neonGreen, 2));
-		botonMotrarConexionesGrafo.setBounds(540, 240, 200, 40);
+		botonMotrarConexionesGrafo.setBounds(540, 90, 200, 40);
 		panelCentral.add(botonMotrarConexionesGrafo);
 
 		JButton botonMostrarEquipos = new JButton("Visualizar Equipos");
 		botonMostrarEquipos.setBackground(neonBlack);
 		botonMostrarEquipos.setForeground(neonGreen);
 		botonMostrarEquipos.setBorder(new LineBorder(neonGreen, 2));
-		botonMostrarEquipos.setBounds(540, 290, 200, 40);
+		botonMostrarEquipos.setBounds(540, 140, 200, 40);
 		panelCentral.add(botonMostrarEquipos);
 
 		JButton botonRealizarPingEquipo = new JButton("Realizar Ping a un equipo");
 		botonRealizarPingEquipo.setBackground(neonBlack);
 		botonRealizarPingEquipo.setForeground(neonGreen);
 		botonRealizarPingEquipo.setBorder(new LineBorder(neonGreen, 2));
-		botonRealizarPingEquipo.setBounds(540, 340, 200, 40);
+		botonRealizarPingEquipo.setBounds(540, 190, 200, 40);
 		panelCentral.add(botonRealizarPingEquipo);
+		
+		// Lista de equipos para el JComboBox (puedes llenarla con los equipos que necesites)
+		String[] listaDeEquipos = {"Equipo 1", "Equipo 2", "Equipo 3", "Equipo 4"};
+
+		// Crear el JComboBox con la lista de equipos 
+		JComboBox<String> comboboxEquipoPing = new JComboBox<>(listaDeEquipos);
+		
+		comboboxEquipoPing.setBackground(neonGray); // Fondo gris
+		comboboxEquipoPing.setForeground(neonGreen); // Texto verde
+		comboboxEquipoPing.setBorder(new LineBorder(neonGreen, 2)); // Borde verde
+		comboboxEquipoPing.setBounds(540, 235, 200, 30); // Posición y tamaño
+		panelCentral.add(comboboxEquipoPing);
 
 		JButton boton4 = new JButton("Botón 4");
 		boton4.setBackground(neonBlack);
 		boton4.setForeground(neonGreen);
 		boton4.setBorder(new LineBorder(neonGreen, 2));
-		boton4.setBounds(540, 390, 200, 40);
+		boton4.setBounds(540, 290, 200, 40);
 		panelCentral.add(boton4);
 
 		JButton boton5 = new JButton("Botón 5");
 		boton5.setBackground(neonBlack);
 		boton5.setForeground(neonGreen);
 		boton5.setBorder(new LineBorder(neonGreen, 2));
-		boton5.setBounds(540, 440, 200, 40);
+		boton5.setBounds(540, 340, 200, 40);
 		panelCentral.add(boton5);
 
 		JButton botonSalir = new JButton("Salir");
 		botonSalir.setBackground(neonBlack);
 		botonSalir.setForeground(neonGreen);
 		botonSalir.setBorder(new LineBorder(neonGreen, 2));
-		botonSalir.setBounds(540, 490, 200, 40);
+		botonSalir.setBounds(540, 390, 200, 40);
 		panelCentral.add(botonSalir);
 
 		JLabel labelTitulo = new JLabel("Redes");
@@ -270,6 +262,12 @@ public class AplicacionGui extends JFrame {
 		labelTitulo.setBounds(20, 20, 500, 40); // Ajuste de posición y tamaño
 		labelTitulo.setFont(labelTitulo.getFont().deriveFont(30f)); // Tamaño de fuente
 		panelCentral.add(labelTitulo);
+		
+		JLabel labelSubTitulo = new JLabel("Consultas");
+		labelSubTitulo.setForeground(neonGreen);
+		labelSubTitulo.setBounds(555, 20, 200, 30); // Ajuste de posición y tamaño
+		labelSubTitulo.setFont(labelTitulo.getFont().deriveFont(30f)); // Tamaño de fuente
+		panelCentral.add(labelSubTitulo);
 
 		// Acción del visualizar conexiones
 		botonMotrarConexionesGrafo.addActionListener(new ActionListener() {
@@ -323,15 +321,6 @@ public class AplicacionGui extends JFrame {
 
 		return panelCentral;
 	}
-
-//	private void llenarComboBoxConEquipos() {
-//		//logica for para agregar los equipos en el combobox
-//		TreeMap<String, Equipo> e = coordinador.listarEquipos();
-//		
-//		for (Equipo equipos : e.values()) {
-//			comboBoxEquipos.addItem(equipos.getCodigo());
-//		}
-//	}
 
 	private JPanel crearNuevaPantalla(Color neonGreen, Color neonGray, Color neonBlack, Color neonWhite) {
 		JPanel nuevaPantalla = new JPanel();

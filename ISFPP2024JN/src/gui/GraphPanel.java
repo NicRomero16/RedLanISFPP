@@ -56,7 +56,7 @@ public class GraphPanel extends JPanel {
 
 						// Crear el texto de información
 						StringBuilder infoBuilder = new StringBuilder();
-						infoBuilder.append(" Equipo: ").append(equipo.getCodigo()).append(" \tDescripción: ")
+						infoBuilder.append("Equipo: ").append(equipo.getCodigo()).append(" \tDescripción: ")
 								.append(equipo.getDescripcion()).append(" \tUbicación: ");
 
 						// Verificación de la ubicación
@@ -66,10 +66,10 @@ public class GraphPanel extends JPanel {
 							infoBuilder.append("Sin ubicación actualmente");
 						}
 
-						// Usar if-else para asignar el estado
+						
 						String status;
 						if (equipo.getEstado()) {
-							status = "Conectado";
+							status = "Disponible";
 						} else {
 							status = "Desconectado";
 						}
@@ -166,14 +166,14 @@ public class GraphPanel extends JPanel {
 				g2d.setColor(Color.BLACK);
 
 				// Establecer una fuente más gruesa (negrita)
-				g2d.setFont(new Font("Arial", Font.BOLD, 16));
+				g2d.setFont(new Font("Arial", Font.BOLD, 18));
 				g2d.drawString(equipo.getCodigo(), pos.x - g2d.getFontMetrics().stringWidth(equipo.getCodigo()) / 2,
 						pos.y + 5);
 			}
 		}
 
 		if (infoTexto != null) {
-			g2d.setColor(Color.CYAN);
+			g2d.setColor(Color.BLUE);
 			String[] lineas = infoTexto.split("\n"); // Usar \n para dividir las líneas
 			int y = 20; // Posición vertical inicial para el texto
 			for (String linea : lineas) {

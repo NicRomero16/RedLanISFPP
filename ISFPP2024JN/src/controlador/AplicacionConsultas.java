@@ -32,7 +32,7 @@ public class AplicacionConsultas {
 		miAplicacion.agregarEquipo();
 		miAplicacion.eliminarEquipo();
 		*/
-		miAplicacion.buscarEquipo();
+	//	miAplicacion.buscarEquipo();
 	}
 
 	private void iniciar() throws EquipoExistenteException {
@@ -40,7 +40,7 @@ public class AplicacionConsultas {
 		calculo = new Calculo();
 		coordinador = new Coordinador();
 		interfaz = new Interfaz();
-		//appGui = new AplicacionGui(coordinador);
+		appGui = new AplicacionGui(coordinador);
 		calculo.setCoordinador(coordinador);
 		interfaz.setCoordinador(coordinador);
 		coordinador.setEmpresa(empresa);
