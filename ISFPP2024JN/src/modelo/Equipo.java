@@ -125,6 +125,10 @@ public class Equipo {
 	public boolean contieneIp(String ip) {
 		return direccionesIP.contains(ip);
 	}
+	
+	public String obtenerCodigoTipoPuerto(int index) {
+		return this.puertos.get(index).getTipoPuerto().getCodigo();
+		}
 
 	@Override
 	public String toString() {
@@ -148,7 +152,8 @@ public class Equipo {
 		private int getCantidad() {
 			return cantidad;
 		}
-
+		
+		
 		@SuppressWarnings("unused")
 		private TipoPuerto getTipoPuerto() {
 			return tipoPuerto;

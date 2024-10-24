@@ -43,12 +43,6 @@ public class Interfaz {
 		return equipos.get("SWL0");
 	}
 
-	public Equipo agregarNuevoEquipo() {
-		Equipo equipo = new Equipo("REQW", "eLjota", null, null, new TipoEquipo("RE", "jota"),
-				new Ubicacion("A01", "Aula 1"), false);
-		return equipo;
-	}
-
 	public Equipo[] solicitarEquipos() {
 		Equipo origen = ingresarEquipoOrigen(coordinador.listarEquipos());
 		if (origen == null)
@@ -109,5 +103,11 @@ public class Interfaz {
 
 	public void setCoordinador(Coordinador coordinador) {
 		this.coordinador = coordinador;
+	}
+
+	public Equipo agregarNuevoEquipo() {
+		Equipo equipo = new Equipo("REQW", "eLjota", null, null, new TipoEquipo("RE", "jota"),
+				new Ubicacion("A01", "Aula 1"), false);
+		return equipo;
 	}
 }

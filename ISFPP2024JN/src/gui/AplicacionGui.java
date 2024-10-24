@@ -1,9 +1,12 @@
 package gui;
 
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -15,261 +18,337 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
+import org.jgrapht.Graph;
+
 import controlador.Coordinador;
+import modelo.Conexion;
 import modelo.Equipo;
 import modelo.TipoEquipo;
 import modelo.Ubicacion;
 
 public class AplicacionGui extends JFrame {
-	private Coordinador coordinador;
-	private JTextArea textAreaGrande;
-	private JPanel panelCentral;
-	private CardLayout cardLayout;
-	private JPanel paneles; // Contenedor para intercambiar paneles
 	private JTextField textField;
-	private static final int ANCHO_VENTANA_PRINCIPAL = 800;
-	private static final int LARGO_VENTANA_PRINCIPAL = 600;
+    private Coordinador coordinador;
+    private JTextArea textAreaGrande;
+    private JPanel panelCentral;
+    private CardLayout cardLayout;
+    private JPanel paneles; // Contenedor para intercambiar paneles
+    private JTextArea textAreaGrafo; // Nueva área de texto para mostrar el grafo en la nueva pantalla
+    private JPanel panelGrafico;
+    private static final int ANCHO_VENTANA_PRINCIPAL = 800;
+    private static final int LARGO_VENTANA_PRINCIPAL = 600;
+    
+    public AplicacionGui(Coordinador coordinador) {
+        this.coordinador = coordinador;
+        // Configuración de la ventana principal
+        setResizable(false);
+        setTitle("Redes - Neon Style");
+        setSize(ANCHO_VENTANA_PRINCIPAL, LARGO_VENTANA_PRINCIPAL); // Resolución: 800x600
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-	public AplicacionGui(Coordinador coordinador) {
-		this.coordinador = coordinador;
-		// Configuración de la ventana principal
-		setResizable(false);
-		setTitle("Redes - Neon Style");
-		setSize(ANCHO_VENTANA_PRINCIPAL, LARGO_VENTANA_PRINCIPAL); // Resolucion
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // Colores neón
+        Color neonGreen = new Color(57, 255, 20);
+        Color neonGray = new Color(30, 30, 30);
+        Color neonBlack = Color.BLACK;
+        Color neonWhite = Color.WHITE;
 
-		// Colores neón
-		Color neonGreen = new Color(57, 255, 20); // Intensidad de cada color
-		Color neonGray = new Color(30, 30, 30);
-		Color neonBlack = Color.BLACK;
-		Color neonWhite = Color.WHITE;
+        // Crear la barra de menú
+        JMenuBar menuBar = new JMenuBar();
+        menuBar.setBackground(neonBlack);
+        menuBar.setForeground(neonGreen);
 
-		// Crear la barra de menú
-		JMenuBar menuBar = new JMenuBar();
-		menuBar.setBackground(neonBlack);
-		menuBar.setForeground(neonGreen);
+        // Menú principal "Grafo"
+        JMenu menuArchivo = new JMenu("Grafo");
+        menuArchivo.setForeground(neonGreen);
 
-		// Menú principal "Archivo"
-		JMenu menuArchivo = new JMenu("Grafo");
-		menuArchivo.setForeground(neonGreen);
+        // Elementos dentro del menú "grafo"
+        JMenuItem itemAbrir = new JMenuItem("Grafico");
+        itemAbrir.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Cargar el grafo desde el coordinador
+                Graph<Equipo, Conexion> grafo = coordinador.cargarDatos();
 
-		// Elementos dentro del menú "Archivo"
-		JMenuItem itemAbrir = new JMenuItem("Grafico");
+                // Crear listas de equipos y conexiones
+                List<Equipo> equipos = new ArrayList<>(grafo.vertexSet());
+                List<Conexion> conexiones = new ArrayList<>(grafo.edgeSet());
 
-		itemAbrir.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				cardLayout.show(paneles, "nuevaPantalla");
-			}
-		});
+                // Crear el panel gráfico con los equipos y conexiones
+                GraphPanel graphPanel = new GraphPanel(equipos, conexiones);
 
-		JMenuItem itemGuardar = new JMenuItem("Guardar");
-		JMenuItem itemSalir = new JMenuItem("Salir");
+                // Reemplazar el contenido del panel con el nuevo panel gráfico
+                panelGrafico.removeAll();
+                panelGrafico.add(graphPanel);
+                panelGrafico.revalidate();
+                panelGrafico.repaint();
 
-		// Añadir los elementos al menú "Archivo"
-		menuArchivo.add(itemAbrir);
-		menuArchivo.add(itemGuardar);
-		menuArchivo.addSeparator(); // Separador
-		menuArchivo.add(itemSalir);
+                // Mostrar la pantalla del grafo
+                cardLayout.show(paneles, "pantallaGrafico");
+            }
+        });
+        
+        JMenuItem itemConsultas= new JMenuItem("Consultas");
+        itemConsultas.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cardLayout.show(paneles, "panelPrincipal");
+            }
+        });
+        
+        JMenuItem itemSalir = new JMenuItem("Salir");
 
-		// Menú principal "Editar"
-		JMenu menuEditar = new JMenu("Editar");
-		menuEditar.setForeground(neonGreen);
+        // Añadir los elementos al menú "Archivo"
+        menuArchivo.add(itemAbrir);
+        menuArchivo.add(itemConsultas);
+        menuArchivo.addSeparator(); // Separador
+        menuArchivo.add(itemSalir);
 
-		// Elementos dentro del menú "Editar"
-		JMenuItem itemCopiar = new JMenuItem("Copiar");
-		JMenuItem itemPegar = new JMenuItem("Pegar");
+        // Menú principal "Editar"
+        JMenu menuEditar = new JMenu("Editar");
+        menuEditar.setForeground(neonGreen);
 
-		// Añadir los elementos al menú "Editar"
-		menuEditar.add(itemCopiar);
-		menuEditar.add(itemPegar);
+        // Elementos dentro del menú "Editar"
+        JMenuItem itemCopiar = new JMenuItem("Copiar");
+        JMenuItem itemPegar = new JMenuItem("Pegar");
 
-		// Añadir los menús a la barra de menú
-		menuBar.add(menuArchivo);
-		menuBar.add(menuEditar);
+        // Añadir los elementos al menú "Editar"
+        menuEditar.add(itemCopiar);
+        menuEditar.add(itemPegar);
 
-		// Establecer la barra de menú en el frame
-		setJMenuBar(menuBar);
+        // Añadir los menús a la barra de menú
+        menuBar.add(menuArchivo);
+        menuBar.add(menuEditar);
 
-		JMenu menuABM = new JMenu("ABM");
-		menuABM.setForeground(neonGreen);
+        // Establecer la barra de menú en el frame
+        setJMenuBar(menuBar);
 
-		JMenuItem itemEquipo = new JMenuItem("Equipo");
+        JMenu menuABM = new JMenu("ABM");
+        menuABM.setForeground(neonGreen);
+
+        JMenuItem itemEquipo = new JMenuItem("Equipo");
 		itemEquipo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				cardLayout.show(paneles, "panelEquipo");
 			}
 		});
+        JMenuItem itemConexion = new JMenuItem("Conexion");
+        itemConexion.addActionListener(new ActionListener(){
+        	@Override
+        	public void actionPerformed(ActionEvent e) {
+        		cardLayout.show(paneles,"panelConexion");
+        	}
+        });
+        JMenuItem itemUbicacion = new JMenuItem("Ubicacion");
 
-		JMenuItem itemConexion = new JMenuItem("Conexion");
-		itemConexion.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				cardLayout.show(paneles, "panelConexion");
-			}
-		});
+        menuABM.add(itemEquipo);
+        menuABM.add(itemConexion);
+        menuABM.add(itemUbicacion);
 
-		menuABM.add(itemEquipo);
-		menuABM.add(itemConexion);
+        menuBar.add(menuABM);
 
-		menuBar.add(menuABM);
+        // Configuración de CardLayout
+        cardLayout = new CardLayout();
+        paneles = new JPanel(cardLayout);
+        add(paneles);
 
-		// Configuración de CardLayout
-		cardLayout = new CardLayout();
-		paneles = new JPanel(cardLayout);
-		add(paneles);
+        // Crear panel original (pantalla principal)
+        panelCentral = crearPanelPrincipal(neonGreen, neonGray, neonBlack, neonWhite);
+        paneles.add(panelCentral, "panelPrincipal");
 
-		// Crear panel original (pantalla principal)
-		panelCentral = crearPanelPrincipal(neonGreen, neonGray, neonBlack, neonWhite);
-		paneles.add(panelCentral, "panelPrincipal");
-
-		// Crear nueva pantalla que se mostrará cuando se presione el botón 2
-		JPanel nuevaPantalla = crearNuevaPantalla(neonGreen, neonGray, neonBlack, neonWhite);
-		paneles.add(nuevaPantalla, "nuevaPantalla");
-
-		JPanel panelConexion = crearPanelConexion(neonGreen, neonGray, neonBlack, neonWhite);
+        // Pantalla del grafo
+        panelGrafico = crearPantallaGrafico(neonGreen, neonGray, neonBlack, neonWhite);
+        paneles.add(panelGrafico, "pantallaGrafico");
+        
+        // Crear nueva pantalla que se mostrará cuando se presione el botón 2
+        JPanel nuevaPantalla = crearNuevaPantalla(neonGreen, neonGray, neonBlack, neonWhite);
+        paneles.add(nuevaPantalla, "nuevaPantalla");
+        
+        JPanel panelConexion = crearPanelConexion(neonGreen, neonGray, neonBlack, neonWhite);
 		paneles.add(panelConexion, "panelConexion");
 
 		JPanel panelEquipo = crearPanelEquipo(neonGreen, neonGray, neonBlack, neonWhite);
 		paneles.add(panelEquipo, "panelEquipo");
 
-		setVisible(true);
-	}
+        setJMenuBar(menuBar);
+        setVisible(true);
+    }
 
-	private JPanel crearPanelPrincipal(Color neonGreen, Color neonGray, Color neonBlack, Color neonWhite) {
-		JPanel panelCentral = new JPanel();
-		panelCentral.setBackground(neonBlack);
-		panelCentral.setLayout(null); // Layout nulo para colocar elementos de manera absoluta
+    private JPanel crearPanelPrincipal(Color neonGreen, Color neonGray, Color neonBlack, Color neonWhite) {
+        JPanel panelCentral = new JPanel();
+        panelCentral.setBackground(neonBlack);
+        panelCentral.setLayout(null); // Layout nulo para colocar elementos de manera absoluta
 
-		// Area de texto grande (con scroll y borde negro)
-		this.textAreaGrande = new JTextArea();
-		textAreaGrande.setBackground(neonGray);
-		textAreaGrande.setForeground(neonGreen);
-		textAreaGrande.setBorder(new LineBorder(neonGreen, 2));
-		textAreaGrande.setCaretColor(neonWhite); // Cursor blanco
-		textAreaGrande.setEditable(false);
+        // Area de texto grande (con scroll y borde negro)
+        this.textAreaGrande = new JTextArea();
+        textAreaGrande.setBackground(neonGray);
+        textAreaGrande.setForeground(neonGreen);
+        textAreaGrande.setBorder(new LineBorder(neonGreen, 2));
+        textAreaGrande.setCaretColor(neonWhite); // Cursor blanco
+        textAreaGrande.setEditable(false);
 
-		JScrollPane scrollGrande = new JScrollPane(textAreaGrande);
-		scrollGrande.setBounds(20, 70, 500, 400); // Posición y tamaño
-		scrollGrande.setBorder(new LineBorder(neonGreen, 2));
-		panelCentral.add(scrollGrande);
+        JScrollPane scrollGrande = new JScrollPane(textAreaGrande);
+        scrollGrande.setBounds(20, 70, 500, 400); // Posición y tamaño
+        scrollGrande.setBorder(new LineBorder(neonGreen, 2));
+        panelCentral.add(scrollGrande);
+        
+        
+        
+        // Area de texto pequeña (con scroll y borde negro)
+        JTextArea textAreaPequena = new JTextArea();
+        textAreaPequena.setBackground(neonGray);
+        textAreaPequena.setForeground(neonGreen);
+        textAreaPequena.setBorder(new LineBorder(neonGreen, 2));
+        textAreaPequena.setCaretColor(neonWhite); // Cursor blanco
 
-		// Area de texto pequeña (con scroll y borde negro)
-		JTextArea textAreaPequena = new JTextArea();
-		textAreaPequena.setBackground(neonGray);
-		textAreaPequena.setForeground(neonGreen);
-		textAreaPequena.setBorder(new LineBorder(neonGreen, 2));
-		textAreaPequena.setCaretColor(neonWhite); // Cursor blanco
+        JScrollPane scrollPequeno = new JScrollPane(textAreaPequena);
+        scrollPequeno.setBounds(540, 70, 200, 150); // Posición y tamaño
+        scrollPequeno.setBorder(new LineBorder(neonGreen, 2));
+        panelCentral.add(scrollPequeno);
 
-		JScrollPane scrollPequeno = new JScrollPane(textAreaPequena);
-		scrollPequeno.setBounds(540, 70, 200, 150); // Posición y tamaño
-		scrollPequeno.setBorder(new LineBorder(neonGreen, 2));
-		panelCentral.add(scrollPequeno);
+        // Botones
+        JButton botonMotrarGrafo = new JButton("Visualizar Conexiones");
+        botonMotrarGrafo.setBackground(neonBlack);
+        botonMotrarGrafo.setForeground(neonGreen);
+        botonMotrarGrafo.setBorder(new LineBorder(neonGreen, 2));
+        botonMotrarGrafo.setBounds(540, 240, 200, 40);
+        panelCentral.add(botonMotrarGrafo);
 
-		// Botones
-		JButton botonMostrarGrafo = new JButton("Visualizar Conexiones");
-		botonMostrarGrafo.setBackground(neonBlack);
-		botonMostrarGrafo.setForeground(neonGreen);
-		botonMostrarGrafo.setBorder(new LineBorder(neonGreen, 2));
-		botonMostrarGrafo.setBounds(540, 240, 200, 40);
-		panelCentral.add(botonMostrarGrafo);
+        JButton boton2 = new JButton("Botón 2");
+        boton2.setBackground(neonBlack);
+        boton2.setForeground(neonGreen);
+        boton2.setBorder(new LineBorder(neonGreen, 2));
+        boton2.setBounds(540, 290, 200, 40);
+        panelCentral.add(boton2);
 
-		JButton boton2 = new JButton("Botón 2");
-		boton2.setBackground(neonBlack);
-		boton2.setForeground(neonGreen);
-		boton2.setBorder(new LineBorder(neonGreen, 2));
-		boton2.setBounds(540, 290, 200, 40);
-		panelCentral.add(boton2);
+        JButton boton3 = new JButton("Botón 3");
+        boton3.setBackground(neonBlack);
+        boton3.setForeground(neonGreen);
+        boton3.setBorder(new LineBorder(neonGreen, 2));
+        boton3.setBounds(540, 340, 200, 40);
+        panelCentral.add(boton3);
 
-		JButton boton3 = new JButton("Botón 3");
-		boton3.setBackground(neonBlack);
-		boton3.setForeground(neonGreen);
-		boton3.setBorder(new LineBorder(neonGreen, 2));
-		boton3.setBounds(540, 340, 200, 40);
-		panelCentral.add(boton3);
+        JButton botonSalir = new JButton("Salir");
+        botonSalir.setBackground(neonBlack);
+        botonSalir.setForeground(neonGreen);
+        botonSalir.setBorder(new LineBorder(neonGreen, 2));
+        botonSalir.setBounds(540, 390, 200, 40);
+        panelCentral.add(botonSalir);
 
-		JButton botonSalir = new JButton("Salir");
-		botonSalir.setBackground(neonBlack);
-		botonSalir.setForeground(neonGreen);
-		botonSalir.setBorder(new LineBorder(neonGreen, 2));
-		botonSalir.setBounds(540, 390, 200, 40);
-		panelCentral.add(botonSalir);
+        JLabel labelTitulo = new JLabel("Redes");
+        labelTitulo.setForeground(neonGreen);
+        labelTitulo.setBounds(20, 20, 500, 40); // Ajuste de posición y tamaño
+        labelTitulo.setFont(labelTitulo.getFont().deriveFont(30f)); // Tamaño de fuente
+        panelCentral.add(labelTitulo);
 
-		JLabel labelTitulo = new JLabel("Redes");
-		labelTitulo.setForeground(neonGreen);
-		labelTitulo.setBounds(20, 20, 500, 40); // Ajuste de posición y tamaño
-		labelTitulo.setFont(labelTitulo.getFont().deriveFont(30f)); // Tamaño de fuente
-		panelCentral.add(labelTitulo);
+        // Acción del visualizar conexiones
+        botonMotrarGrafo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                textAreaGrande.setText(coordinador.imprimirGrafo2());
+            }
+        });
 
-		// Acción del botón 1
-		botonMostrarGrafo.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				textAreaGrande.setText(coordinador.imprimirGrafo2());
-			}
-		});
+        // Acción del botón 2
+        boton2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Cambiar a la nueva pantalla
+                cardLayout.show(paneles, "nuevaPantalla");
+            }
+        });
 
-		// Acción del botón 2
-		boton2.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// Cambiar a la nueva pantalla
-				cardLayout.show(paneles, "nuevaPantalla");
-			}
-		});
+        // Acción del botón 3
+        boton3.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	
+                // Implementa tu lógica aquí
+            }
+        });
 
-		// Acción del botón 3
-		boton3.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// Implementa tu lógica aquí
-			}
-		});
+        // Acción del botón de salir
+        botonSalir.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
 
-		// Acción del botón de salir
-		botonSalir.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
-			}
-		});
+        return panelCentral;
+    }
 
-		return panelCentral;
-	}
+    private JPanel crearNuevaPantalla(Color neonGreen, Color neonGray, Color neonBlack, Color neonWhite) {
+        JPanel nuevaPantalla = new JPanel();
+        nuevaPantalla.setBackground(neonBlack);
+        nuevaPantalla.setLayout(null); // Layout nulo para colocación absoluta
 
-	private JPanel crearNuevaPantalla(Color neonGreen, Color neonGray, Color neonBlack, Color neonWhite) {
-		JPanel nuevaPantalla = new JPanel();
-		nuevaPantalla.setBackground(neonBlack);
-		nuevaPantalla.setLayout(null); // Layout nulo para colocación absoluta
+        JLabel labelNuevaPantalla = new JLabel("Nueva Pantalla");
+        labelNuevaPantalla.setForeground(neonGreen);
+        labelNuevaPantalla.setBounds(20, 20, 200, 40); // Posición y tamaño
+        nuevaPantalla.add(labelNuevaPantalla);
 
-		JLabel labelNuevaPantalla = new JLabel("Nueva Pantalla");
-		labelNuevaPantalla.setForeground(neonGreen);
-		labelNuevaPantalla.setBounds(300, 50, 200, 40);
-		labelNuevaPantalla.setFont(labelNuevaPantalla.getFont().deriveFont(30f)); // Tamaño de fuente
-		nuevaPantalla.add(labelNuevaPantalla);
+        // Crear el área de texto para mostrar el grafo
+        textAreaGrafo = new JTextArea();
+        textAreaGrafo.setBackground(neonGray);
+        textAreaGrafo.setForeground(neonGreen);
+        textAreaGrafo.setBorder(new LineBorder(neonGreen, 2));
+        textAreaGrafo.setCaretColor(neonWhite); // Cursor blanco
+        textAreaGrafo.setEditable(false);
 
-		JButton botonRegresar = new JButton("Regresar");
-		botonRegresar.setBackground(neonBlack);
-		botonRegresar.setForeground(neonGreen);
-		botonRegresar.setBorder(new LineBorder(neonGreen, 2));
-		botonRegresar.setBounds(300, 150, 200, 40);
-		nuevaPantalla.add(botonRegresar);
+        JScrollPane scrollGrafo = new JScrollPane(textAreaGrafo);
+        scrollGrafo.setBounds(20, 70, 500, 400); // Posición y tamaño
+        scrollGrafo.setBorder(new LineBorder(neonGreen, 2));
+        nuevaPantalla.add(scrollGrafo);
 
-		// Acción del botón de regresar a la pantalla principal
-		botonRegresar.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				cardLayout.show(paneles, "panelPrincipal");
-			}
-		});
+        JButton botonVolver = new JButton("Volver");
+        botonVolver.setBackground(neonBlack);
+        botonVolver.setForeground(neonGreen);
+        botonVolver.setBorder(new LineBorder(neonGreen, 2));
+        botonVolver.setBounds(540, 390, 200, 40);
+        nuevaPantalla.add(botonVolver);
 
-		return nuevaPantalla;
-	}
+        // Acción del botón de volver
+        botonVolver.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Cambiar a la pantalla principal
+                cardLayout.show(paneles, "panelPrincipal");
+            }
+        });
 
-	private JPanel crearPanelEquipo(Color neonGreen, Color neonGray, Color neonBlack, Color neonWhite) {
+        return nuevaPantalla;
+    }
+    
+    private JPanel crearPantallaGrafico(Color neonGreen, Color neonGray, Color neonBlack, Color neonWhite) {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(neonBlack);
+
+        JLabel label = new JLabel("Visualización del Grafo");
+        label.setForeground(neonGreen);
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        panel.add(label, BorderLayout.NORTH);
+
+        // Volver al panel principal
+        JButton botonVolver = new JButton("Volver");
+        botonVolver.setBackground(neonBlack);
+        botonVolver.setForeground(neonGreen);
+        botonVolver.setBorder(new LineBorder(neonGreen, 2));
+        botonVolver.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cardLayout.show(paneles, "panelPrincipal");
+            }
+        });
+        panel.add(botonVolver, BorderLayout.SOUTH);
+
+        return panel;
+    }
+    
+    private JPanel crearPanelEquipo(Color neonGreen, Color neonGray, Color neonBlack, Color neonWhite) {
 		JPanel panelEquipo = new JPanel();
 		panelEquipo.setBackground(neonBlack);
 		panelEquipo.setLayout(null); // Layout nulo para colocación absoluta
@@ -388,5 +467,4 @@ public class AplicacionGui extends JFrame {
 
 		return panelConexion;
 	}
-
 }

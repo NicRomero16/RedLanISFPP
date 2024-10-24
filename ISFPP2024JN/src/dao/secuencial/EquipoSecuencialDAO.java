@@ -6,8 +6,11 @@ import java.util.Collections;
 import java.util.Formatter;
 import java.util.FormatterClosedException;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.ResourceBundle;
 import java.util.Scanner;
+import java.util.Set;
+
 import modelo.*;
 import dao.*;
 import excepciones.ArchivoExistenteException;
@@ -75,10 +78,23 @@ public class EquipoSecuencialDAO implements EquipoDAO {
 		Formatter outFile = null;
 		try {
 			outFile = new Formatter(file);
+			
 			for (Equipo e : map.values()) {
-				outFile.format("%s;%s;%s;%s;%s;%s;%s;%s;\n", e.getCodigo(), e.getDescripcion(), e.getMarca(),
-						e.getModelo(), e.getTipoEquipo().toString(), e.getUbicacion().toString(),
-						e.getPuertos().toString(), e.getDireccionesIP().toString());
+				
+				String marca;
+				if(e.getMarca()==null) marca = "";
+				else marca =e.getMarca();
+				
+				String modelo;
+				if(e.getModelo()==null) modelo = "";
+				else modelo = e.getModelo();
+				String ubicacion;
+				if(e.getUbicacion()==null)ubicacion = "";
+				else ubicacion = e.getUbicacion().getCodigo();
+				
+				outFile.format("%s;%s;%s;%s;%s;%s;%s;%s;%s;\n", e.getCodigo(), e.getDescripcion(), marca,
+						modelo, e.getTipoEquipo().getCodigo(), ubicacion,
+						portTypeFormatter(e), ipAdressFormatter(e), String.valueOf(e.getEstado()));
 			}
 		} catch (FileNotFoundException fileNotFoundException) {
 			System.err.println("Error creating file.");
@@ -90,9 +106,31 @@ public class EquipoSecuencialDAO implements EquipoDAO {
 		}
 	}
 
+	
+	private String ipAdressFormatter(Equipo equipo) {
+		StringBuilder sb = new StringBuilder();
+		if(equipo.getDireccionesIP().isEmpty()|| equipo.getDireccionesIP()==null) return "";
+		for(String ip: equipo.getDireccionesIP()) {
+			sb.append(ip);
+			sb.append(",");
+		}
+		sb.deleteCharAt(sb.length()-1);
+		return sb.toString();
+	}
+	
+	private String portTypeFormatter(Equipo equipo) {
+		StringBuilder sb = new StringBuilder();
+		if(equipo.getPuertos().isEmpty() || equipo.getPuertos()==null) return ",0";
+		//System.out.println(equipo.getCodigo()+" "+equipo.obtenerCodigoTipoPuerto(0));
+		sb.append(equipo.obtenerCodigoTipoPuerto(0));
+		sb.append(",");
+		sb.append(equipo.getPuertos().size());
+		return sb.toString();
+	}
+	
 	@Override
 	public void insertar(Equipo equipo) throws ArchivoExistenteException {
-		if (map.containsKey(equipo.getCodigo())) //no sean crotos
+		if (map.containsKey(equipo.getCodigo()))
 			throw new ArchivoExistenteException("El equipo ya existe");
 		map.put(equipo.getCodigo(), equipo);
 		writeToFile(map, name);
