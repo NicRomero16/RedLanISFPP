@@ -92,7 +92,7 @@ public class EquipoSecuencialDAO implements EquipoDAO {
 
 	@Override
 	public void insertar(Equipo equipo) throws ArchivoExistenteException {
-		if (map.containsKey(equipo.getCodigo()))
+		if (map.containsKey(equipo.getCodigo())) //no sean crotos
 			throw new ArchivoExistenteException("El equipo ya existe");
 		map.put(equipo.getCodigo(), equipo);
 		writeToFile(map, name);

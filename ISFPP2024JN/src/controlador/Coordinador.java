@@ -23,7 +23,7 @@ public class Coordinador {
 	public Coordinador() {
 		calculo = new Calculo();
 	}
-
+	
 	public void agregarEquipo(Equipo equipo) {
 		try {
 			red.agregarEquipo(equipo);
@@ -167,10 +167,6 @@ public class Coordinador {
 		return red;
 	}
 	
-	public void setRed(Red red) {
-		this.red = red;
-	}
-
 	public Calculo getCalculo() {
 		return calculo;
 	}

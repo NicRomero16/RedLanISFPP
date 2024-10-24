@@ -29,9 +29,9 @@ public class AplicacionConsultas {
 		 miAplicacion.consultar3();
 		 miAplicacion.consultar4(); 
 		 miAplicacion.consultar5();
-		 miAplicacion.consultar6();
+		 miAplicacion.consultar6(); */
 		 miAplicacion.consultar7();
-		 */
+		
 	}
 
 	private void iniciar() throws EquipoExistenteException {
