@@ -30,6 +30,7 @@ public class AplicacionConsultas {
 		miAplicacion.consultar5();
 		miAplicacion.estadoEquipos();
 		miAplicacion.agregarEquipo();
+		miAplicacion.eliminarEquipo();
 		*/
 		miAplicacion.buscarEquipo();
 	}
@@ -39,7 +40,7 @@ public class AplicacionConsultas {
 		calculo = new Calculo();
 		coordinador = new Coordinador();
 		interfaz = new Interfaz();
-		appGui = new AplicacionGui(coordinador);
+		//appGui = new AplicacionGui(coordinador);
 		calculo.setCoordinador(coordinador);
 		interfaz.setCoordinador(coordinador);
 		coordinador.setEmpresa(empresa);
@@ -90,7 +91,6 @@ public class AplicacionConsultas {
 		coordinador.agregarEquipo(equipo);
 	}
 	
-	// NO FUNCIONA
 	// Eliminar un equipo
 	private void eliminarEquipo() {
 		Equipo equipo = interfaz.eliminarEquipo();

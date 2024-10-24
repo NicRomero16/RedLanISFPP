@@ -14,6 +14,8 @@ import excepciones.EquipoExistenteException;
 import interfaz.Interfaz;
 import modelo.Conexion;
 import modelo.Equipo;
+import modelo.TipoEquipo;
+import modelo.Ubicacion;
 
 public class Coordinador {
 	private Red red;
@@ -146,8 +148,8 @@ public class Coordinador {
 		this.interfaz = interfaz;
 	}
 
-	public Equipo buscarEquipo(Equipo equipo) {
-		return red.buscarEquipo(equipo.getCodigo());
+	public Equipo buscarEquipo(String codigo) {
+		return red.buscarEquipo(codigo);
 	}
 
 	public TreeMap<String, Equipo> listarEquipos() {

@@ -34,8 +34,8 @@ public class Interfaz {
 	}
 
 	public void buscarEquipo() {
-		TreeMap<String, Equipo> equipos = recibirMapEquipos();
-		System.out.println(equipos.get(Constantes.BUSCAR_EQUIPO));
+		Equipo equipo = coordinador.buscarEquipo(Constantes.BUSCAR_EQUIPO);
+		System.out.println(equipo);
 	}
 
 	public Equipo agregarNuevoEquipo() {
