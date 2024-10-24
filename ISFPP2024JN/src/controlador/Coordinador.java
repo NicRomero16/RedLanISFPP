@@ -34,11 +34,11 @@ public class Coordinador {
 		Set<Conexion> edges = calculo.getRed().edgeSet();
 		interfaz.imprimirGrafo(edges);
 	}
-	
-	public String imprimirGrafo2() {
-		
+
+	public String imprimirConexionesGrafo() {
+
 		Set<Conexion> edges = calculo.getRed().edgeSet();
-		
+
 		StringBuilder resultado = new StringBuilder();
 
 		for (Conexion edge : edges) {
@@ -57,15 +57,31 @@ public class Coordinador {
 					+ edge.getEquipo2().getDireccionesIP() + "\n Estado: " + edge.getEquipo2().getEstado() + "\n "
 					+ edge.getTipoPuerto2() + "\n");
 			resultado.append(" \nTipo de cable de la conexion: \n " + edge.getTipoCable() + "\n");
-			resultado.append(
-					"================================================================\n");
+			resultado.append("================================================================\n");
 
 		}
-		
+
 		return resultado.toString();
 	}
-	
-	
+
+	public String imprimirEquipos() {
+		TreeMap<String, Equipo> edges = listarEquipos();
+
+		StringBuilder resultado = new StringBuilder();
+
+		for (Equipo edge : edges.values()) {
+
+			resultado.append("Equipo: " + edge.getCodigo() + "\n");
+
+			resultado.append("Decripcion: " + edge.getDescripcion() + "\n Marca: " + edge.getMarca() + "\n Modelo: "
+					+ edge.getModelo() + "\n " + edge.getTipoEquipo() + "\n " + edge.getUbicacion() + "\n "
+					+ edge.getPuertos() + "\n Direciones IP: " + edge.getDireccionesIP() + "\n Estado: "
+					+ edge.getEstado() + "\n");
+			resultado.append("================================================================\n");
+		}
+
+		return resultado.toString();
+	}
 
 	public void mostrarEquiposIntermedios(Equipo origen, Equipo destino) {
 		String resultado = "Los equipos intermedios entre " + origen.getCodigo() + " y " + destino.getCodigo()
@@ -81,7 +97,7 @@ public class Coordinador {
 		} catch (ConexionInexistenteException e) {
 			e.printStackTrace();
 		}
-	}	   
+	}
 
 	public void ping(String ip) {
 		TreeMap<String, Equipo> equipos = empresa.getEquipos();
@@ -143,8 +159,7 @@ public class Coordinador {
 	public List<Conexion> listarConexiones() {
 		return empresa.getConexiones();
 	}
-	
-	
+
 	public void agregarEquipoMock() {
 		Equipo equipo = new Equipo("REQW", "eLjota", null, null, new TipoEquipo("RE", "jota"),
 				new Ubicacion("A01", "Aula 1"), false);
@@ -154,9 +169,9 @@ public class Coordinador {
 			System.out.println("Error al agregar equipo");
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 	public void agregarEquipo(Equipo equipo) {
 		try {
 			empresa.agregarEquipo(equipo);
@@ -166,10 +181,11 @@ public class Coordinador {
 		}
 		calculo.update();
 	}
+
 //interfaz grafica
 	public Graph<Equipo, Conexion> cargarDatos() {
-		
-		Graph<Equipo, Conexion> grafo= null;
+
+		Graph<Equipo, Conexion> grafo = null;
 		try {
 			grafo = calculo.cargarDatos(listarConexiones());
 		} catch (EquipoExistenteException e) {

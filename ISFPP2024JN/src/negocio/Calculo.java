@@ -1,6 +1,7 @@
 package negocio;
 
 import java.util.List;
+import java.util.TreeMap;
 
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
@@ -21,13 +22,13 @@ public class Calculo {
 
 	private Graph<Equipo, Conexion> red;
 	private boolean actualizar;
-	
+
 	public Calculo() {
 		red = new DefaultUndirectedGraph<>(Conexion.class);
 	}
 
 	public Graph<Equipo, Conexion> cargarDatos(List<Conexion> conexiones) throws EquipoExistenteException {
-		
+
 		this.actualizar = false;
 		red = new DefaultUndirectedWeightedGraph<>(Conexion.class);
 
@@ -46,7 +47,7 @@ public class Calculo {
 	}
 
 	public List<Equipo> mostrarEquiposIntermedios(Equipo origen, Equipo destino) throws EquipoInexistenteException {
-		if(this.actualizar)
+		if (this.actualizar)
 			try {
 				this.cargarDatos(coordinador.listarConexiones());
 			} catch (EquipoExistenteException e) {
@@ -63,9 +64,10 @@ public class Calculo {
 	}
 
 	public double velocidadMaxima(Equipo origen, Equipo destino) throws ConexionInexistenteException {
-		if(this.actualizar)
+		if (this.actualizar)
 			try {
-				this.cargarDatos(coordinador.listarConexiones()); //al avanzar el codigo tenemos q hacer el patron de diseño observer
+				this.cargarDatos(coordinador.listarConexiones()); // al avanzar el codigo tenemos q hacer el patron de
+																	// diseño observer
 			} catch (EquipoExistenteException e) {
 				e.printStackTrace();
 			}
@@ -106,7 +108,7 @@ public class Calculo {
 	}
 
 	public Graph<Equipo, Conexion> getRed() {
-		if(this.actualizar)
+		if (this.actualizar)
 			try {
 				this.cargarDatos(coordinador.listarConexiones());
 			} catch (EquipoExistenteException e) {
@@ -116,9 +118,8 @@ public class Calculo {
 		return red;
 	}
 
-	
 	public void update() {
 		this.actualizar = true;
 	}
-	
+
 }

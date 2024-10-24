@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.Color;
+import java.awt.Font; // Importar la clase Font
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -17,152 +18,168 @@ import modelo.Equipo;
 
 public class GraphPanel extends JPanel {
 
-    private List<Equipo> equipos;
-    private List<Conexion> conexiones;
+	private List<Equipo> equipos;
+	private List<Conexion> conexiones;
+	private Map<Equipo, Point> posiciones;
+	private String infoTexto;
+	private Equipo nodoSeleccionado;
+	private Point posicionInicial;
+	private Point posicionInicialNodo;
 
-    // Mapa para almacenar las posiciones de los equipos usando Point
-    private Map<Equipo, Point> posiciones;
+	public GraphPanel(List<Equipo> equipos, List<Conexion> conexiones) {
+		this.equipos = equipos;
+		this.conexiones = conexiones;
+		this.posiciones = new HashMap<>();
+		setBackground(Color.BLACK);
 
-    // Variables para manejar el arrastre de nodos
-    private Equipo nodoSeleccionado;
-    private Point posicionInicial;
-    private Point posicionInicialNodo;
+		this.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+				asignarPosicionesDinamicas();
+				repaint();
+			}
+		});
 
-    // Variable para mostrar información del equipo
-    private String infoEquipo;
+		this.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				Point clickPoint = e.getPoint();
+				boolean clickedOnNode = false; // Variable para verificar si se hizo clic en un nodo
 
-    public GraphPanel(List<Equipo> equipos, List<Conexion> conexiones) {
-        this.equipos = equipos;
-        this.conexiones = conexiones;
-        this.posiciones = new HashMap<>();
-        setBackground(Color.BLACK); // Fondo negro
-        
-        // Añadir un listener para detectar cuando el panel cambia de tamaño
-        this.addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                asignarPosicionesDinamicas(); // Recalcular posiciones cuando se redimensiona
-                repaint(); // Redibujar el panel
-            }
-        });
+				for (Equipo equipo : equipos) {
+					Point pos = posiciones.get(equipo);
+					if (pos != null && pos.distance(clickPoint) <= 35) {
+						// Si se hace clic en un nodo, lo seleccionamos
+						nodoSeleccionado = equipo;
+						posicionInicial = clickPoint;
+						posicionInicialNodo = pos;
 
-        // Añadir listener de ratón para mover nodos
-        this.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                // Detectar si se hace clic en un nodo
-                Point clickPoint = e.getPoint();
-                for (Equipo equipo : equipos) {
-                    Point pos = posiciones.get(equipo);
-                    if (pos != null && pos.distance(clickPoint) <= 35) { // Aumentar el radio para incluir el nuevo tamaño del nodo
-                        nodoSeleccionado = equipo;
-                        posicionInicial = clickPoint;
-                        posicionInicialNodo = pos;
-                        break;
-                    }
-                }
-            }
+						// Crear el texto de información
+						StringBuilder infoBuilder = new StringBuilder();
+						infoBuilder.append(" Equipo: ").append(equipo.getCodigo()).append(" \tDescripción: ")
+								.append(equipo.getDescripcion()).append(" \tUbicación: ");
 
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                nodoSeleccionado = null; // Desbloquear el nodo
-                infoEquipo = null; // Ocultar información
-                repaint(); // Redibujar para ocultar la información
-            }
-        });
+						// Verificación de la ubicación
+						if (equipo.getUbicacion() != null) {
+							infoBuilder.append(equipo.getUbicacion().getDescripcion());
+						} else {
+							infoBuilder.append("Sin ubicación actualmente");
+						}
 
-        this.addMouseMotionListener(new MouseAdapter() {
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                if (nodoSeleccionado != null) {
-                    // Mover el nodo seleccionado
-                    Point nuevaPosicion = e.getPoint();
-                    int dx = (int) (nuevaPosicion.getX() - posicionInicial.getX());
-                    int dy = (int) (nuevaPosicion.getY() - posicionInicial.getY());
-                    Point nuevaPos = new Point(posicionInicialNodo.x + dx, posicionInicialNodo.y + dy);
-                    posiciones.put(nodoSeleccionado, nuevaPos); // Actualizar posición en el mapa
-                    repaint(); // Redibujar el panel
-                }
-            }
+						// Usar if-else para asignar el estado
+						String status;
+						if (equipo.getEstado()) {
+							status = "Conectado";
+						} else {
+							status = "Desconectado";
+						}
+						infoBuilder.append(" \tEstado: ").append(status);
 
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                // Detectar si el mouse está sobre un nodo
-                Point mousePos = e.getPoint();
-                infoEquipo = null; // Reiniciar información del equipo
-                for (Equipo equipo : equipos) {
-                    Point pos = posiciones.get(equipo);
-                    if (pos != null && pos.distance(mousePos) <= 35) {
-                        infoEquipo = equipo.getCodigo() + " \n " + equipo.getDescripcion() + " \n " + equipo.getMarca() + " \n " + equipo.getModelo() + " \n " + equipo.getEstado(); // Guardar la información del equipo
-                        break;
-                    }
-                }
-                repaint(); // Redibujar para mostrar información
-            }
-        });
-    }
+						// Agregar conexiones
+						infoBuilder.append("\nConectado a: \n");
+						for (Conexion conexion : conexiones) {
+							if (conexion.getEquipo1().equals(equipo)) {
+								infoBuilder.append(conexion.getEquipo2().getCodigo()).append("\n");
+							} else if (conexion.getEquipo2().equals(equipo)) {
+								infoBuilder.append(conexion.getEquipo1().getCodigo()).append("\n");
+							}
+						}
 
-    // Método para asignar posiciones a los equipos en un círculo
-    private void asignarPosicionesDinamicas() {
-        int centerX = getWidth() / 2; // Centro del panel en X
-        int centerY = getHeight() / 2; // Centro del panel en Y
-        int radius = Math.min(centerX, centerY) - 50; // Radio para el círculo de nodos
+						infoTexto = infoBuilder.toString(); // Asignar texto de información
+						clickedOnNode = true; // Se hizo clic en un nodo
+						break;
+					}
+				}
 
-        // Si no hay suficiente espacio para el radio, evitar errores
-        if (radius < 0) radius = 10;
+				// Si no se hizo clic en un nodo, ocultar la información
+				if (!clickedOnNode) {
+					infoTexto = null; // Ocultar información
+				}
 
-        // Distribuir los equipos en círculo
-        int numEquipos = equipos.size();
-        for (int i = 0; i < numEquipos; i++) {
-            double angle = 2 * Math.PI * i / numEquipos; // Ángulo para cada equipo
-            int x = (int) (centerX + radius * Math.cos(angle)); // Coordenada X
-            int y = (int) (centerY + radius * Math.sin(angle)); // Coordenada Y
-            posiciones.put(equipos.get(i), new Point(x, y)); // Guardar posición como Point
-        }
-    }
+				repaint();
+			}
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D) g;
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				nodoSeleccionado = null; // Desbloquear el nodo
+				repaint(); // Redibujar el panel
+			}
+		});
 
-        int nodoRadius = 40; // Aumentar el tamaño del nodo
+		this.addMouseMotionListener(new MouseAdapter() {
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				if (nodoSeleccionado != null) {
+					// Mover el nodo seleccionado
+					Point nuevaPosicion = e.getPoint();
+					int dx = (int) (nuevaPosicion.getX() - posicionInicial.getX());
+					int dy = (int) (nuevaPosicion.getY() - posicionInicial.getY());
+					Point nuevaPos = new Point(posicionInicialNodo.x + dx, posicionInicialNodo.y + dy);
+					posiciones.put(nodoSeleccionado, nuevaPos); // Actualizar posición en el mapa
+					posicionInicialNodo = nuevaPos; // Actualizar posición inicial del nodo
+					posicionInicial = nuevaPos; // Actualizar la posición del mouse
+					repaint(); // Redibujar el panel
+				}
+			}
+		});
+	}
 
-        // Dibujar conexiones
-        g2d.setColor(Color.GREEN); // Color de las conexiones
-        for (Conexion conexion : conexiones) {
-            Equipo equipo1 = conexion.getEquipo1();
-            Equipo equipo2 = conexion.getEquipo2();
+	private void asignarPosicionesDinamicas() {
+		int centerX = getWidth() / 2;
+		int centerY = getHeight() / 2;
+		int radius = Math.min(centerX, centerY) - 50;
 
-            // Obtener las posiciones de los equipos para dibujar la línea
-            Point pos1 = posiciones.get(equipo1);
-            Point pos2 = posiciones.get(equipo2);
+		if (radius < 0)
+			radius = 10;
 
-            if (pos1 != null && pos2 != null) {
-                // Dibujar línea de conexión
-                g2d.drawLine(pos1.x, pos1.y, pos2.x, pos2.y); // Dibuja la línea entre los nodos
-            }
-        }
+		int numEquipos = equipos.size();
+		for (int i = 0; i < numEquipos; i++) {
+			double angle = 2 * Math.PI * i / numEquipos;
+			int x = (int) (centerX + radius * Math.cos(angle));
+			int y = (int) (centerY + radius * Math.sin(angle));
+			posiciones.put(equipos.get(i), new Point(x, y));
+		}
+	}
 
-        // Dibujar nodos (equipos)
-        for (Equipo equipo : equipos) {
-            Point pos = posiciones.get(equipo);
-            if (pos != null) {
-                g2d.setColor(Color.CYAN); // Color de los nodos
-                // Dibuja el nodo como un círculo
-                g2d.fillOval(pos.x - nodoRadius / 2, pos.y - nodoRadius / 2, nodoRadius, nodoRadius);
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		Graphics2D g2d = (Graphics2D) g;
 
-                // Dibujar nombre del equipo en el centro del nodo
-                g2d.setColor(Color.BLACK);
-                // Centrar el texto sobre el nodo
-                g2d.drawString(equipo.getCodigo(), pos.x - g2d.getFontMetrics().stringWidth(equipo.getCodigo()) / 2, pos.y + 5);
-            }
-        }
+		int nodoRadius = 55;
+		g2d.setColor(Color.GREEN);
+		for (Conexion conexion : conexiones) {
+			Equipo equipo1 = conexion.getEquipo1();
+			Equipo equipo2 = conexion.getEquipo2();
+			Point pos1 = posiciones.get(equipo1);
+			Point pos2 = posiciones.get(equipo2);
+			if (pos1 != null && pos2 != null) {
+				g2d.drawLine(pos1.x, pos1.y, pos2.x, pos2.y);
+			}
+		}
 
-        // Dibujar información del equipo en la esquina superior izquierda
-        if (infoEquipo != null) {
-            g2d.setColor(Color.GREEN); // Color de la información
-            g2d.drawString(infoEquipo, 10, 20); // Mostrar la información
-        }
-    }
+		for (Equipo equipo : equipos) {
+			Point pos = posiciones.get(equipo);
+			if (pos != null) {
+				g2d.setColor(Color.CYAN);
+				g2d.fillOval(pos.x - nodoRadius / 2, pos.y - nodoRadius / 2, nodoRadius, nodoRadius);
+				g2d.setColor(Color.BLACK);
+
+				// Establecer una fuente más gruesa (negrita)
+				g2d.setFont(new Font("Arial", Font.BOLD, 16));
+				g2d.drawString(equipo.getCodigo(), pos.x - g2d.getFontMetrics().stringWidth(equipo.getCodigo()) / 2,
+						pos.y + 5);
+			}
+		}
+
+		if (infoTexto != null) {
+			g2d.setColor(Color.CYAN);
+			String[] lineas = infoTexto.split("\n"); // Usar \n para dividir las líneas
+			int y = 20; // Posición vertical inicial para el texto
+			for (String linea : lineas) {
+				g2d.drawString(linea, 10, y);
+				y += 15; // Aumentar la posición vertical para la siguiente línea
+			}
+		}
+	}
 }
