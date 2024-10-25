@@ -12,11 +12,10 @@ import org.jgrapht.Graph;
 
 import excepciones.ConexionInexistenteException;
 import excepciones.EquipoExistenteException;
+import excepciones.EquipoInexistenteException;
 import interfaz.Interfaz;
 import modelo.Conexion;
 import modelo.Equipo;
-import modelo.TipoEquipo;
-import modelo.Ubicacion;
 
 public class Coordinador {
 	private Red red;
@@ -196,8 +195,16 @@ public class Coordinador {
 	}
 
 	public String VelocidadMaximaEntreEquipos(String equipo1, String equipo2) {
-
-		return calculo.velocidadMaximaEntreEquipos(red.buscarEquipo(equipo1),red.buscarEquipo(equipo2));
+		try {
+			return calculo.velocidadMaximaEntreEquipos(red.buscarEquipo(equipo1), red.buscarEquipo(equipo2));
+		} catch (EquipoInexistenteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ConexionInexistenteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

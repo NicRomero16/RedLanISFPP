@@ -1,7 +1,6 @@
 package negocio;
 
 import java.util.List;
-import java.util.TreeMap;
 
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
@@ -59,21 +58,17 @@ public class Calculo {
 			throw new EquipoInexistenteException("Los equipos no tienen equipos intermedios");
 	}
 
-	public String velocidadMaximaEntreEquipos(Equipo origen, Equipo destino) {
+	public String velocidadMaximaEntreEquipos(Equipo origen, Equipo destino) throws ConexionInexistenteException {
 		if (this.actualizar) {
 			this.cargarDatos(coordinador.listarConexiones());
-
 		}
 		DijkstraShortestPath<Equipo, Conexion> dijkstraAlg = new DijkstraShortestPath<>(redGrafo);
 		GraphPath<Equipo, Conexion> path = dijkstraAlg.getPath(origen, destino);
 
-		if (path == null) {
-			return "No existe una conexion entre los equipos " + origen.getCodigo() + " y " + destino.getCodigo();
-		}
-		
 		List<Conexion> recorrido = path.getEdgeList();
-        if(recorrido.isEmpty())
-			return "No existe una conexion entre los equipos " + origen.getCodigo() + " y " + destino.getCodigo();
+		if (recorrido.isEmpty())
+			throw new ConexionInexistenteException(
+					"No existe una conexion entre " + origen.getCodigo() + " y " + destino.getCodigo());
 
 		double velocidadMaxima = 0;
 
