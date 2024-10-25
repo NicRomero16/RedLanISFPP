@@ -66,8 +66,11 @@ public class Calculo {
 			return "No se puede calcular la velocidad de conexión entre el mismo equipo.\n" + origen.getCodigo()
 					+ " <=//=> " + destino.getCodigo();
 		}
-		if (!redGrafo.containsVertex(origen) || !redGrafo.containsVertex(destino)) {
-			return "Uno o ambos equipos no existen en el grafo.";
+		if (!redGrafo.containsVertex(origen)) {
+			return "El equipo " + origen.getCodigo() + " no tiene conexiones.";
+		}
+		if (!redGrafo.containsVertex(destino)) {
+			return "El equipo " + destino.getCodigo() + " no tiene conexiones.";
 		}
 		DijkstraShortestPath<Equipo, Conexion> dijkstraAlg = new DijkstraShortestPath<>(redGrafo);
 		GraphPath<Equipo, Conexion> path = dijkstraAlg.getPath(origen, destino);
