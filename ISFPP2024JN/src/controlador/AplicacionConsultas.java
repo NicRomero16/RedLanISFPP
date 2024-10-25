@@ -19,19 +19,16 @@ public class AplicacionConsultas {
 
 	public static void main(String[] args) {
 		AplicacionConsultas miAplicacion = new AplicacionConsultas();
-		
+
 		miAplicacion.iniciar();
-		//miAplicacion.consultar1();
+		// miAplicacion.consultar1();
 		/*
-		miAplicacion.consultar2();
-		miAplicacion.consultar3();
-		miAplicacion.consultar4();
-		miAplicacion.consultar5();
-		miAplicacion.estadoEquipos();
-		miAplicacion.agregarEquipo();
-		miAplicacion.eliminarEquipo();
-		*/
-	//	miAplicacion.buscarEquipo();
+		 * miAplicacion.consultar2(); miAplicacion.consultar3();
+		 * miAplicacion.consultar4(); miAplicacion.consultar5();
+		 * miAplicacion.estadoEquipos(); miAplicacion.agregarEquipo();
+		 * miAplicacion.eliminarEquipo();
+		 */
+		// miAplicacion.buscarEquipo();
 	}
 
 	private void iniciar() {
@@ -41,11 +38,12 @@ public class AplicacionConsultas {
 		interfaz = new Interfaz();
 		calculo.setCoordinador(coordinador);
 		interfaz.setCoordinador(coordinador);
+		appGui = new AplicacionGui(coordinador);
 		coordinador.setEmpresa(red);
 		coordinador.setCalculo(calculo);
 		coordinador.setInterfaz(interfaz);
-		appGui = new AplicacionGui(coordinador);
-		calculo.cargarDatos(coordinador.listarConexiones());	
+
+		calculo.cargarDatos(coordinador.listarConexiones());
 	}
 
 	// Imprimir el grafo en pantalla
@@ -56,8 +54,8 @@ public class AplicacionConsultas {
 	// Dado dos equipos mostrar todos los equipos intermedios y sus conexiones.
 	private void consultar2() {
 		Equipo[] equipos = interfaz.solicitarEquipos();
-			coordinador.mostrarEquiposIntermedios(equipos[0], equipos[1]);
-		
+		coordinador.mostrarEquiposIntermedios(equipos[0], equipos[1]);
+
 	}
 
 	// Calcular la velocidad máxima de acuerdo al tipo de puerto y cables por donde
@@ -83,21 +81,21 @@ public class AplicacionConsultas {
 		TreeMap<String, Equipo> map = interfaz.recibirMapEquipos();
 		coordinador.estadoEquipos(map);
 	}
-	
-	// Agregar un equipo 
+
+	// Agregar un equipo
 	private void agregarEquipo() {
 		Equipo equipo = interfaz.agregarNuevoEquipo();
 		coordinador.agregarEquipo(equipo);
 	}
-	
+
 	// Eliminar un equipo
 	private void eliminarEquipo() {
 		Equipo equipo = interfaz.eliminarEquipo();
 		coordinador.eliminarEquipo(equipo);
 	}
-	
+
 	// Buscar un equipo
 	private void buscarEquipo() {
 		interfaz.buscarEquipo();
-		}
+	}
 }

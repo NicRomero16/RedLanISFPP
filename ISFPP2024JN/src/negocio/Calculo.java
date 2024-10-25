@@ -58,17 +58,22 @@ public class Calculo {
 			throw new EquipoInexistenteException("Los equipos no tienen equipos intermedios");
 	}
 
-	public String velocidadMaximaEntreEquipos(Equipo origen, Equipo destino) throws ConexionInexistenteException {
-		if (this.actualizar) {
-			this.cargarDatos(coordinador.listarConexiones());
+	public String velocidadMaximaEntreEquipos(Equipo origen, Equipo destino) {
+
+		if (origen.equals(destino)) {
+			return "No se puede calcular la velocidad de conexión entre el mismo equipo.\n" + origen.getCodigo()
+					+ " <=//=> " + destino.getCodigo();
+		}
+		if (!redGrafo.containsVertex(origen) || !redGrafo.containsVertex(destino)) {
+			return "Uno o ambos equipos no existen en el grafo.";
 		}
 		DijkstraShortestPath<Equipo, Conexion> dijkstraAlg = new DijkstraShortestPath<>(redGrafo);
 		GraphPath<Equipo, Conexion> path = dijkstraAlg.getPath(origen, destino);
 
+		if (path == null) {
+			return "No existe una conexion entre los equipos " + origen.getCodigo() + " y " + destino.getCodigo();
+		}
 		List<Conexion> recorrido = path.getEdgeList();
-		if (recorrido.isEmpty())
-			throw new ConexionInexistenteException(
-					"No existe una conexion entre " + origen.getCodigo() + " y " + destino.getCodigo());
 
 		double velocidadMaxima = 0;
 

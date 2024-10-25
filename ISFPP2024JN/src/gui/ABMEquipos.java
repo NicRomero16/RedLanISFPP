@@ -21,7 +21,7 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
-public class MiPanel extends JPanel {
+public class ABMEquipos extends JPanel {
     private JTextField[] textFields;
     private JTable table;
     DefaultTableModel tableModel;
@@ -32,7 +32,7 @@ public class MiPanel extends JPanel {
     Color neonBlack = Color.BLACK;
     Color neonWhite = Color.WHITE;
 
-    public MiPanel() {
+    public ABMEquipos() {
         setLayout(new BorderLayout());
         setBackground(neonGray); // Color de fondo del panel principal
         
@@ -115,7 +115,7 @@ public class MiPanel extends JPanel {
     public static void main(String[] args) {
         JFrame frame = new JFrame("Mi Panel");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(new MiPanel());
+        frame.add(new ABMEquipos());
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
@@ -142,10 +142,10 @@ class ButtonRenderer extends JButton implements TableCellRenderer {
 class ButtonEditor extends DefaultCellEditor {
     private JButton button;
     private boolean isEditButton;
-    private MiPanel panel;
+    private ABMEquipos panel;
     private int row;
 
-    public ButtonEditor(JCheckBox checkBox, MiPanel panel, boolean isEditButton) {
+    public ButtonEditor(JCheckBox checkBox, ABMEquipos panel, boolean isEditButton) {
         super(checkBox);
         this.isEditButton = isEditButton;
         this.panel = panel;

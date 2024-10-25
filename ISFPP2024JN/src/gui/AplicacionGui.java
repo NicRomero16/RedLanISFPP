@@ -68,8 +68,9 @@ public class AplicacionGui extends JFrame {
 		menuArchivo.setForeground(NEON_GREEN);
 
 		// Elementos dentro del menú "grafo"
-		JMenuItem itemAbrir = new JMenuItem("Grafico");
-		itemAbrir.addActionListener(new ActionListener() {
+		JMenuItem itemGrafico = new JMenuItem("Grafico");
+
+		itemGrafico.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// Cargar el grafo desde el coordinador
@@ -111,7 +112,7 @@ public class AplicacionGui extends JFrame {
 		});
 
 		// Añadir los elementos al menú "Archivo"
-		menuArchivo.add(itemAbrir);
+		menuArchivo.add(itemGrafico);
 		menuArchivo.add(itemConsultas);
 		menuArchivo.addSeparator(); // Separador
 		menuArchivo.add(itemSalir);
@@ -289,8 +290,6 @@ public class AplicacionGui extends JFrame {
 				String equipoSelected = (String) comboBoxEquipoPing.getSelectedItem();
 				if (equipoSelected != null) {
 					String message = coordinador.realizarPingEquipo(equipoSelected);
-					// String message = coordinador.realizarPingEquipoIp(equipoSelected); //cambiar
-					// de codigo a ip
 					textAreaGrande.setText(message);
 					textAreaGrande.setFont(new Font("Arial", Font.BOLD, 20));
 				}
@@ -304,16 +303,9 @@ public class AplicacionGui extends JFrame {
 				String equipo1 = (String) comboBoxVelMaxEquip1.getSelectedItem();
 				String equipo2 = (String) comboBoxVelMaxEquip2.getSelectedItem();
 
-				if (equipo1 == null || equipo2 == null)
-					if (equipo1 != equipo2) {
-						String message = coordinador.VelocidadMaximaEntreEquipos(equipo1, equipo2);
-						textAreaGrande.setText(message);
-					} else
-						JOptionPane.showMessageDialog(null, "Seleccione equipos diferentes", "Error",
-								JOptionPane.ERROR_MESSAGE);
-				else
-					JOptionPane.showMessageDialog(null, "Uno de los equipos no existe en la conexion", "Error",
-							JOptionPane.ERROR_MESSAGE);
+				String message = coordinador.VelocidadMaximaEntreEquipos(equipo1, equipo2);
+				textAreaGrande.setText(message);
+
 				textAreaGrande.setFont(new Font("Arial", Font.BOLD, 16));
 			}
 		});

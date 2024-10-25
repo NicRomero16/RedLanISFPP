@@ -195,16 +195,8 @@ public class Coordinador {
 	}
 
 	public String VelocidadMaximaEntreEquipos(String equipo1, String equipo2) {
-		try {
-			return calculo.velocidadMaximaEntreEquipos(red.buscarEquipo(equipo1), red.buscarEquipo(equipo2));
-		} catch (EquipoInexistenteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ConexionInexistenteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+
+		return calculo.velocidadMaximaEntreEquipos(red.buscarEquipo(equipo1), red.buscarEquipo(equipo2));
 	}
 
 }
