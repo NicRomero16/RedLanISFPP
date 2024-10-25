@@ -59,7 +59,9 @@ public class Calculo {
 	}
 
 	public String velocidadMaximaEntreEquipos(Equipo origen, Equipo destino) {
-
+		if (this.actualizar) {
+			this.cargarDatos(coordinador.listarConexiones());
+		}
 		if (origen.equals(destino)) {
 			return "No se puede calcular la velocidad de conexión entre el mismo equipo.\n" + origen.getCodigo()
 					+ " <=//=> " + destino.getCodigo();
