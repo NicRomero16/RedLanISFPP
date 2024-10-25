@@ -58,25 +58,19 @@ public class Calculo {
 			throw new EquipoInexistenteException("Los equipos no tienen equipos intermedios");
 	}
 
-	public String velocidadMaximaEntreEquipos(Equipo origen, Equipo destino) {
+	public double velocidadMaximaEntreEquipos(Equipo origen, Equipo destino) throws Exception {
 		if (this.actualizar) {
 			this.cargarDatos(coordinador.listarConexiones());
 		}
-		if (origen.equals(destino)) {
-			return "No se puede calcular la velocidad de conexión entre el mismo equipo.\n" + origen.getCodigo()
-					+ " <=//=> " + destino.getCodigo();
-		}
+		if (origen.equals(destino))
+			throw new Exception("Seleccione equipos diferentes");
 
-		if (!redGrafo.containsVertex(origen) || !redGrafo.containsVertex(destino)) {
-			return "No existe una conexion entre los equipos " + origen.getCodigo() + " y " + destino.getCodigo();
-		}
+		if (!redGrafo.containsVertex(origen) || !redGrafo.containsVertex(destino))
+			throw new Exception("Uno de los dos equipos no existe en la red");
 
 		DijkstraShortestPath<Equipo, Conexion> dijkstraAlg = new DijkstraShortestPath<>(redGrafo);
 		GraphPath<Equipo, Conexion> path = dijkstraAlg.getPath(origen, destino);
-		// mas adelante ver si esta validacion es al pedo o no.
-		if (path == null) {
-			return "No existe una conexion entre los equipos " + origen.getCodigo() + " y " + destino.getCodigo();
-		}
+
 		List<Conexion> recorrido = path.getEdgeList();
 
 		double velocidadMaxima = 0;
@@ -95,8 +89,7 @@ public class Calculo {
 			velocidadMaxima = velocidadConexion;
 		}
 
-		return "Velocidad maxima entre " + origen.getCodigo() + " y " + destino.getCodigo() + " es de "
-				+ velocidadMaxima;
+		return velocidadMaxima;
 	}
 
 	public double velocidadMaxima(Equipo origen, Equipo destino) throws ConexionInexistenteException {
@@ -152,18 +145,10 @@ public class Calculo {
 	}
 
 	// interfaz grafica
-	public String realizarPingEquipo(Equipo equipoSelected) {
-
+	public boolean realizarPingEquipo(Equipo equipoSelected) {
 		// Verificar el estado del equipo y devolver el mensaje correspondiente
 		if (equipoSelected == null)
-			return "El equipo no existe";
-		if (equipoSelected.getEstado()) {
-			return " Equipo: " + equipoSelected.getCodigo() + "\n Descripcion: " + equipoSelected.getDescripcion()
-					+ " \n está activo.";
-		} else {
-			return " Equipo: " + equipoSelected.getCodigo() + "\n descripcion: " + equipoSelected.getDescripcion()
-					+ " \n está inactivo.";
-		}
+			throw new EquipoInexistenteException("El equipo no existe");
+		return equipoSelected.getEstado();
 	}
-
 }

@@ -189,14 +189,22 @@ public class Coordinador {
 	}
 
 	// interfaz grafica
-	public String realizarPingEquipo(String equipoSelected) {
-
+	public boolean realizarPingEquipo(String equipoSelected) {
 		return calculo.realizarPingEquipo(red.buscarEquipo(equipoSelected));
 	}
 
-	public String VelocidadMaximaEntreEquipos(String equipo1, String equipo2) {
+	public double VelocidadMaximaEntreEquipos(String equipo1, String equipo2) {
 
-		return calculo.velocidadMaximaEntreEquipos(red.buscarEquipo(equipo1), red.buscarEquipo(equipo2));
+		try {
+			return calculo.velocidadMaximaEntreEquipos(red.buscarEquipo(equipo1), red.buscarEquipo(equipo2));
+		} catch (EquipoInexistenteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return -1;
 	}
 
 }

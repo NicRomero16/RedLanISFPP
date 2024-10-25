@@ -26,9 +26,10 @@ public class AplicacionConsultas {
 		 * miAplicacion.consultar2(); miAplicacion.consultar3();
 		 * miAplicacion.consultar4(); miAplicacion.consultar5();
 		 * miAplicacion.estadoEquipos(); miAplicacion.agregarEquipo();
-		 * miAplicacion.eliminarEquipo();
+		 *
 		 */
 		// miAplicacion.buscarEquipo();
+		 //miAplicacion.eliminarEquipo();
 	}
 
 	private void iniciar() {
