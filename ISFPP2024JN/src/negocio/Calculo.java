@@ -66,15 +66,14 @@ public class Calculo {
 			return "No se puede calcular la velocidad de conexión entre el mismo equipo.\n" + origen.getCodigo()
 					+ " <=//=> " + destino.getCodigo();
 		}
-		if (!redGrafo.containsVertex(origen)) {
-			return "El equipo " + origen.getCodigo() + " no tiene conexiones.";
+
+		if (!redGrafo.containsVertex(origen) || !redGrafo.containsVertex(destino)) {
+			return "No existe una conexion entre los equipos " + origen.getCodigo() + " y " + destino.getCodigo();
 		}
-		if (!redGrafo.containsVertex(destino)) {
-			return "El equipo " + destino.getCodigo() + " no tiene conexiones.";
-		}
+
 		DijkstraShortestPath<Equipo, Conexion> dijkstraAlg = new DijkstraShortestPath<>(redGrafo);
 		GraphPath<Equipo, Conexion> path = dijkstraAlg.getPath(origen, destino);
-
+		// mas adelante ver si esta validacion es al pedo o no.
 		if (path == null) {
 			return "No existe una conexion entre los equipos " + origen.getCodigo() + " y " + destino.getCodigo();
 		}
