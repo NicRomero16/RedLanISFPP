@@ -12,13 +12,13 @@ import negocio.Red;
 
 public class AplicacionConsultas {
 
-	private Red empresa;
+	private Red red;
 	private Calculo calculo;
 	private Interfaz interfaz;
 	private Coordinador coordinador;
 	private AplicacionGui appGui;
 
-	public static void main(String[] args) throws EquipoExistenteException {
+	public static void main(String[] args) {
 		AplicacionConsultas miAplicacion = new AplicacionConsultas();
 		
 		miAplicacion.iniciar();
@@ -35,18 +35,18 @@ public class AplicacionConsultas {
 	//	miAplicacion.buscarEquipo();
 	}
 
-	private void iniciar() throws EquipoExistenteException {
-		empresa = Red.getRed();
+	private void iniciar() {
+		red = Red.getRed();
 		calculo = new Calculo();
-		coordinador = new Coordinador(empresa);
+		coordinador = new Coordinador(red);
 		interfaz = new Interfaz();
-		appGui = new AplicacionGui(coordinador);
 		calculo.setCoordinador(coordinador);
 		interfaz.setCoordinador(coordinador);
-		coordinador.setEmpresa(empresa);
+		coordinador.setEmpresa(red);
 		coordinador.setCalculo(calculo);
 		coordinador.setInterfaz(interfaz);
-		calculo.cargarDatos(coordinador.listarConexiones());		
+		appGui = new AplicacionGui(coordinador);
+		calculo.cargarDatos(coordinador.listarConexiones());	
 	}
 
 	// Imprimir el grafo en pantalla

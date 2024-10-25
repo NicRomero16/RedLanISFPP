@@ -176,22 +176,28 @@ public class Coordinador {
 	// interfaz grafica
 	public Graph<Equipo, Conexion> cargarDatos() {
 
-		Graph<Equipo, Conexion> grafo = null;
-		try {
-			grafo = calculo.cargarDatos(listarConexiones());
-		} catch (EquipoExistenteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return grafo;
+		return calculo.cargarDatos(listarConexiones());
 	}
 
-	public String[] devolverEquipoping() {
-		TreeMap<String, Equipo> equipos = red.getEquipos();
+	// interfaz grafica
+	public String[] devolverEquipoCodigos() {
+		TreeMap<String, Equipo> equipos = listarEquipos();
 		List<String> equipoList = new ArrayList<>();
 		for (Equipo equipo : equipos.values()) {
 			equipoList.add(equipo.getCodigo());
 		}
 		return equipoList.toArray(new String[0]);
 	}
+
+	// interfaz grafica
+	public String realizarPingEquipo(String equipoSelected) {
+
+		return calculo.realizarPingEquipo(red.buscarEquipo(equipoSelected));
+	}
+
+	public String VelocidadMaximaEntreEquipos(String equipo1, String equipo2) {
+
+		return calculo.velocidadMaximaEntreEquipos(red.buscarEquipo(equipo1),red.buscarEquipo(equipo2));
+	}
+
 }

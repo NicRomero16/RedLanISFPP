@@ -11,7 +11,6 @@ import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
 
 import controlador.Coordinador;
 import excepciones.ConexionInexistenteException;
-import excepciones.EquipoExistenteException;
 import excepciones.EquipoInexistenteException;
 import modelo.Conexion;
 import modelo.Equipo;
@@ -20,41 +19,38 @@ public class Calculo {
 
 	private Coordinador coordinador;
 
-	private Graph<Equipo, Conexion> red;
+	private Graph<Equipo, Conexion> redGrafo;
 	private boolean actualizar;
 
 	public Calculo() {
-		red = new DefaultUndirectedGraph<>(Conexion.class);
+		redGrafo = new DefaultUndirectedGraph<>(Conexion.class);
 	}
 
-	public Graph<Equipo, Conexion> cargarDatos(List<Conexion> conexiones) throws EquipoExistenteException {
+	public Graph<Equipo, Conexion> cargarDatos(List<Conexion> conexiones) {
 
 		this.actualizar = false;
-		red = new DefaultUndirectedWeightedGraph<>(Conexion.class);
+		redGrafo = new DefaultUndirectedWeightedGraph<>(Conexion.class);
 
 		for (Conexion conexion : conexiones) {
 			Equipo equipo1 = conexion.getEquipo1();
 			Equipo equipo2 = conexion.getEquipo2();
 			int velocidadEntre = conexion.getTipoCable().getVelocidad();
 
-			red.addVertex(equipo1);
-			red.addVertex(equipo2);
-			red.addEdge(equipo1, equipo2, conexion);
-			red.setEdgeWeight(conexion, velocidadEntre);
+			redGrafo.addVertex(equipo1);
+			redGrafo.addVertex(equipo2);
+			redGrafo.addEdge(equipo1, equipo2, conexion);
+			redGrafo.setEdgeWeight(conexion, velocidadEntre);
 
 		}
-		return red;
+		return redGrafo;
 	}
 
 	public List<Equipo> mostrarEquiposIntermedios(Equipo origen, Equipo destino) throws EquipoInexistenteException {
-		if (this.actualizar)
-			try {
-				this.cargarDatos(coordinador.listarConexiones());
-			} catch (EquipoExistenteException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		List<Equipo> camino = DijkstraShortestPath.findPathBetween(red, origen, destino).getVertexList();
+		if (this.actualizar) {
+			this.cargarDatos(coordinador.listarConexiones());
+
+		}
+		List<Equipo> camino = DijkstraShortestPath.findPathBetween(redGrafo, origen, destino).getVertexList();
 
 		if (camino.size() > 2) {
 			List<Equipo> verticesIntermedios = camino.subList(1, camino.size() - 1);
@@ -63,15 +59,48 @@ public class Calculo {
 			throw new EquipoInexistenteException("Los equipos no tienen equipos intermedios");
 	}
 
+	public String velocidadMaximaEntreEquipos(Equipo origen, Equipo destino) {
+		if (this.actualizar) {
+			this.cargarDatos(coordinador.listarConexiones());
+
+		}
+		DijkstraShortestPath<Equipo, Conexion> dijkstraAlg = new DijkstraShortestPath<>(redGrafo);
+		GraphPath<Equipo, Conexion> path = dijkstraAlg.getPath(origen, destino);
+
+		if (path == null) {
+			return "No existe una conexion entre los equipos " + origen.getCodigo() + " y " + destino.getCodigo();
+		}
+		
+		List<Conexion> recorrido = path.getEdgeList();
+        if(recorrido.isEmpty())
+			return "No existe una conexion entre los equipos " + origen.getCodigo() + " y " + destino.getCodigo();
+
+		double velocidadMaxima = 0;
+
+		for (Conexion conexion : recorrido) {
+
+			int velocidadPuerto1 = conexion.getTipoPuerto1().getVelocidad();
+			int velocidadPuerto2 = conexion.getTipoPuerto2().getVelocidad();
+
+			int velocidadPuertos = Math.min(velocidadPuerto1, velocidadPuerto2);
+
+			int velocidadCable = conexion.getTipoCable().getVelocidad();
+
+			int velocidadConexion = Math.min(velocidadPuertos, velocidadCable);
+
+			velocidadMaxima = velocidadConexion;
+		}
+
+		return "Velocidad maxima entre " + origen.getCodigo() + " y " + destino.getCodigo() + " es de "
+				+ velocidadMaxima;
+	}
+
 	public double velocidadMaxima(Equipo origen, Equipo destino) throws ConexionInexistenteException {
-		if (this.actualizar)
-			try {
-				this.cargarDatos(coordinador.listarConexiones()); // al avanzar el codigo tenemos q hacer el patron de
-																	// diseño observer
-			} catch (EquipoExistenteException e) {
-				e.printStackTrace();
-			}
-		DijkstraShortestPath<Equipo, Conexion> dijkstraAlg = new DijkstraShortestPath<>(red);
+		if (this.actualizar) {
+			this.cargarDatos(coordinador.listarConexiones()); // al avanzar el codigo tenemos q hacer el patron de
+																// diseño observer
+		}
+		DijkstraShortestPath<Equipo, Conexion> dijkstraAlg = new DijkstraShortestPath<>(redGrafo);
 		GraphPath<Equipo, Conexion> path = dijkstraAlg.getPath(origen, destino);
 
 		if (path == null)
@@ -93,7 +122,7 @@ public class Calculo {
 
 			int velocidadConexion = Math.min(velocidadPuertos, velocidadCable);
 
-			velocidadMaxima = Math.min(velocidadMaxima, velocidadConexion);
+			velocidadMaxima = velocidadConexion;
 		}
 
 		return velocidadMaxima;
@@ -108,18 +137,29 @@ public class Calculo {
 	}
 
 	public Graph<Equipo, Conexion> getRed() {
-		if (this.actualizar)
-			try {
-				this.cargarDatos(coordinador.listarConexiones());
-			} catch (EquipoExistenteException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		return red;
+		if (this.actualizar) {
+			this.cargarDatos(coordinador.listarConexiones());
+		}
+		return redGrafo;
 	}
 
 	public void update() {
 		this.actualizar = true;
+	}
+
+	// interfaz grafica
+	public String realizarPingEquipo(Equipo equipoSelected) {
+
+		// Verificar el estado del equipo y devolver el mensaje correspondiente
+		if (equipoSelected == null)
+			return "El equipo no existe";
+		if (equipoSelected.getEstado()) {
+			return " Equipo: " + equipoSelected.getCodigo() + "\n Descripcion: " + equipoSelected.getDescripcion()
+					+ " \n está activo.";
+		} else {
+			return " Equipo: " + equipoSelected.getCodigo() + "\n descripcion: " + equipoSelected.getDescripcion()
+					+ " \n está inactivo.";
+		}
 	}
 
 }

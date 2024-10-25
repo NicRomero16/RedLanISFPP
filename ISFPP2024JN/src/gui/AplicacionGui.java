@@ -3,6 +3,7 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -140,7 +142,7 @@ public class AplicacionGui extends JFrame {
 		itemEquipo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				cardLayout.show(paneles, "panelEquipo");
+				cardLayout.show(paneles, "panelEquipo"); //abmPrueba
 			}
 		});
 
@@ -168,6 +170,8 @@ public class AplicacionGui extends JFrame {
 		// Pantalla del grafo
 		panelGrafico = crearPantallaGrafico(neonGreen, neonGray, neonBlack, neonWhite);
 		paneles.add(panelGrafico, "pantallaGrafico");
+
+		// paneles.add(new MiPanel(), "abmPrueba"); //ejemplo de abm AJSDJAKSBDJAHSDGJASHDVAHSMDVAJHSDAS F.VSD GKJ-WE ÑOGJWEKJFKJQ
 
 		// Crear nueva pantalla que se mostrará cuando se presione el botón 2
 		JPanel nuevaPantalla = crearNuevaPantalla(neonGreen, neonGray, neonBlack, neonWhite);
@@ -202,68 +206,69 @@ public class AplicacionGui extends JFrame {
 		panelCentral.add(scrollGrande);
 
 		// Botones
-		JButton botonMotrarConexionesGrafo = new JButton("Visualizar Conexiones");
-		botonMotrarConexionesGrafo.setBackground(neonBlack);
-		botonMotrarConexionesGrafo.setForeground(neonGreen);
-		botonMotrarConexionesGrafo.setBorder(new LineBorder(neonGreen, 2));
-		botonMotrarConexionesGrafo.setBounds(540, 70, 200, 40);
-		panelCentral.add(botonMotrarConexionesGrafo);
 
 		JButton botonMostrarEquipos = new JButton("Visualizar Equipos");
 		botonMostrarEquipos.setBackground(neonBlack);
 		botonMostrarEquipos.setForeground(neonGreen);
 		botonMostrarEquipos.setBorder(new LineBorder(neonGreen, 2));
-		botonMostrarEquipos.setBounds(540, 130, 200, 40);
+		botonMostrarEquipos.setBounds(540, 70, 200, 40);
 		panelCentral.add(botonMostrarEquipos);
 
 		JButton botonRealizarPingEquipo = new JButton("Realizar Ping a un equipo");
 		botonRealizarPingEquipo.setBackground(neonBlack);
 		botonRealizarPingEquipo.setForeground(neonGreen);
 		botonRealizarPingEquipo.setBorder(new LineBorder(neonGreen, 2));
-		botonRealizarPingEquipo.setBounds(540, 190, 200, 40);
+		botonRealizarPingEquipo.setBounds(540, 130, 200, 40);
 		panelCentral.add(botonRealizarPingEquipo);
-		
-		// Lista de equipos para el JComboBox (se llena con los equipos que tenemos)
-		String[] listaDeEquipos = coordinador.devolverEquipoping();
 
-		// Crear el JComboBox con la lista de equipos 
+		// Lista de equipos para el JComboBox (se llena con los equipos que tenemos)
+		String[] listaDeEquipos = coordinador.devolverEquipoCodigos();
+
+		// Crear el JComboBox con la lista de equipos
 		JComboBox<String> comboboxEquipoPing = new JComboBox<>(listaDeEquipos);
-		
+
 		comboboxEquipoPing.setBackground(neonGray); // Fondo gris
 		comboboxEquipoPing.setForeground(neonGreen); // Texto verde
 		comboboxEquipoPing.setBorder(new LineBorder(neonGreen, 2)); // Borde verde
-		comboboxEquipoPing.setBounds(540, 240, 200, 30); // Posición y tamaño
+		comboboxEquipoPing.setBounds(540, 180, 200, 30); // Posición y tamaño
 		panelCentral.add(comboboxEquipoPing);
 
-		JButton boton4 = new JButton("Velocidad maxima entre equipos");
-		boton4.setBackground(neonBlack);
-		boton4.setForeground(neonGreen);
-		boton4.setBorder(new LineBorder(neonGreen, 2));
-		boton4.setBounds(540, 280, 200, 40);
-		panelCentral.add(boton4);
+		JButton botonVelocidadMaxEntreEquipos = new JButton("Velocidad maxima entre equipos");
+		botonVelocidadMaxEntreEquipos.setBackground(neonBlack);
+		botonVelocidadMaxEntreEquipos.setForeground(neonGreen);
+		botonVelocidadMaxEntreEquipos.setBorder(new LineBorder(neonGreen, 2));
+		botonVelocidadMaxEntreEquipos.setBounds(540, 220, 200, 40);
+		panelCentral.add(botonVelocidadMaxEntreEquipos);
 		JComboBox<String> comboboxVelMaxEquip1 = new JComboBox<>(listaDeEquipos);
-		
+
 		comboboxVelMaxEquip1.setBackground(neonGray); // Fondo gris
 		comboboxVelMaxEquip1.setForeground(neonGreen); // Texto verde
 		comboboxVelMaxEquip1.setBorder(new LineBorder(neonGreen, 2)); // Borde verde
-		comboboxVelMaxEquip1.setBounds(540, 330, 200, 30); // Posición y tamaño
+		comboboxVelMaxEquip1.setBounds(540, 270, 200, 30); // Posición y tamaño
 		panelCentral.add(comboboxVelMaxEquip1);
-		
+
 		JComboBox<String> comboboxVelMaxEquip2 = new JComboBox<>(listaDeEquipos);
-		
+
 		comboboxVelMaxEquip2.setBackground(neonGray); // Fondo gris
 		comboboxVelMaxEquip2.setForeground(neonGreen); // Texto verde
 		comboboxVelMaxEquip2.setBorder(new LineBorder(neonGreen, 2)); // Borde verde
-		comboboxVelMaxEquip2.setBounds(540, 370, 200, 30); // Posición y tamaño
+		comboboxVelMaxEquip2.setBounds(540, 310, 200, 30); // Posición y tamaño
 		panelCentral.add(comboboxVelMaxEquip2);
 
-		JButton boton5 = new JButton("Mas consultas...");
-		boton5.setBackground(neonBlack);
-		boton5.setForeground(neonGreen);
-		boton5.setBorder(new LineBorder(neonGreen, 2));
-		boton5.setBounds(540, 430, 200, 40);
-		boton5.setFont(boton5.getFont().deriveFont(22f)); // Tamaño de fuente
-		panelCentral.add(boton5);
+		JButton botonMotrarConexionesGrafo = new JButton("Visualizar Conexiones");
+		botonMotrarConexionesGrafo.setBackground(neonBlack);
+		botonMotrarConexionesGrafo.setForeground(neonGreen);
+		botonMotrarConexionesGrafo.setBorder(new LineBorder(neonGreen, 2));
+		botonMotrarConexionesGrafo.setBounds(540, 350, 200, 40);
+		panelCentral.add(botonMotrarConexionesGrafo);
+
+		JButton botonDeConsultas = new JButton("Mas consultas...");
+		botonDeConsultas.setBackground(neonBlack);
+		botonDeConsultas.setForeground(neonGreen);
+		botonDeConsultas.setBorder(new LineBorder(neonGreen, 2));
+		botonDeConsultas.setBounds(540, 430, 200, 40);
+		botonDeConsultas.setFont(botonDeConsultas.getFont().deriveFont(22f)); // Tamaño de fuente
+		panelCentral.add(botonDeConsultas);
 
 //		JButton botonSalir = new JButton("Salir");
 //		botonSalir.setBackground(neonBlack);
@@ -277,7 +282,7 @@ public class AplicacionGui extends JFrame {
 		labelTitulo.setBounds(20, 20, 500, 40); // Ajuste de posición y tamaño
 		labelTitulo.setFont(labelTitulo.getFont().deriveFont(30f)); // Tamaño de fuente
 		panelCentral.add(labelTitulo);
-		
+
 		JLabel labelSubTitulo = new JLabel("Consultas");
 		labelSubTitulo.setForeground(neonGreen);
 		labelSubTitulo.setBounds(570, 30, 200, 30); // Ajuste de posición y tamaño
@@ -289,6 +294,8 @@ public class AplicacionGui extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				textAreaGrande.setText(coordinador.imprimirConexionesGrafo());
+				textAreaGrande.setFont(new Font("Arial", Font.BOLD, 12));
+
 			}
 		});
 
@@ -297,6 +304,8 @@ public class AplicacionGui extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				textAreaGrande.setText(coordinador.imprimirEquipos());
+				textAreaGrande.setFont(new Font("Arial", Font.BOLD, 12));
+
 			}
 		});
 
@@ -304,20 +313,34 @@ public class AplicacionGui extends JFrame {
 		botonRealizarPingEquipo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// String equipoSeleccionado = (String) comboBoxEquipos.getSelectedItem();
-				// coordinador.RealizarPingAEquipo(equipoSeleccionado);
+				String equipoSelected = (String) comboboxEquipoPing.getSelectedItem();
+				if (equipoSelected != null) {
+					String message = coordinador.realizarPingEquipo(equipoSelected);
+					// String message = coordinador.realizarPingEquipoIp(equipoSelected); //cambiar
+					// de codigo a ip
+					textAreaGrande.setText(message);
+					textAreaGrande.setFont(new Font("Arial", Font.BOLD, 20));
+				}
 			}
 		});
 
-		boton4.addActionListener(new ActionListener() {
+		botonVelocidadMaxEntreEquipos.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				// Implementa tu lógica aquí
+				String equipo1 = (String) comboboxVelMaxEquip1.getSelectedItem();
+				String equipo2 = (String) comboboxVelMaxEquip2.getSelectedItem();
+
+				if (equipo1 != null || equipo2 != null) {
+					String message = coordinador.VelocidadMaximaEntreEquipos(equipo1, equipo2);
+					textAreaGrande.setText(message);
+				}
+				textAreaGrande.setFont(new Font("Arial", Font.BOLD, 16));
+
 			}
 		});
 
-		boton5.addActionListener(new ActionListener() {
+		botonDeConsultas.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// Cambiar a la nueva pantalla
