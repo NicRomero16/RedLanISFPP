@@ -21,7 +21,7 @@ public class AplicacionConsultas {
 		AplicacionConsultas miAplicacion = new AplicacionConsultas();
 
 		miAplicacion.iniciar();
-		// miAplicacion.consultar1();
+		miAplicacion.consultar1();
 		/*
 		 * miAplicacion.consultar2(); miAplicacion.consultar3();
 		 * miAplicacion.consultar4(); miAplicacion.consultar5();

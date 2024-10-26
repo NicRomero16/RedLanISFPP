@@ -25,7 +25,6 @@ import javax.swing.border.LineBorder;
 import org.jgrapht.Graph;
 
 import controlador.Coordinador;
-import guiEjemplos.ABMEquiposEjemplo;
 import modelo.Conexion;
 import modelo.Equipo;
 
@@ -37,7 +36,7 @@ public class AplicacionGui extends JFrame {
 	private CardLayout cardLayout;
 	private JPanel paneles; // Contenedor para intercambiar paneles
 	private JTextArea textAreaGrafo; // Nueva área de texto para mostrar el grafo en la nueva pantalla
-	private JPanel panelGrafico;
+	private JPanel panel;
 	private static final int ANCHO_VENTANA_PRINCIPAL = 800;
 	private static final int LARGO_VENTANA_PRINCIPAL = 600;
 
@@ -80,10 +79,10 @@ public class AplicacionGui extends JFrame {
 				GraphPanel graphPanel = new GraphPanel(equipos, conexiones);
 
 				// Reemplazar el contenido del panel con el nuevo panel gráfico
-				panelGrafico.removeAll();
-				panelGrafico.add(graphPanel);
-				panelGrafico.revalidate();
-				panelGrafico.repaint();
+				panel.removeAll();
+				panel.add(graphPanel);
+				panel.revalidate();
+				panel.repaint();
 
 				// Mostrar la pantalla del grafo
 				cardLayout.show(paneles, "pantallaGrafico");
@@ -134,12 +133,13 @@ public class AplicacionGui extends JFrame {
 				TreeMap<String, Equipo> equipos = coordinador.listarEquipos();
 
 				// Crear el panel gráfico con los equipos y conexiones
-				ABMEquiposEjemplo EquipoABM = new ABMEquiposEjemplo(equipos);
+				ABMEquipos EquipoABM = new ABMEquipos(equipos);
+				
 				// Reemplazar el contenido del panel con el nuevo panel gráfico
-				panelGrafico.removeAll();
-				panelGrafico.add(EquipoABM);
-				panelGrafico.revalidate();
-				panelGrafico.repaint();
+				panel.removeAll();
+				panel.add(EquipoABM);
+				panel.revalidate();
+				panel.repaint();
 
 				// Mostrar la pantalla del grafo
 				cardLayout.show(paneles, "pantallaGrafico");
@@ -155,10 +155,10 @@ public class AplicacionGui extends JFrame {
 
 				ConexionesABM ConexionABM = new ConexionesABM(conexiones);
 
-				panelGrafico.removeAll();
-				panelGrafico.add(ConexionABM);
-				panelGrafico.revalidate();
-				panelGrafico.repaint();
+				panel.removeAll();
+				panel.add(ConexionABM);
+				panel.revalidate();
+				panel.repaint();
 				cardLayout.show(paneles, "pantallaGrafico");
 			}
 		});
@@ -188,8 +188,8 @@ public class AplicacionGui extends JFrame {
 		paneles.add(panelCentral, "panelPrincipal");
 
 		// Pantalla del grafo
-		panelGrafico = crearPantallaGrafico(NEON_GREEN, NEON_GRAY, Color.BLACK, Color.WHITE);
-		paneles.add(panelGrafico, "pantallaGrafico");
+		panel = crearPantallaGrafico(NEON_GREEN, NEON_GRAY, Color.BLACK, Color.WHITE);
+		paneles.add(panel, "pantallaGrafico");
 
 		// Crear nueva pantalla que se mostrará cuando se presione el botón 2
 		JPanel nuevaPantalla = crearNuevaPantalla(NEON_GREEN, NEON_GRAY, Color.BLACK, Color.WHITE);

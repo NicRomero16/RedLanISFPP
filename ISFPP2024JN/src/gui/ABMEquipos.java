@@ -1,4 +1,4 @@
-package guiEjemplos;
+package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -9,6 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.TreeMap;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -16,17 +17,19 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
 import modelo.Equipo;
 
-public class ABMEquiposEjemplo extends JPanel {
+public class ABMEquipos extends JPanel {
 
 	private TreeMap<String, Equipo> equipos;
 	private static final Color NEON_GREEN = new Color(57, 255, 20);
+	private static final Color NEON_GRAY = new Color(30, 30, 30);
 
-	public ABMEquiposEjemplo(TreeMap<String, Equipo> equipos) {
+	public ABMEquipos(TreeMap<String, Equipo> equipos) {
 		super();
 		this.equipos = new TreeMap<String, Equipo>();
 		crearPanelEquipo(); // Llamar al método para crear el panel de equipo
@@ -35,7 +38,6 @@ public class ABMEquiposEjemplo extends JPanel {
 	public void crearPanelEquipo() {
 		// Crear el panel principal para el equipo
 		JPanel panelEquipo = new JPanel();
-		panelEquipo.setBackground(Color.BLACK);
 		panelEquipo.setLayout(new BorderLayout());
 
 		// Crear el modelo de la tabla y asignar los nombres de las columnas
@@ -54,12 +56,9 @@ public class ABMEquiposEjemplo extends JPanel {
 				return false; // Hacer que ninguna celda sea editable
 			}
 		};
-
 		// Cambiar el modo de selección para que solo se seleccionen celdas
 		tablaEquipos.setCellSelectionEnabled(true);
-
-		// Añadir un MouseListener para detectar clics
-		tablaEquipos.addMouseListener(new MouseAdapter() {
+		tablaEquipos.addMouseListener(new MouseAdapter() {// Añadir un MouseListener para detectar clics
 			@Override
 			public void mouseClicked(MouseEvent e) {
 
@@ -96,10 +95,9 @@ public class ABMEquiposEjemplo extends JPanel {
 
 			}
 		});
-
-		tablaEquipos.setBackground(Color.BLACK);
-		tablaEquipos.setForeground(NEON_GREEN);
-		tablaEquipos.setGridColor(NEON_GREEN);
+		tablaEquipos.setBackground(Color.BLACK); // Fondo de la tabla
+		tablaEquipos.setForeground(NEON_GREEN); // Letras de la tabla
+		tablaEquipos.setGridColor(NEON_GREEN); // Bordes de la tabla
 
 		// Personalizar la cabecera
 		JTableHeader header = tablaEquipos.getTableHeader();
@@ -109,7 +107,7 @@ public class ABMEquiposEjemplo extends JPanel {
 
 		// Configurar el JScrollPane para contener la tabla
 		JScrollPane pane = new JScrollPane(tablaEquipos);
-		pane.setBackground(Color.BLACK); // Color de fondo del JScrollPane
+		pane.setBackground(Color.BLACK);
 		pane.getViewport().setBackground(Color.BLACK); // Color de fondo del viewport
 
 		// Añadir el panel de scroll (con la tabla) al panel principal
@@ -141,16 +139,22 @@ public class ABMEquiposEjemplo extends JPanel {
 
 		// Inicializar el panel y los campos
 		for (int i = 0; i < etiquetas.length; i++) {
+			JLabel label = new JLabel(etiquetas[i] + ":");
+			label.setForeground(NEON_GREEN);
+
 			camposTexto[i] = new JTextField();
-			panelFormulario.add(new JLabel(etiquetas[i] + ":"));
+			camposTexto[i].setBackground(NEON_GREEN);
+			camposTexto[i].setForeground(Color.BLACK);
+			camposTexto[i].setCaretColor(Color.BLACK); // Color del cursor en el JTextField
+			camposTexto[i].setBorder(BorderFactory.createLineBorder(Color.BLACK, 3)); // Borde verde
+
+			panelFormulario.add(label);
 			panelFormulario.add(camposTexto[i]);
 		}
 
 		// Botón para confirmar la adición
 		JButton btnAgregar = new JButton("Agregar");
-		btnAgregar.setBackground(Color.BLACK);
-		btnAgregar.setForeground(NEON_GREEN);
-
+		
 		btnAgregar.addActionListener(e -> {
 			// Crear un arreglo de objetos para la nueva fila con los valores de cada
 			// JTextField
@@ -169,7 +173,6 @@ public class ABMEquiposEjemplo extends JPanel {
 
 		// Agregar el botón al formulario
 		panelFormulario.add(btnAgregar);
-
 		dialog.add(panelFormulario);
 		dialog.setVisible(true); // Muestra el diálogo
 		dialog.setResizable(false);
@@ -185,6 +188,7 @@ public class ABMEquiposEjemplo extends JPanel {
 		// Obtener los datos actuales de la fila
 		String[] labels = { "Código", "Descripción", "Marca", "Modelo", "Tipo de equipo", "Ubicación", "Puertos",
 				"Direcciones IP", "Estado" };
+
 		String[] currentValues = { (String) tEquipos.getValueAt(row, 0), (String) tEquipos.getValueAt(row, 1),
 				(String) tEquipos.getValueAt(row, 2), (String) tEquipos.getValueAt(row, 3),
 				(String) tEquipos.getValueAt(row, 4), (String) tEquipos.getValueAt(row, 5),
@@ -194,12 +198,21 @@ public class ABMEquiposEjemplo extends JPanel {
 		// Crear un panel para el formulario
 		JPanel panelFormulario = new JPanel();
 		panelFormulario.setLayout(new GridLayout(labels.length + 1, 2));
+		panelFormulario.setBackground(Color.BLACK);
 
 		// Crear campos de texto y agregar etiquetas y campos al panel
 		JTextField[] textFields = new JTextField[labels.length];
 		for (int i = 0; i < labels.length; i++) {
+			JLabel label = new JLabel(labels[i] + ":");
+			label.setForeground(NEON_GREEN);
+
 			textFields[i] = new JTextField(currentValues[i]);
-			panelFormulario.add(new JLabel(labels[i] + ":"));
+			textFields[i].setBackground(NEON_GREEN);
+			textFields[i].setForeground(Color.BLACK);
+			textFields[i].setCaretColor(Color.BLACK); // Color del cursor en el JTextField
+			textFields[i].setBorder(BorderFactory.createLineBorder(Color.BLACK, 3)); // Borde verde
+
+			panelFormulario.add(label);
 			panelFormulario.add(textFields[i]);
 		}
 
