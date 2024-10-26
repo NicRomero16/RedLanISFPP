@@ -2,179 +2,224 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.DefaultCellEditor;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.TreeMap;
+
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
+import javax.swing.table.JTableHeader;
+
+import modelo.Equipo;
 
 public class ABMEquipos extends JPanel {
-    private JTextField[] textFields;
-    private JTable table;
-    DefaultTableModel tableModel;
 
-    // Colores neón
-    Color neonGreen = new Color(57, 255, 20);
-    Color neonGray = new Color(30, 30, 30);
-    Color neonBlack = Color.BLACK;
-    Color neonWhite = Color.WHITE;
+	private TreeMap<String, Equipo> equipos;
+	private static final Color NEON_GREEN = new Color(57, 255, 20);
 
-    public ABMEquipos() {
-        setLayout(new BorderLayout());
-        setBackground(neonGray); // Color de fondo del panel principal
-        
-        // Panel superior con etiquetas y campos de texto
-        JPanel inputPanel = new JPanel(new GridLayout(3, 2, 10, 10));
-        inputPanel.setBackground(neonGray); // Mismo color de fondo
-        JLabel[] labels = new JLabel[6];
-        textFields = new JTextField[6];
-        
-        for (int i = 0; i < labels.length; i++) {
-            labels[i] = new JLabel("Campo " + (i + 1));
-            labels[i].setFont(new Font("Arial", Font.BOLD, 14)); // Fuente más grande y negrita
-            labels[i].setForeground(neonWhite); // Color de texto blanco
-            textFields[i] = new JTextField(10);
-            textFields[i].setFont(new Font("Arial", Font.PLAIN, 12)); // Fuente normal
-            textFields[i].setBackground(neonWhite); // Color de fondo blanco para campos de texto
-            inputPanel.add(labels[i]);
-            inputPanel.add(textFields[i]);
-        }
+	public ABMEquipos(TreeMap<String, Equipo> equipos) {
+		super();
+		this.equipos = new TreeMap<String, Equipo>();
+		crearPanelEquipo(); // Llamar al método para crear el panel de equipo
+	}
 
-        // Botón para agregar datos a la tabla
-        JButton addButton = new JButton("Agregar");
-        addButton.setBackground(neonGreen); // Color de fondo del botón
-        addButton.setForeground(neonBlack); // Color de texto negro
-        addButton.setFont(new Font("Arial", Font.BOLD, 14)); // Fuente en negrita
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                agregarFila();
-            }
-        });
-        
-        JPanel addPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        addPanel.setBackground(neonGray); // Mismo color de fondo
-        addPanel.add(addButton);
-        
-        // Tabla para mostrar los datos
-        String[] columnNames = {"Código", "Descripción", "Modelo", "Etc", "Etc", "Editar", "Eliminar"};
-        tableModel = new DefaultTableModel(columnNames, 0);
-        table = new JTable(tableModel) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return column == 5 || column == 6; // Solo permite editar las columnas de botones
-            }
-        };
+	public void crearPanelEquipo() {
+		// Crear el panel principal para el equipo
+		JPanel panelEquipo = new JPanel();
+		panelEquipo.setBackground(Color.BLACK);
+		panelEquipo.setLayout(new BorderLayout());
 
-        // Configurar colores de la tabla
-        table.setBackground(neonWhite); // Color de fondo blanco para la tabla
-        table.setForeground(neonGray); // Color de texto oscuro
-        table.setFont(new Font("Arial", Font.PLAIN, 12)); // Fuente normal
-        
-        // Agregar botones de edición y eliminación
-        table.getColumn("Editar").setCellRenderer(new ButtonRenderer("✏️"));
-        table.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), this, true));
-        table.getColumn("Eliminar").setCellRenderer(new ButtonRenderer("❌"));
-        table.getColumn("Eliminar").setCellEditor(new ButtonEditor(new JCheckBox(), this, false));
-        
-        JScrollPane scrollPane = new JScrollPane(table);
+		// Crear el modelo de la tabla y asignar los nombres de las columnas
+		DefaultTableModel tEquipos = new DefaultTableModel();
+		String ids[] = { "Codigo", "Descripcion", "Marca", "Modelo", "Tipo de equipo", "Ubicacion", "Puertos",
+				"Direcciones IP", "Estado", "Eliminar", "Modificar" };
+		tEquipos.setColumnIdentifiers(ids);
 
-        // Añadir todo al panel principal
-        add(inputPanel, BorderLayout.NORTH);
-        add(scrollPane, BorderLayout.CENTER);
-        add(addPanel, BorderLayout.SOUTH);
-    }
+		Object[] filaBoton = { "Agregar fila" };
+		tEquipos.addRow(filaBoton);
 
-    // Método para agregar una nueva fila a la tabla
-    private void agregarFila() {
-        String[] data = new String[textFields.length];
-        for (int i = 0; i < textFields.length; i++) {
-            data[i] = textFields[i].getText();
-        }
-        tableModel.addRow(new Object[]{data[0], data[1], data[2], "Etc", "Etc", "✏️", "❌"});
-        
-        // Limpiar campos de texto después de agregar la fila
-        for (JTextField textField : textFields) {
-            textField.setText("");
-        }
-    }
+		// Inicializar la tabla y asignar el modelo
+		JTable tablaEquipos = new JTable(tEquipos) {
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false; // Hacer que ninguna celda sea editable
+			}
+		};
 
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Mi Panel");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(new ABMEquipos());
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-    }
-}
+		// Cambiar el modo de selección para que solo se seleccionen celdas
+		tablaEquipos.setCellSelectionEnabled(true);
 
-// Renderizador de botones
-class ButtonRenderer extends JButton implements TableCellRenderer {
-    public ButtonRenderer(String text) {
-        setText(text);
-        setFocusPainted(false);
-        setContentAreaFilled(false);
-        setBorderPainted(false);
-        setForeground(new Color(30, 30, 30)); // Color de texto oscuro
-    }
+		// Añadir un MouseListener para detectar clics
+		tablaEquipos.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
 
-    @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        return this;
-    }
-}
+				int row = tablaEquipos.rowAtPoint(e.getPoint());
+				int column = tablaEquipos.columnAtPoint(e.getPoint());
 
-// Editor de botones
-class ButtonEditor extends DefaultCellEditor {
-    private JButton button;
-    private boolean isEditButton;
-    private ABMEquipos panel;
-    private int row;
+				// Verificar si se hizo clic en la fila del botón
+				if (row == tEquipos.getRowCount() - 1 && column == 0) {
+					formularioAgregarEquipo(tEquipos);
+				}
 
-    public ButtonEditor(JCheckBox checkBox, ABMEquipos panel, boolean isEditButton) {
-        super(checkBox);
-        this.isEditButton = isEditButton;
-        this.panel = panel;
-        button = new JButton();
-        button.setForeground(new Color(30, 30, 30)); // Color de texto oscuro
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                fireEditingStopped();
-                if (isEditButton) {
-                    // Acciones de edición
-                    JOptionPane.showMessageDialog(panel, "Editar fila " + row);
-                } else {
-                    // Eliminar fila
-                    panel.tableModel.removeRow(row);
-                }
-            }
-        });
-    }
+				for (int i = 0; i < tEquipos.getRowCount(); i++) {
+					if (i < tEquipos.getRowCount() - 1) { // No agregar a la fila del botón
+						tEquipos.setValueAt("Eliminar", i, 9); // Colocar "Eliminar" en la nueva columna
+					}
+				}
 
-    @Override
-    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-        this.row = row;
-        button.setText(isEditButton ? "✏️" : "❌");
-        return button;
-    }
+				for (int i = 0; i < tEquipos.getRowCount(); i++) {
+					if (i < tEquipos.getRowCount() - 1) { // No agregar a la fila del botón
+						tEquipos.setValueAt("Modificar", i, 10); // Colocar "Eliminar" en la nueva columna
+					}
+				}
 
-    @Override
-    public Object getCellEditorValue() {
-        return button.getText();
-    }
+				// Verificar si se hizo clic en la columna de "Eliminar"
+				if (column == 9) {
+					if (row >= 0 && row < tEquipos.getRowCount() - 1) // No permitir eliminar la fila del botón
+						tEquipos.removeRow(row);
+
+				}
+
+				if (column == 10)
+					if ((row >= 0) && (row < tEquipos.getRowCount() - 1))
+						modificarEquipo(tEquipos, row);
+
+			}
+		});
+
+		tablaEquipos.setBackground(Color.BLACK);
+		tablaEquipos.setForeground(NEON_GREEN);
+		tablaEquipos.setGridColor(NEON_GREEN);
+
+		// Personalizar la cabecera
+		JTableHeader header = tablaEquipos.getTableHeader();
+		header.setBackground(Color.BLACK); // Fondo de la cabecera
+		header.setForeground(NEON_GREEN); // Color del texto de la cabecera
+		header.setFont(header.getFont().deriveFont(Font.BOLD, 14f)); // Fuente en negrita para la cabecera
+
+		// Configurar el JScrollPane para contener la tabla
+		JScrollPane pane = new JScrollPane(tablaEquipos);
+		pane.setBackground(Color.BLACK); // Color de fondo del JScrollPane
+		pane.getViewport().setBackground(Color.BLACK); // Color de fondo del viewport
+
+		// Añadir el panel de scroll (con la tabla) al panel principal
+		panelEquipo.add(pane, BorderLayout.CENTER);
+
+		// Agregar el panelEquipo a la instancia actual de ABMEquipos
+		this.setLayout(new BorderLayout());
+		this.add(panelEquipo, BorderLayout.CENTER);
+	}
+
+	public void formularioAgregarEquipo(DefaultTableModel table) {
+		// Aquí puedes abrir un formulario para agregar nuevos datos
+		// Crear un nuevo JDialog para el formulario
+		JDialog dialog = new JDialog((Frame) null, "Modificar equipo", true);
+		dialog.setTitle("Agregar Nuevo Equipo");
+		dialog.setSize(400, 300);
+		dialog.setLocationRelativeTo(null); // Centra el diálogo
+
+		// Aquí puedes agregar los componentes necesarios al diálogo
+		JPanel panelFormulario = new JPanel();
+		panelFormulario.setLayout(new GridLayout(0, 2)); // Usar un GridLayout para el formulario
+		panelFormulario.setBackground(Color.BLACK);
+		panelFormulario.setForeground(NEON_GREEN);
+
+		// Crear etiquetas y campos en arreglos
+		String[] etiquetas = { "Código", "Descripción", "Marca", "Modelo", "Tipo de equipo", "Ubicación", "Puertos",
+				"Direcciones IP", "Estado" };
+		JTextField[] camposTexto = new JTextField[etiquetas.length];
+
+		// Inicializar el panel y los campos
+		for (int i = 0; i < etiquetas.length; i++) {
+			camposTexto[i] = new JTextField();
+			panelFormulario.add(new JLabel(etiquetas[i] + ":"));
+			panelFormulario.add(camposTexto[i]);
+		}
+
+		// Botón para confirmar la adición
+		JButton btnAgregar = new JButton("Agregar");
+		btnAgregar.setBackground(Color.BLACK);
+		btnAgregar.setForeground(NEON_GREEN);
+
+		btnAgregar.addActionListener(e -> {
+			// Crear un arreglo de objetos para la nueva fila con los valores de cada
+			// JTextField
+			Object[] nuevaFila = new Object[camposTexto.length];
+
+			for (int i = 0; i < camposTexto.length; i++) {
+				nuevaFila[i] = camposTexto[i].getText();
+			}
+
+			// Agregar la nueva fila al modelo de la tabla
+			table.insertRow(table.getRowCount() - 1, nuevaFila);
+
+			// Cerrar el diálogo después de agregar
+			dialog.dispose();
+		});
+
+		// Agregar el botón al formulario
+		panelFormulario.add(btnAgregar);
+
+		dialog.add(panelFormulario);
+		dialog.setVisible(true); // Muestra el diálogo
+		dialog.setResizable(false);
+	}
+
+	private void modificarEquipo(DefaultTableModel tEquipos, int row) {
+		// Crear un formulario para editar el equipo
+		JDialog dialog = new JDialog((Frame) null, "Modificar equipo", true);
+		dialog.setTitle("Modificar Equipo");
+		dialog.setSize(400, 300);
+		dialog.setLocationRelativeTo(null); // Centra el diálogo
+
+		// Obtener los datos actuales de la fila
+		String[] labels = { "Código", "Descripción", "Marca", "Modelo", "Tipo de equipo", "Ubicación", "Puertos",
+				"Direcciones IP", "Estado" };
+		String[] currentValues = { (String) tEquipos.getValueAt(row, 0), (String) tEquipos.getValueAt(row, 1),
+				(String) tEquipos.getValueAt(row, 2), (String) tEquipos.getValueAt(row, 3),
+				(String) tEquipos.getValueAt(row, 4), (String) tEquipos.getValueAt(row, 5),
+				(String) tEquipos.getValueAt(row, 6), (String) tEquipos.getValueAt(row, 7),
+				(String) tEquipos.getValueAt(row, 8) };
+
+		// Crear un panel para el formulario
+		JPanel panelFormulario = new JPanel();
+		panelFormulario.setLayout(new GridLayout(labels.length + 1, 2));
+
+		// Crear campos de texto y agregar etiquetas y campos al panel
+		JTextField[] textFields = new JTextField[labels.length];
+		for (int i = 0; i < labels.length; i++) {
+			textFields[i] = new JTextField(currentValues[i]);
+			panelFormulario.add(new JLabel(labels[i] + ":"));
+			panelFormulario.add(textFields[i]);
+		}
+
+		// Botón para confirmar la modificación
+		JButton btnModificar = new JButton("Modificar");
+
+		btnModificar.addActionListener(evt -> {
+			// Actualizar la fila en el modelo
+			for (int i = 0; i < textFields.length; i++) {
+				tEquipos.setValueAt(textFields[i].getText(), row, i);
+			}
+			dialog.dispose(); // Cerrar el diálogo después de modificar
+		});
+
+		// Agregar el botón al formulario
+		panelFormulario.add(btnModificar);
+
+		dialog.add(panelFormulario);
+		dialog.setVisible(true);
+		dialog.setResizable(false);
+	}
+
 }

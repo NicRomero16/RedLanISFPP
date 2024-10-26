@@ -5,13 +5,12 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -19,17 +18,11 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
 
 import org.jgrapht.Graph;
 
@@ -38,8 +31,6 @@ import modelo.Conexion;
 import modelo.Equipo;
 
 public class AplicacionGui extends JFrame {
-	private JTable tablaEquipos;
-	private DefaultTableModel tEquipos;
 	private JScrollPane scrollGrande;
 	private Coordinador coordinador;
 	private JTextArea textAreaGrande;
@@ -74,6 +65,7 @@ public class AplicacionGui extends JFrame {
 
 		// Elementos dentro del menú "grafo"
 		JMenuItem itemGrafico = new JMenuItem("Grafico");
+		definirColoresItems(itemGrafico);
 
 		itemGrafico.addActionListener(new ActionListener() {
 			@Override
@@ -100,6 +92,7 @@ public class AplicacionGui extends JFrame {
 		});
 
 		JMenuItem itemConsultas = new JMenuItem("Atras");
+		definirColoresItems(itemConsultas);
 		itemConsultas.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -109,6 +102,7 @@ public class AplicacionGui extends JFrame {
 
 		// Boton para cerrar App
 		JMenuItem itemSalir = new JMenuItem("Salir");
+		definirColoresItems(itemSalir);
 		itemSalir.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -132,14 +126,30 @@ public class AplicacionGui extends JFrame {
 		menuABM.setForeground(NEON_GREEN);
 
 		JMenuItem itemEquipo = new JMenuItem("Equipos");
+		definirColoresItems(itemEquipo);
 		itemEquipo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				cardLayout.show(paneles, "panelEquipo"); // abmPrueba
+
+				// Crear listas de equipos y conexiones
+				TreeMap<String, Equipo> equipos = coordinador.listarEquipos();
+				
+				// Crear el panel gráfico con los equipos y conexiones
+				ABMEquipos ABM = new ABMEquipos(equipos);
+				// Reemplazar el contenido del panel con el nuevo panel gráfico
+				panelGrafico.removeAll();
+				panelGrafico.add(ABM);
+				panelGrafico.revalidate();
+				panelGrafico.repaint();
+
+				// Mostrar la pantalla del grafo
+				cardLayout.show(paneles, "pantallaGrafico");
 			}
 		});
 
+
 		JMenuItem itemConexion = new JMenuItem("Conexiones");
+		definirColoresItems(itemConexion);
 		itemConexion.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -171,11 +181,13 @@ public class AplicacionGui extends JFrame {
 		JPanel panelConexion = crearPanelConexion(NEON_GREEN, NEON_GRAY, Color.BLACK, Color.WHITE);
 		paneles.add(panelConexion, "panelConexion");
 
-		JPanel panelEquipo = crearPanelEquipo(NEON_GREEN, Color.BLACK);
-		paneles.add(panelEquipo, "panelEquipo");
-
 		setJMenuBar(menuBar);
 		setVisible(true);
+	}
+	
+	public void definirColoresItems(JMenuItem item) {
+		item.setBackground(Color.BLACK);
+		item.setForeground(NEON_GREEN);
 	}
 
 	private JPanel crearPanelPrincipal(Color neonGreen, Color neonGray, Color neonBlack, Color neonWhite) {
@@ -398,167 +410,7 @@ public class AplicacionGui extends JFrame {
 
 		return panel;
 	}
-
-	private JPanel crearPanelEquipo(Color neonGreen, Color neonBlack) {
-		// Crear el panel
-		JPanel panelEquipo = new JPanel();
-		panelEquipo.setLayout(new BorderLayout());
-
-		// Crear panel de formulario
-		JPanel panelFormulario = new JPanel();
-		panelFormulario.setLayout(new BoxLayout(panelFormulario, BoxLayout.X_AXIS)); // Usar BoxLayout para disposición
-																						// vertical
-		panelFormulario.setBackground(neonBlack);
-
-		// Crear un panel para etiquetas y campos de texto
-		JPanel panelCampos = new JPanel();
-		panelCampos.setLayout(new GridLayout(9, 2, 5, 5)); // Usar GridLayout para los campos
-		panelCampos.setBackground(neonBlack);
-
-		// Etiquetas y campos de texto
-		JLabel lblCodigoEquipo = new JLabel("Código de equipo:");
-		lblCodigoEquipo.setForeground(neonGreen);
-		panelCampos.add(lblCodigoEquipo);
-
-		JTextField txtCodigoEquipo = new JTextField(10);
-		txtCodigoEquipo.setBackground(neonGreen);
-		panelCampos.add(txtCodigoEquipo);
-
-		JLabel lblDescripcion = new JLabel("Descripción:");
-		lblDescripcion.setForeground(neonGreen);
-		panelCampos.add(lblDescripcion);
-
-		JTextField txtDescripcion = new JTextField(10);
-		txtDescripcion.setBackground(neonGreen);
-		panelCampos.add(txtDescripcion);
-
-		JLabel lblMarca = new JLabel("Marca:");
-		lblMarca.setForeground(neonGreen);
-		panelCampos.add(lblMarca);
-
-		JTextField txtMarca = new JTextField(10);
-		txtMarca.setBackground(neonGreen);
-		panelCampos.add(txtMarca);
-
-		JLabel lblModelo = new JLabel("Modelo:");
-		lblModelo.setForeground(neonGreen);
-		panelCampos.add(lblModelo);
-
-		JTextField txtModelo = new JTextField(10);
-		txtModelo.setBackground(neonGreen);
-		panelCampos.add(txtModelo);
-
-		JLabel lblTipoEquipo = new JLabel("Tipo de equipo:");
-		lblTipoEquipo.setForeground(neonGreen);
-		panelCampos.add(lblTipoEquipo);
-
-		JTextField txtTipoEquipo = new JTextField(10);
-		txtTipoEquipo.setBackground(neonGreen);
-		panelCampos.add(txtTipoEquipo);
-
-		JLabel lblUbicacion = new JLabel("Ubicacion:");
-		lblUbicacion.setForeground(neonGreen);
-		panelCampos.add(lblUbicacion);
-
-		JTextField txtUbicacion = new JTextField(10);
-		txtUbicacion.setBackground(neonGreen);
-		panelCampos.add(txtUbicacion);
-
-		JLabel lblPuertos = new JLabel("Puertos:");
-		lblPuertos.setForeground(neonGreen);
-		panelCampos.add(lblPuertos);
-
-		JTextField txtPuertos = new JTextField(10);
-		txtPuertos.setBackground(neonGreen);
-		panelCampos.add(txtPuertos);
-
-		JLabel lblDireccionesIP = new JLabel("Direciones IP:");
-		lblDireccionesIP.setForeground(neonGreen);
-		panelCampos.add(lblDireccionesIP);
-
-		JTextField txtDireccionesIP = new JTextField(10);
-		txtDireccionesIP.setBackground(neonGreen);
-		panelCampos.add(txtDireccionesIP);
-
-		JLabel lblEstado = new JLabel("Estado:");
-		lblEstado.setForeground(neonGreen);
-		panelCampos.add(lblEstado);
-
-		JTextField txtEstado = new JTextField(10);
-		txtEstado.setBackground(neonGreen);
-		panelCampos.add(txtEstado);
-
-		// Añadir los campos al panel de formulario
-		panelFormulario.add(panelCampos);
-
-		// Botón Agregar
-		JButton btnAgregar = new JButton("Agregar");
-		btnAgregar.setBackground(neonGreen);
-		btnAgregar.setForeground(neonBlack);
-		panelFormulario.add(btnAgregar);
-
-		JButton botonRegresar = new JButton("Regresar");
-		botonRegresar.setBackground(neonGreen);
-		botonRegresar.setForeground(neonBlack);
-		panelFormulario.add(botonRegresar);
-
-		// Añadir panel de formulario al panelEquipo
-		panelEquipo.add(panelFormulario, BorderLayout.NORTH);
-		panelEquipo.setBackground(neonBlack);
-
-		// Crear la tabla
-		String[] columnas = { "Código", "Descripción", "Marca", "Modelo" };
-		DefaultTableModel tableModel = new DefaultTableModel(columnas, 0);
-
-		JTable table = new JTable(tableModel);
-		JTableHeader header = table.getTableHeader();
-		header.setBackground(neonGreen);
-		header.setForeground(neonBlack);
-
-		table.setBackground(neonBlack);
-		table.setForeground(neonGreen);
-		table.setGridColor(neonGreen);
-		JScrollPane scrollPane = new JScrollPane(table);
-		scrollPane.setBackground(neonBlack); // Color de fondo del JScrollPane
-		scrollPane.getViewport().setBackground(neonBlack); // Color de fondo del viewport
-
-		panelEquipo.add(scrollPane, BorderLayout.CENTER);
-
-		// Configurar el renderer para cambiar el color de fondo y el color del texto
-		DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
-		renderer.setBackground(neonBlack); // Color de fondo de las celdas
-		renderer.setForeground(neonGreen); // Color de texto de las celdas
-		table.setDefaultRenderer(Object.class, renderer); // Aplicar el renderer a todas las celdas
-
-		// Acción del botón regresar para volver al panel principal
-		botonRegresar.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// cardLayout.show(paneles, "panelPrincipal"); // Regresar al panel principal
-			}
-		});
-
-		// Acción del botón Agregar
-		btnAgregar.addActionListener(e -> {
-			// Obtener datos del formulario
-			String codigoEquipo = txtCodigoEquipo.getText();
-			String descripcion = txtDescripcion.getText();
-			String marca = txtMarca.getText();
-			String modelo = txtModelo.getText();
-
-			// Agregar datos a la tabla
-			tableModel.addRow(new Object[] { codigoEquipo, descripcion, marca, modelo });
-
-			// Limpiar los campos
-			txtCodigoEquipo.setText("");
-			txtDescripcion.setText("");
-			txtMarca.setText("");
-			txtModelo.setText("");
-		});
-
-		return panelEquipo;
-	}
-
+	
 	private JPanel crearPanelConexion(Color neonGreen, Color neonGray, Color neonBlack, Color neonWhite) {
 		JPanel panelConexion = new JPanel();
 		panelConexion.setBackground(neonBlack);
@@ -566,31 +418,23 @@ public class AplicacionGui extends JFrame {
 
 		// Crear botones con opciones adicionales
 		JButton botonAgregarConexion = new JButton("Agregar Conexion");
+		crearBoton(botonAgregarConexion);
 		botonAgregarConexion.setBounds(ANCHO_VENTANA_PRINCIPAL / 3, ANCHO_VENTANA_PRINCIPAL / 8, 200, 40);
-		botonAgregarConexion.setBackground(neonBlack);
-		botonAgregarConexion.setForeground(neonGreen);
-		botonAgregarConexion.setBorder(new LineBorder(neonGreen, 2));
 		panelConexion.add(botonAgregarConexion);
 
 		JButton botonEliminarConexion = new JButton("Eliminar Conexion");
+		crearBoton(botonEliminarConexion);
 		botonEliminarConexion.setBounds(ANCHO_VENTANA_PRINCIPAL / 3, ANCHO_VENTANA_PRINCIPAL / 5, 200, 40);
-		botonEliminarConexion.setBackground(neonBlack);
-		botonEliminarConexion.setForeground(neonGreen);
-		botonEliminarConexion.setBorder(new LineBorder(neonGreen, 2));
 		panelConexion.add(botonEliminarConexion);
 
 		JButton botonModificarConexion = new JButton("Modificar Conexion");
+		crearBoton(botonModificarConexion);
 		botonModificarConexion.setBounds(ANCHO_VENTANA_PRINCIPAL / 3, (int) (ANCHO_VENTANA_PRINCIPAL / 3.6), 200, 40);
-		botonModificarConexion.setBackground(neonBlack);
-		botonModificarConexion.setForeground(neonGreen);
-		botonModificarConexion.setBorder(new LineBorder(neonGreen, 2));
 		panelConexion.add(botonModificarConexion);
 
 		JButton botonRegresar = new JButton("Regresar");
+		crearBoton(botonRegresar);
 		botonRegresar.setBounds(ANCHO_VENTANA_PRINCIPAL / 3, ANCHO_VENTANA_PRINCIPAL / 2, 200, 40);
-		botonRegresar.setBackground(neonBlack);
-		botonRegresar.setForeground(neonGreen);
-		botonRegresar.setBorder(new LineBorder(neonGreen, 2));
 		panelConexion.add(botonRegresar);
 
 		// Acción del botón regresar para volver al panel principal
