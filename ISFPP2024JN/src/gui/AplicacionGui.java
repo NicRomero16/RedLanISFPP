@@ -1,7 +1,6 @@
 package gui;
 
 import java.awt.BorderLayout;
-
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -21,12 +20,12 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
 import org.jgrapht.Graph;
 
 import controlador.Coordinador;
+import guiEjemplos.ABMEquiposEjemplo;
 import modelo.Conexion;
 import modelo.Equipo;
 
@@ -60,14 +59,14 @@ public class AplicacionGui extends JFrame {
 		menuBar.setForeground(NEON_GREEN);
 
 		// Menú principal "Grafo"
-		JMenu menuArchivo = new JMenu("Opciones");
-		menuArchivo.setForeground(NEON_GREEN);
+		JMenu menuOpciones = new JMenu("Opciones");
+		menuOpciones.setForeground(NEON_GREEN);
 
 		// Elementos dentro del menú "grafo"
-		JMenuItem itemGrafico = new JMenuItem("Grafico");
-		definirColoresItems(itemGrafico);
+		JMenuItem itemOpcionesGrafico = new JMenuItem("Grafico");
+		definirColoresItems(itemOpcionesGrafico);
 
-		itemGrafico.addActionListener(new ActionListener() {
+		itemOpcionesGrafico.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// Cargar el grafo desde el coordinador
@@ -91,9 +90,9 @@ public class AplicacionGui extends JFrame {
 			}
 		});
 
-		JMenuItem itemConsultas = new JMenuItem("Atras");
-		definirColoresItems(itemConsultas);
-		itemConsultas.addActionListener(new ActionListener() {
+		JMenuItem itemOpcionesAtras = new JMenuItem("Atras");
+		definirColoresItems(itemOpcionesAtras);
+		itemOpcionesAtras.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				cardLayout.show(paneles, "panelPrincipal");
@@ -101,44 +100,44 @@ public class AplicacionGui extends JFrame {
 		});
 
 		// Boton para cerrar App
-		JMenuItem itemSalir = new JMenuItem("Salir");
-		definirColoresItems(itemSalir);
-		itemSalir.addActionListener(new ActionListener() {
+		JMenuItem itemOpcionesSalir = new JMenuItem("Salir");
+		definirColoresItems(itemOpcionesSalir);
+		itemOpcionesSalir.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.exit(0);
 			}
 		});
 
-		// Añadir los elementos al menú "Archivo"
-		menuArchivo.add(itemGrafico);
-		menuArchivo.add(itemConsultas);
-		menuArchivo.addSeparator(); // Separador
-		menuArchivo.add(itemSalir);
+		// Añadir los elementos al menú "oPCIONES"
+		menuOpciones.add(itemOpcionesGrafico);
+		menuOpciones.add(itemOpcionesAtras);
+		menuOpciones.addSeparator(); // Separador
+		menuOpciones.add(itemOpcionesSalir);
 
 		// Añadir los menús a la barra de menú
-		menuBar.add(menuArchivo);
+		menuBar.add(menuOpciones);
 
 		// Establecer la barra de menú en el frame
 		setJMenuBar(menuBar);
 
-		JMenu menuABM = new JMenu("Editar");
+		JMenu menuABM = new JMenu("ABM");
 		menuABM.setForeground(NEON_GREEN);
 
-		JMenuItem itemEquipo = new JMenuItem("Equipos");
-		definirColoresItems(itemEquipo);
-		itemEquipo.addActionListener(new ActionListener() {
+		JMenuItem itemABMEquipo = new JMenuItem("Equipos");
+		definirColoresItems(itemABMEquipo);
+		itemABMEquipo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
 				// Crear listas de equipos y conexiones
 				TreeMap<String, Equipo> equipos = coordinador.listarEquipos();
-				
+
 				// Crear el panel gráfico con los equipos y conexiones
-				ABMEquipos ABM = new ABMEquipos(equipos);
+				ABMEquiposEjemplo EquipoABM = new ABMEquiposEjemplo(equipos);
 				// Reemplazar el contenido del panel con el nuevo panel gráfico
 				panelGrafico.removeAll();
-				panelGrafico.add(ABM);
+				panelGrafico.add(EquipoABM);
 				panelGrafico.revalidate();
 				panelGrafico.repaint();
 
@@ -147,23 +146,41 @@ public class AplicacionGui extends JFrame {
 			}
 		});
 
-
-		JMenuItem itemConexion = new JMenuItem("Conexiones");
-		definirColoresItems(itemConexion);
-		itemConexion.addActionListener(new ActionListener() {
+		JMenuItem itemABMConexion = new JMenuItem("Conexiones");
+		definirColoresItems(itemABMConexion);
+		itemABMConexion.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				cardLayout.show(paneles, "panelConexion");
+				List<Conexion> conexiones = coordinador.listarConexiones();
+
+				ConexionesABM ConexionABM = new ConexionesABM(conexiones);
+
+				panelGrafico.removeAll();
+				panelGrafico.add(ConexionABM);
+				panelGrafico.revalidate();
+				panelGrafico.repaint();
+				cardLayout.show(paneles, "pantallaGrafico");
+			}
+		});
+		JMenuItem itemABMAtras = new JMenuItem("Atras");
+		definirColoresItems(itemABMAtras);
+		itemABMAtras.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				cardLayout.show(paneles, "panelPrincipal");
 			}
 		});
 
-		menuABM.add(itemEquipo);
-		menuABM.add(itemConexion);
+		menuABM.add(itemABMEquipo);
+		menuABM.add(itemABMConexion);
+		menuABM.add(itemABMAtras);
+		menuABM.add("putito el que lee");
 		menuBar.add(menuABM);
 
 		// Configuración de CardLayout
 		cardLayout = new CardLayout();
 		paneles = new JPanel(cardLayout);
+
 		add(paneles);
 
 		// Crear panel original (pantalla principal)
@@ -184,7 +201,7 @@ public class AplicacionGui extends JFrame {
 		setJMenuBar(menuBar);
 		setVisible(true);
 	}
-	
+
 	public void definirColoresItems(JMenuItem item) {
 		item.setBackground(Color.BLACK);
 		item.setForeground(NEON_GREEN);
@@ -209,7 +226,6 @@ public class AplicacionGui extends JFrame {
 		panelCentral.add(scrollGrande);
 
 		// Botones
-
 		JButton botonMostrarEquipos = new JButton("Ver Equipos");
 		crearBoton(botonMostrarEquipos);
 		botonMostrarEquipos.setBounds((int) (ANCHO_VENTANA_PRINCIPAL / 1.48), (int) (LARGO_VENTANA_PRINCIPAL / 7.9),
@@ -306,8 +322,10 @@ public class AplicacionGui extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String equipoSelected = (String) comboBoxEquipoPing.getSelectedItem();
 				if (equipoSelected != null) {
-					boolean message = coordinador.realizarPingEquipo(equipoSelected);
-					textAreaGrande.setText("Estado del equipo: " + message);
+					boolean ping = coordinador.realizarPingEquipo(equipoSelected);
+					if ((ping == true) || (ping == false)) {
+						textAreaGrande.setText("Estado del equipo: " + ping);
+					}
 					textAreaGrande.setFont(new Font("Arial", Font.BOLD, 20));
 				}
 			}
@@ -321,7 +339,18 @@ public class AplicacionGui extends JFrame {
 				String equipo2 = (String) comboBoxVelMaxEquip2.getSelectedItem();
 
 				double velocidad = coordinador.VelocidadMaximaEntreEquipos(equipo1, equipo2);
-				textAreaGrande.setText("Velocidad: " + velocidad);
+				if (velocidad > 0) {
+					textAreaGrande.setText("Velocidad: " + velocidad);
+				}
+				if (velocidad == 0) {
+					textAreaGrande.setText("Seleccione equipos diferentes, Porfavor. ");
+				}
+				if (velocidad == -1) {
+					textAreaGrande.setText("el equipo " + equipo1 + " no tiene conexiones en la red.");
+				}
+				if (velocidad == -2) {
+					textAreaGrande.setText("el equipo " + equipo2 + " no tiene conexiones en la red.");
+				}
 
 				textAreaGrande.setFont(new Font("Arial", Font.BOLD, 16));
 			}
@@ -388,29 +417,10 @@ public class AplicacionGui extends JFrame {
 	private JPanel crearPantallaGrafico(Color neonGreen, Color neonGray, Color neonBlack, Color neonWhite) {
 
 		JPanel panel = new JPanel(new BorderLayout());
-		panel.setBackground(neonBlack);
-
-		JLabel label = new JLabel("Visualización del Grafo");
-		label.setForeground(neonGreen);
-		label.setHorizontalAlignment(SwingConstants.CENTER);
-		panel.add(label, BorderLayout.NORTH);
-
-		// Volver al panel principal
-		JButton botonVolver = new JButton("Volver");
-		botonVolver.setBackground(neonBlack);
-		botonVolver.setForeground(neonGreen);
-		botonVolver.setBorder(new LineBorder(neonGreen, 2));
-		botonVolver.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				cardLayout.show(paneles, "panelPrincipal");
-			}
-		});
-		panel.add(botonVolver, BorderLayout.SOUTH);
 
 		return panel;
 	}
-	
+
 	private JPanel crearPanelConexion(Color neonGreen, Color neonGray, Color neonBlack, Color neonWhite) {
 		JPanel panelConexion = new JPanel();
 		panelConexion.setBackground(neonBlack);

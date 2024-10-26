@@ -57,7 +57,6 @@ public class Coordinador {
 			resultado.append("================================================================\n");
 
 		}
-
 		return resultado.toString();
 	}
 
@@ -178,7 +177,6 @@ public class Coordinador {
 		return calculo.cargarDatos(listarConexiones());
 	}
 
-	// interfaz grafica
 	public String[] devolverEquipoCodigos() {
 		TreeMap<String, Equipo> equipos = listarEquipos();
 		List<String> equipoList = new ArrayList<>();
@@ -188,23 +186,14 @@ public class Coordinador {
 		return equipoList.toArray(new String[0]);
 	}
 
-	// interfaz grafica
 	public boolean realizarPingEquipo(String equipoSelected) {
 		return calculo.realizarPingEquipo(red.buscarEquipo(equipoSelected));
 	}
 
 	public double VelocidadMaximaEntreEquipos(String equipo1, String equipo2) {
 
-		try {
-			return calculo.velocidadMaximaEntreEquipos(red.buscarEquipo(equipo1), red.buscarEquipo(equipo2));
-		} catch (EquipoInexistenteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return -1;
+		return calculo.velocidadMaximaEntreEquipos(red.buscarEquipo(equipo1), red.buscarEquipo(equipo2));
+
 	}
 
 }

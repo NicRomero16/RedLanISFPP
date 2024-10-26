@@ -1,4 +1,4 @@
-package gui;
+package guiEjemplos;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -21,12 +21,12 @@ import javax.swing.table.JTableHeader;
 
 import modelo.Equipo;
 
-public class ABMEquipos extends JPanel {
+public class ABMEquiposEjemplo extends JPanel {
 
 	private TreeMap<String, Equipo> equipos;
 	private static final Color NEON_GREEN = new Color(57, 255, 20);
 
-	public ABMEquipos(TreeMap<String, Equipo> equipos) {
+	public ABMEquiposEjemplo(TreeMap<String, Equipo> equipos) {
 		super();
 		this.equipos = new TreeMap<String, Equipo>();
 		crearPanelEquipo(); // Llamar al método para crear el panel de equipo
