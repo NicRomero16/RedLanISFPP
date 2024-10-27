@@ -5,6 +5,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
+import controlador.Coordinador;
 import modelo.Conexion;
 
 import java.awt.*;
@@ -15,8 +16,8 @@ import java.util.List;
 public class ConexionesABM extends JPanel {
 	private static final Color NEON_GRAY = new Color(60, 60, 60);
 	private static final Color NEON_GREEN = new Color(57, 255, 20);
-	private static final int ANCHO_VENTANA_PRINCIPAL = 800;
-	private static final int LARGO_VENTANA_PRINCIPAL = 600;
+	// private static final int ANCHO_VENTANA_PRINCIPAL = 800;
+	// private static final int LARGO_VENTANA_PRINCIPAL = 600;
 
 	private DefaultTableModel tableModel;
 	private JTable table;
@@ -25,25 +26,31 @@ public class ConexionesABM extends JPanel {
 	private JComboBox<String> comboBoxTipoPuerto1;
 	private JComboBox<String> comboBoxTipoPuerto2;
 	private JComboBox<String> comboBoxtipocable;
-	private static List<Conexion> conexiones;
+	private List<Conexion> conexiones;
 	private JButton btnActualizar;
 	private JButton btnModificar;
 	private JButton btnAgregar;
 	private JButton btnBorrar;
+	private Coordinador coordinador;
 
-	public ConexionesABM(List<Conexion> conexiones) {
+	public ConexionesABM(Coordinador coordinador) {
 		setBackground(Color.BLACK);
 		setLayout(null);
-		this.conexiones = conexiones;
+		this.coordinador = coordinador;
+		this.conexiones = coordinador.listarConexiones();
 		itemConexion(); // Inicializa los componentes llamando al método itemConexion
 	}
 
 	private void itemConexion() {
-		comboBoxEquipo1 = crearComboBox(new JComboBox<>(new String[] { "Opción 1", "Opción 2", "Opción 3" }));
-		comboBoxEquipo2 = crearComboBox(new JComboBox<>(new String[] { "Opción 1", "Opción 2", "Opción 3" }));
-		comboBoxTipoPuerto1 = crearComboBox(new JComboBox<>(new String[] { "Opción 1", "Opción 2", "Opción 3" }));
-		comboBoxTipoPuerto2 = crearComboBox(new JComboBox<>(new String[] { "Opción 1", "Opción 2", "Opción 3" }));
-		comboBoxtipocable = crearComboBox(new JComboBox<>(new String[] { "Opción 1", "Opción 2", "Opción 3" }));
+		String[] listaDeEquipos = coordinador.devolverEquipoCodigos();
+		String[] listaDeTipoPuertos = coordinador.devolverTipoPuertoCodigo();
+		String[] listaDeTipoCables = coordinador.devolverTipoCableCodigo();
+
+		comboBoxEquipo1 = crearComboBox(new JComboBox<>(listaDeEquipos));
+		comboBoxEquipo2 = crearComboBox(new JComboBox<>(listaDeEquipos));
+		comboBoxTipoPuerto1 = crearComboBox(new JComboBox<>(listaDeTipoPuertos));
+		comboBoxTipoPuerto2 = crearComboBox(new JComboBox<>(listaDeTipoPuertos));
+		comboBoxtipocable = crearComboBox(new JComboBox<>(listaDeTipoCables));
 
 		JLabel labelEquipo1 = crearLabel("Equipo 1");
 		JLabel labelEquipo2 = crearLabel("Equipo 2");
@@ -110,6 +117,13 @@ public class ConexionesABM extends JPanel {
 		table.setGridColor(NEON_GREEN);
 		table.setShowGrid(true);
 		table.setIntercellSpacing(new java.awt.Dimension(0, 0));
+ 
+		for (int i = 0; i < conexiones.size(); i++) {
+			String[] conecAux = { conexiones.get(i).getEquipo1().getCodigo(),
+					conexiones.get(i).getTipoPuerto1().getCodigo(), conexiones.get(i).getEquipo2().getCodigo(),
+					conexiones.get(i).getTipoPuerto2().getCodigo(), conexiones.get(i).getTipoCable().getCodigo() };
+			tableModel.insertRow(table.getRowCount(), conecAux);
+		}
 
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.setBounds(20, 160, 740, 350);
@@ -193,7 +207,7 @@ public class ConexionesABM extends JPanel {
 		add(btnBorrar);
 		add(btnModificar);
 		add(btnActualizar);
-	} 
+	}
 
 	private JComboBox<String> crearComboBox(JComboBox<String> comboBox) {
 		comboBox.setBackground(Color.BLACK);
@@ -205,13 +219,5 @@ public class ConexionesABM extends JPanel {
 		JLabel label = new JLabel(text);
 		label.setForeground(NEON_GREEN);
 		return label;
-	}
-
-	public static void main(String[] args) {
-		JFrame frame = new JFrame("Conexiones ABM");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(ANCHO_VENTANA_PRINCIPAL, LARGO_VENTANA_PRINCIPAL);
-		frame.add(new ConexionesABM(conexiones));
-		frame.setVisible(true);
 	}
 }

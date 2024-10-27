@@ -89,30 +89,18 @@ public class AplicacionGui extends JFrame {
 			}
 		});
 
-		JMenuItem itemOpcionesAtras = new JMenuItem("Atras");
-		definirColoresItems(itemOpcionesAtras);
-		itemOpcionesAtras.addActionListener(new ActionListener() {
+		JMenuItem itemOpcionesConsultas = new JMenuItem("Consultas");
+		definirColoresItems(itemOpcionesConsultas);
+		itemOpcionesConsultas.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				cardLayout.show(paneles, "panelPrincipal");
 			}
 		});
 
-		// Boton para cerrar App
-		JMenuItem itemOpcionesSalir = new JMenuItem("Salir");
-		definirColoresItems(itemOpcionesSalir);
-		itemOpcionesSalir.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
-			}
-		});
-
 		// Añadir los elementos al menú "oPCIONES"
 		menuOpciones.add(itemOpcionesGrafico);
-		menuOpciones.add(itemOpcionesAtras);
-		menuOpciones.addSeparator(); // Separador
-		menuOpciones.add(itemOpcionesSalir);
+		menuOpciones.add(itemOpcionesConsultas);
 
 		// Añadir los menús a la barra de menú
 		menuBar.add(menuOpciones);
@@ -134,7 +122,7 @@ public class AplicacionGui extends JFrame {
 
 				// Crear el panel gráfico con los equipos y conexiones
 				ABMEquipos EquipoABM = new ABMEquipos(equipos);
-				
+
 				// Reemplazar el contenido del panel con el nuevo panel gráfico
 				panel.removeAll();
 				panel.add(EquipoABM);
@@ -151,9 +139,9 @@ public class AplicacionGui extends JFrame {
 		itemABMConexion.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				List<Conexion> conexiones = coordinador.listarConexiones();
+				// List<Conexion> conexiones = coordinador.listarConexiones();
 
-				ConexionesABM ConexionABM = new ConexionesABM(conexiones);
+				ConexionesABM ConexionABM = new ConexionesABM(coordinador);
 
 				panel.removeAll();
 				panel.add(ConexionABM);
@@ -162,19 +150,9 @@ public class AplicacionGui extends JFrame {
 				cardLayout.show(paneles, "pantallaGrafico");
 			}
 		});
-		JMenuItem itemABMAtras = new JMenuItem("Atras");
-		definirColoresItems(itemABMAtras);
-		itemABMAtras.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				cardLayout.show(paneles, "panelPrincipal");
-			}
-		});
 
 		menuABM.add(itemABMEquipo);
 		menuABM.add(itemABMConexion);
-		menuABM.add(itemABMAtras);
-		menuABM.add("putito el que lee");
 		menuBar.add(menuABM);
 
 		// Configuración de CardLayout
@@ -324,6 +302,7 @@ public class AplicacionGui extends JFrame {
 				if (equipoSelected != null) {
 					boolean ping = coordinador.realizarPingEquipo(equipoSelected);
 					if ((ping == true) || (ping == false)) {
+						
 						textAreaGrande.setText("Estado del equipo: " + ping);
 					}
 					textAreaGrande.setFont(new Font("Arial", Font.BOLD, 20));

@@ -16,6 +16,8 @@ import excepciones.EquipoInexistenteException;
 import interfaz.Interfaz;
 import modelo.Conexion;
 import modelo.Equipo;
+import modelo.TipoCable;
+import modelo.TipoPuerto;
 
 public class Coordinador {
 	private Red red;
@@ -156,6 +158,14 @@ public class Coordinador {
 		return red.getConexiones();
 	}
 
+	public TreeMap<String, TipoPuerto> listarTipoPuertos() {
+		return red.getTiposPuertos();
+	}
+
+	public TreeMap<String, TipoCable> listarTipoCables() {
+		return red.getTiposCables();
+	}
+
 	public void agregarEquipo(Equipo equipo) {
 		try {
 			red.agregarEquipo(equipo);
@@ -177,6 +187,16 @@ public class Coordinador {
 		return calculo.cargarDatos(listarConexiones());
 	}
 
+	public boolean realizarPingEquipo(String equipoSelected) {
+		return calculo.realizarPingEquipo(red.buscarEquipo(equipoSelected));
+	}
+
+	public double VelocidadMaximaEntreEquipos(String equipo1, String equipo2) {
+
+		return calculo.velocidadMaximaEntreEquipos(red.buscarEquipo(equipo1), red.buscarEquipo(equipo2));
+
+	}
+
 	public String[] devolverEquipoCodigos() {
 		TreeMap<String, Equipo> equipos = listarEquipos();
 		List<String> equipoList = new ArrayList<>();
@@ -186,14 +206,22 @@ public class Coordinador {
 		return equipoList.toArray(new String[0]);
 	}
 
-	public boolean realizarPingEquipo(String equipoSelected) {
-		return calculo.realizarPingEquipo(red.buscarEquipo(equipoSelected));
+	public String[] devolverTipoPuertoCodigo() {
+		TreeMap<String, TipoPuerto> tipoPuertos = listarTipoPuertos();
+		List<String> tipoPuertoList = new ArrayList<>();
+		for (TipoPuerto tipoPuerto : tipoPuertos.values()) {
+			tipoPuertoList.add(tipoPuerto.getCodigo());
+		}
+		return tipoPuertoList.toArray(new String[0]);
 	}
 
-	public double VelocidadMaximaEntreEquipos(String equipo1, String equipo2) {
-
-		return calculo.velocidadMaximaEntreEquipos(red.buscarEquipo(equipo1), red.buscarEquipo(equipo2));
-
+	public String[] devolverTipoCableCodigo() {
+		TreeMap<String, TipoCable> tipoCables = listarTipoCables();
+		List<String> tipoCableList = new ArrayList<>();
+		for (TipoCable tipoCable : tipoCables.values()) {
+			tipoCableList.add(tipoCable.getCodigo());
+		}
+		return tipoCableList.toArray(new String[0]);
 	}
 
 }
