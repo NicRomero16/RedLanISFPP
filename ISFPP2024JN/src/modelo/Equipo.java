@@ -176,7 +176,7 @@ public class Equipo {
 
 		@Override
 		public String toString() {
-			return "Puertos [cantidad=" + cantidad + ", " + tipoPuerto + "]";
+			return "cantidad=" + cantidad + ", " + tipoPuerto;
 		}
 	}
 

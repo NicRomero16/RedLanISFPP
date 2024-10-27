@@ -32,7 +32,7 @@ public class ABMEquipos extends JPanel {
 
 	public ABMEquipos(TreeMap<String, Equipo> equipos) {
 		super();
-		this.equipos = new TreeMap<String, Equipo>();
+		this.equipos = equipos;
 		crearPanelEquipo(); // Llamar al método para crear el panel de equipo
 	}
 
@@ -46,6 +46,24 @@ public class ABMEquipos extends JPanel {
 				"Direcciones IP", "Estado", "Eliminar", "Modificar" };
 		DefaultTableModel tEquipos = new DefaultTableModel();
 		tEquipos.setColumnIdentifiers(ids);
+		tEquipos.setRowCount(0);
+		
+		 for (Equipo equipo : equipos.values()) {
+		        Object[] fila = {
+		            equipo.getCodigo(),
+		            equipo.getDescripcion(),
+		            equipo.getMarca(),
+		            equipo.getModelo(),
+		            equipo.getTipoEquipo(),
+		            equipo.getUbicacion(),
+		            equipo.getPuertos(),
+		            equipo.getDireccionesIP(),
+		            equipo.getEstado(),
+		            "Eliminar", // Placeholder para acciones
+		            "Modificar"  // Placeholder para acciones
+		        };
+		        tEquipos.addRow(fila); // Agregar fila a la tabla
+		 }
 
 		Object[] filaBoton = { "Agregar fila" };
 		tEquipos.addRow(filaBoton);

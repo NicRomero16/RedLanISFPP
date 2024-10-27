@@ -47,6 +47,6 @@ public class Ubicacion {
 
 	@Override
 	public String toString() {
-		return "Ubicacion [codigo=" + codigo + ", descripcion=" + descripcion + "]";
+		return "codigo=" + codigo + ", descripcion=" + descripcion;
 	}
 }

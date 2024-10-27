@@ -1,4 +1,3 @@
-AP01;APAulas1;;;AP;A01;1G,1;192.168.16.2;true;
 AP06;APAulas6;;;AP;A06;1G,1;192.168.16.7;true;
 AP07;APAulas7;;;AP;RAP;1G,1;192.168.16.8;true;
 AP08;APAulas8;;;AP;A08;1G,1;192.168.16.9;true;
