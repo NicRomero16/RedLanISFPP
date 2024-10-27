@@ -5,7 +5,7 @@ import java.util.TreeMap;
 import modelo.Equipo;
 
 public interface EquipoDAO {
-	void insertar(Equipo equipo);
+	void insertar(Equipo equipo) ;
 
 	void actualizar(Equipo equipo);
 

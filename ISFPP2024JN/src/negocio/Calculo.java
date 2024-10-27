@@ -31,17 +31,21 @@ public class Calculo {
 		redGrafo = new DefaultUndirectedWeightedGraph<>(Conexion.class);
 
 		for (Conexion conexion : conexiones) {
-			Equipo equipo1 = conexion.getEquipo1();
-			Equipo equipo2 = conexion.getEquipo2();
-			int velocidadEntre = conexion.getTipoCable().getVelocidad();
+			if (conexion != null) {
+				Equipo equipo1 = conexion.getEquipo1();
+				Equipo equipo2 = conexion.getEquipo2();
 
-			redGrafo.addVertex(equipo1);
-			redGrafo.addVertex(equipo2);
-			redGrafo.addEdge(equipo1, equipo2, conexion);
-			redGrafo.setEdgeWeight(conexion, velocidadEntre);
-
+				if (equipo1 != null && equipo2 != null && conexion.getTipoCable() != null) {
+					int velocidadEntre = conexion.getTipoCable().getVelocidad();
+					redGrafo.addVertex(equipo1);
+					redGrafo.addVertex(equipo2);
+					redGrafo.addEdge(equipo1, equipo2, conexion);
+					redGrafo.setEdgeWeight(conexion, velocidadEntre);
+				}
+			}
 		}
 		return redGrafo;
+
 	}
 
 	public List<Equipo> mostrarEquiposIntermedios(Equipo origen, Equipo destino) throws EquipoInexistenteException {

@@ -131,8 +131,20 @@ public class Equipo {
 	}
 
 	public String obtenerCodigoTipoPuerto(int index) {
-		return this.puertos.get(index).getTipoPuerto().getCodigo();
+	    if (index < 0 || index >= puertos.size()) {
+	        return ""; // Índice fuera de rango, devuelve cadena vacía o lanza una excepción personalizada
+	    }
+	    Puerto puerto = puertos.get(index);
+	    if (puerto.getTipoPuerto() == null) {
+	        return ""; // Retorna cadena vacía si TipoPuerto es null
+	    }
+	    return this.puertos.get(index).getTipoPuerto().getCodigo();
 	}
+
+	
+//	public String obtenerCodigoTipoPuerto(int index) {
+//		return this.puertos.get(index).getTipoPuerto().getCodigo();
+//	}
 
 	@Override
 	public String toString() {

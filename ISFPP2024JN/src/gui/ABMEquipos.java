@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.TreeMap;
@@ -13,11 +15,11 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
@@ -27,7 +29,6 @@ public class ABMEquipos extends JPanel {
 
 	private TreeMap<String, Equipo> equipos;
 	private static final Color NEON_GREEN = new Color(57, 255, 20);
-	private static final Color NEON_GRAY = new Color(30, 30, 30);
 
 	public ABMEquipos(TreeMap<String, Equipo> equipos) {
 		super();
@@ -41,9 +42,9 @@ public class ABMEquipos extends JPanel {
 		panelEquipo.setLayout(new BorderLayout());
 
 		// Crear el modelo de la tabla y asignar los nombres de las columnas
-		DefaultTableModel tEquipos = new DefaultTableModel();
 		String ids[] = { "Codigo", "Descripcion", "Marca", "Modelo", "Tipo de equipo", "Ubicacion", "Puertos",
 				"Direcciones IP", "Estado", "Eliminar", "Modificar" };
+		DefaultTableModel tEquipos = new DefaultTableModel();
 		tEquipos.setColumnIdentifiers(ids);
 
 		Object[] filaBoton = { "Agregar fila" };
@@ -61,7 +62,6 @@ public class ABMEquipos extends JPanel {
 		tablaEquipos.addMouseListener(new MouseAdapter() {// Añadir un MouseListener para detectar clics
 			@Override
 			public void mouseClicked(MouseEvent e) {
-
 				int row = tablaEquipos.rowAtPoint(e.getPoint());
 				int column = tablaEquipos.columnAtPoint(e.getPoint());
 
@@ -83,16 +83,21 @@ public class ABMEquipos extends JPanel {
 				}
 
 				// Verificar si se hizo clic en la columna de "Eliminar"
-				if (column == 9) {
-					if (row >= 0 && row < tEquipos.getRowCount() - 1) // No permitir eliminar la fila del botón
-						tEquipos.removeRow(row);
+				if (column == 9)
+					if (row >= 0 && row < tEquipos.getRowCount() - 1) {// No permitir eliminar la fila del botón
 
-				}
+						int confirmacion = JOptionPane.showConfirmDialog(null,
+								"¿Estás seguro de que deseas eliminar este equipo?", "Confirmación de eliminación",
+								JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+						if (confirmacion == JOptionPane.YES_OPTION) {
+							tEquipos.removeRow(row); // Eliminar la fila si se confirma
+						}
+					}
 
 				if (column == 10)
 					if ((row >= 0) && (row < tEquipos.getRowCount() - 1))
 						modificarEquipo(tEquipos, row);
-
 			}
 		});
 		tablaEquipos.setBackground(Color.BLACK); // Fondo de la tabla
@@ -121,7 +126,7 @@ public class ABMEquipos extends JPanel {
 	public void formularioAgregarEquipo(DefaultTableModel table) {
 		// Aquí puedes abrir un formulario para agregar nuevos datos
 		// Crear un nuevo JDialog para el formulario
-		JDialog dialog = new JDialog((Frame) null, "Modificar equipo", true);
+		JDialog dialog = new JDialog((Frame) null, "Agregar equipo", true);
 		dialog.setTitle("Agregar Nuevo Equipo");
 		dialog.setSize(400, 300);
 		dialog.setLocationRelativeTo(null); // Centra el diálogo
@@ -136,25 +141,21 @@ public class ABMEquipos extends JPanel {
 		String[] etiquetas = { "Código", "Descripción", "Marca", "Modelo", "Tipo de equipo", "Ubicación", "Puertos",
 				"Direcciones IP", "Estado" };
 		JTextField[] camposTexto = new JTextField[etiquetas.length];
-
 		// Inicializar el panel y los campos
 		for (int i = 0; i < etiquetas.length; i++) {
 			JLabel label = new JLabel(etiquetas[i] + ":");
 			label.setForeground(NEON_GREEN);
-
 			camposTexto[i] = new JTextField();
-			camposTexto[i].setBackground(NEON_GREEN);
-			camposTexto[i].setForeground(Color.BLACK);
-			camposTexto[i].setCaretColor(Color.BLACK); // Color del cursor en el JTextField
-			camposTexto[i].setBorder(BorderFactory.createLineBorder(Color.BLACK, 3)); // Borde verde
-
+			camposTexto[i].setBackground(Color.BLACK);
+			camposTexto[i].setForeground(NEON_GREEN);
+			camposTexto[i].setCaretColor(Color.GREEN); // Color del cursor en el JTextField
+			camposTexto[i].setBorder(BorderFactory.createLineBorder(Color.GREEN, 1)); // Borde verde
 			panelFormulario.add(label);
 			panelFormulario.add(camposTexto[i]);
 		}
 
 		// Botón para confirmar la adición
 		JButton btnAgregar = new JButton("Agregar");
-		
 		btnAgregar.addActionListener(e -> {
 			// Crear un arreglo de objetos para la nueva fila con los valores de cada
 			// JTextField
@@ -171,8 +172,11 @@ public class ABMEquipos extends JPanel {
 			dialog.dispose();
 		});
 
+		JButton cancelar = crearBotonCancelar(dialog);
+
 		// Agregar el botón al formulario
 		panelFormulario.add(btnAgregar);
+		panelFormulario.add(cancelar);
 		dialog.add(panelFormulario);
 		dialog.setVisible(true); // Muestra el diálogo
 		dialog.setResizable(false);
@@ -205,20 +209,17 @@ public class ABMEquipos extends JPanel {
 		for (int i = 0; i < labels.length; i++) {
 			JLabel label = new JLabel(labels[i] + ":");
 			label.setForeground(NEON_GREEN);
-
 			textFields[i] = new JTextField(currentValues[i]);
-			textFields[i].setBackground(NEON_GREEN);
-			textFields[i].setForeground(Color.BLACK);
-			textFields[i].setCaretColor(Color.BLACK); // Color del cursor en el JTextField
-			textFields[i].setBorder(BorderFactory.createLineBorder(Color.BLACK, 3)); // Borde verde
-
+			textFields[i].setBackground(Color.BLACK);
+			textFields[i].setForeground(NEON_GREEN);
+			textFields[i].setCaretColor(NEON_GREEN); // Color del cursor en el JTextField
+			textFields[i].setBorder(BorderFactory.createLineBorder(Color.GREEN, 1)); // Borde verde
 			panelFormulario.add(label);
 			panelFormulario.add(textFields[i]);
 		}
 
 		// Botón para confirmar la modificación
 		JButton btnModificar = new JButton("Modificar");
-
 		btnModificar.addActionListener(evt -> {
 			// Actualizar la fila en el modelo
 			for (int i = 0; i < textFields.length; i++) {
@@ -227,12 +228,24 @@ public class ABMEquipos extends JPanel {
 			dialog.dispose(); // Cerrar el diálogo después de modificar
 		});
 
+		JButton cancelar = crearBotonCancelar(dialog);
+
 		// Agregar el botón al formulario
 		panelFormulario.add(btnModificar);
-
+		panelFormulario.add(cancelar);
 		dialog.add(panelFormulario);
 		dialog.setVisible(true);
 		dialog.setResizable(false);
 	}
 
+	public JButton crearBotonCancelar(JDialog dialog) {
+		JButton btnCancelar = new JButton("Cancelar");
+		btnCancelar.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dialog.dispose();
+			}
+		});
+		return btnCancelar;
+	}
 }

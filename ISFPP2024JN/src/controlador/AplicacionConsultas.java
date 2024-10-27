@@ -29,7 +29,7 @@ public class AplicacionConsultas {
 		 *
 		 */
 		// miAplicacion.buscarEquipo();
-		 //miAplicacion.eliminarEquipo();
+		// miAplicacion.eliminarEquipo();
 	}
 
 	private void iniciar() {
