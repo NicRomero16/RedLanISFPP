@@ -39,7 +39,7 @@ public class Interfaz {
 	}
 
 	public Equipo agregarNuevoEquipo() {
-		Equipo equipo = new Equipo("REQW", "eLjota", null, null, new TipoEquipo("RE", "jota"),
+		Equipo equipo = new Equipo("adf", "asf", null, null, new TipoEquipo("asf", "jota"),
 				new Ubicacion("A01", "Aula 1"), false);
 		return equipo;
 	}

@@ -175,8 +175,15 @@ public class Coordinador {
 		}
 		calculo.update();
 	}
+	
+	public void modificarEquipo(String codigo, Equipo equipoModificado) {
+		Equipo equipo = buscarEquipo(codigo);
+		red.modificarEquipo(equipo, equipoModificado);
+		calculo.update();
+	}
 
-	public void eliminarEquipo(Equipo equipo) {
+	public void eliminarEquipo(String codigo) {
+		Equipo equipo = buscarEquipo(codigo);
 		red.eliminarEquipo(equipo);
 		calculo.update();
 	}

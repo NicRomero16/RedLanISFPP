@@ -43,7 +43,6 @@ public class AplicacionConsultas {
 		coordinador.setEmpresa(red);
 		coordinador.setCalculo(calculo);
 		coordinador.setInterfaz(interfaz);
-
 		calculo.cargarDatos(coordinador.listarConexiones());
 	}
 
@@ -92,7 +91,7 @@ public class AplicacionConsultas {
 	// Eliminar un equipo
 	private void eliminarEquipo() {
 		Equipo equipo = interfaz.eliminarEquipo();
-		coordinador.eliminarEquipo(equipo);
+		coordinador.eliminarEquipo(equipo.getCodigo());
 	}
 
 	// Buscar un equipo

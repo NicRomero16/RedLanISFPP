@@ -121,7 +121,7 @@ public class AplicacionGui extends JFrame {
 				TreeMap<String, Equipo> equipos = coordinador.listarEquipos();
 
 				// Crear el panel gráfico con los equipos y conexiones
-				ABMEquipos EquipoABM = new ABMEquipos(equipos);
+				ABMEquipos EquipoABM = new ABMEquipos(equipos, coordinador);
 
 				// Reemplazar el contenido del panel con el nuevo panel gráfico
 				panel.removeAll();

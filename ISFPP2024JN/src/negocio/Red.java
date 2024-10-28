@@ -87,10 +87,10 @@ public class Red {
 		equipoService.insertar(equipo);
 	}
 
-	public void modificarEquipo(Equipo equipo) {
-		buscarEquipo(equipo.getCodigo());
-		equipos.put(equipo.getCodigo(), equipo);
-		equipoService.actualizar(equipo);
+	public void modificarEquipo(Equipo equipo, Equipo equipoModificado) {
+		System.out.print(buscarEquipo(equipo.getCodigo()));
+		equipos.put(equipo.getCodigo(), equipoModificado);
+		equipoService.actualizar(equipo,equipoModificado);
 	}
 
 	public void eliminarEquipo(Equipo equipo) {

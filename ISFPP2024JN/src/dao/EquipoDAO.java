@@ -7,7 +7,7 @@ import modelo.Equipo;
 public interface EquipoDAO {
 	void insertar(Equipo equipo) ;
 
-	void actualizar(Equipo equipo);
+	void actualizar(Equipo equipo, Equipo equipoModificado);
 
 	void borrar(Equipo equipo);
 
