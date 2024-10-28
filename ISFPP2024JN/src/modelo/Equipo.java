@@ -28,6 +28,10 @@ public class Equipo {
 		this.direccionesIP = new ArrayList<String>();
 		this.estado = estado;
 	}
+	
+	public void agregarDireccionIP(String ip) {
+		this.direccionesIP.add(ip);
+	}
 
 	public void agregarPuerto(int cantidad, TipoPuerto tipoPuerto) {
 		this.puertos.add(new Puerto(cantidad, tipoPuerto));
