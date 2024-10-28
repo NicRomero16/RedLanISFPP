@@ -36,7 +36,7 @@ public class Equipo {
 	public void agregarPuerto(int cantidad, TipoPuerto tipoPuerto) {
 		this.puertos.add(new Puerto(cantidad, tipoPuerto));
 	}
-
+	
 	public String getDescripcion() {
 		return descripcion;
 	}
@@ -152,7 +152,7 @@ public class Equipo {
 	    }
 	    return total;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "\nEquipo [\n codigo=" + codigo + ", \n descripcion=" + descripcion + ", \n marca=" + marca

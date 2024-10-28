@@ -12,6 +12,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
@@ -27,6 +31,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane.SystemMenuBar;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
@@ -69,9 +74,10 @@ public class ABMEquipos extends JPanel {
 					equipo.getMarca() != null ? equipo.getMarca() : "", // Evitar null
 					equipo.getModelo() != null ? equipo.getModelo() : "", // Evitar null
 					(equipo.getTipoEquipo() != null ? equipo.getTipoEquipo().getCodigo() : "") + ", "
-							+ (equipo.getTipoEquipo() != null ? equipo.getDescripcion() : ""), // Evitar null
+							+ (equipo.getTipoEquipo() != null ? equipo.getTipoEquipo().getDescripcion() : ""), // Evitar
+																												// null
 					(equipo.getUbicacion() != null ? equipo.getUbicacion().getCodigo() : "") + ", "
-							+ (equipo.getUbicacion() != null ? equipo.getDescripcion() : ""),
+							+ (equipo.getUbicacion() != null ? equipo.getUbicacion().getDescripcion() : ""),
 					equipo.getPuertos() != null ? equipo.getPuertos() : "", // Evitar null
 					equipo.getDireccionesIP() != null ? equipo.getDireccionesIP() : "", // Evitar null
 					equipo.getEstado(), // Evitar null
@@ -98,13 +104,13 @@ public class ABMEquipos extends JPanel {
 				int column = tablaEquipos.columnAtPoint(e.getPoint());
 
 				for (int i = 0; i < tEquipos.getRowCount(); i++) {
-					if (i < tEquipos.getRowCount() - 1) { // No agregar a la fila del botón
+					if (i < tEquipos.getRowCount()) { // No agregar a la fila del botón
 						tEquipos.setValueAt("Eliminar", i, 9); // Colocar "Eliminar" en la nueva columna
 					}
 				}
 
 				for (int i = 0; i < tEquipos.getRowCount(); i++) {
-					if (i < tEquipos.getRowCount() - 1) { // No agregar a la fila del botón
+					if (i < tEquipos.getRowCount()) { // No agregar a la fila del botón
 						tEquipos.setValueAt("Modificar", i, 10); // Colocar "Eliminar" en la nueva columna
 					}
 				}
@@ -115,10 +121,17 @@ public class ABMEquipos extends JPanel {
 					int confirmacion = JOptionPane.showConfirmDialog(null,
 							"¿Estás seguro de que deseas eliminar este equipo?", "Confirmación de eliminación",
 							JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+					Equipo equipo = coordinador.buscarEquipo(codigo);
 
 					if (confirmacion == JOptionPane.YES_OPTION) {
+						if (coordinador.tieneConexiones(equipo) == true) {
+							List<Conexion> conexiones = coordinador.buscarConexiones(equipo);
+							for (Conexion conexion : conexiones)
+								coordinador.borrarConexion(conexion);
+						}
 						tEquipos.removeRow(row); // Eliminar la fila si se confirma
 						coordinador.eliminarEquipo(codigo);
+						coordinador.cargarDatos();
 					}
 				}
 
@@ -157,6 +170,7 @@ public class ABMEquipos extends JPanel {
 	}
 
 	public void formularioAgregarEquipo(DefaultTableModel table) {
+
 		// Crear un nuevo JDialog para el formulario
 		JDialog dialog = new JDialog((Frame) null, "Agregar equipo", true);
 		dialog.setTitle("Agregar Nuevo Equipo");
@@ -250,6 +264,12 @@ public class ABMEquipos extends JPanel {
 		// Botón para confirmar la adición
 		JButton btnAgregar = new JButton("Agregar");
 		btnAgregar.addActionListener(e -> {
+			if (equipos.containsKey(campoCodigo.getText())) {
+				JOptionPane.showMessageDialog(null, "El equipo ya existe", "Error", JOptionPane.ERROR_MESSAGE);
+				campoCodigo.requestFocus();
+				return;
+			}
+
 			if (!verificarCampoEstado(campoEstado)) {
 				campoEstado.requestFocus();
 				return;
@@ -260,9 +280,8 @@ public class ABMEquipos extends JPanel {
 			// Crear un arreglo de objetos para la nueva fila con los valores de cada
 			// JTextField
 			Object[] nuevaFila = { campoCodigo.getText(), campoDescripcion.getText(), campoMarca.getText(),
-					campoModelo.getText(),
-					"Código=" + campoCodTipoEquipo.getText() + ", Descripción=" + campoDescTipoEquipo.getText(),
-					"Código=" + campoCodUbicacion.getText() + ", Descripción=" + campoDescUbicacion.getText(),
+					campoModelo.getText(), campoCodTipoEquipo.getText() + "," + campoDescTipoEquipo.getText(),
+					campoCodUbicacion.getText() + "," + campoDescUbicacion.getText(),
 					comboBoxPuertos.getSelectedItem() + ", " + comboBoxTipoPuerto.getSelectedItem(),
 					campoDireccionesIP.getText(), estado };
 
@@ -407,8 +426,8 @@ public class ABMEquipos extends JPanel {
 			// Crear un nuevo objeto Equipo con los valores modificados
 			Equipo equipoModificado = new Equipo(campoCodigo.getText(), campoDescripcion.getText(),
 					campoMarca.getText(), campoModelo.getText(),
-					new TipoEquipo("Codigo=" + campoCodTipoEquipo.getText(), ", Descripcion=" + campoDescTipoEquipo),
-					new Ubicacion("Codigo=" + campoCodUbicacion.getText(), ", Descripcion=" + campoDescUbicacion),
+					new TipoEquipo(campoCodTipoEquipo.getText(), "," + campoDescTipoEquipo),
+					new Ubicacion(campoCodUbicacion.getText(), "," + campoDescUbicacion),
 					estado);
 
 			// Actualizar el modelo de la tabla
@@ -418,8 +437,6 @@ public class ABMEquipos extends JPanel {
 			tEquipos.setValueAt(equipoModificado.getModelo(), row, 3);
 			tEquipos.setValueAt(equipoModificado.getTipoEquipo(), row, 4);
 			tEquipos.setValueAt(equipoModificado.getUbicacion(), row, 5);
-			tEquipos.setValueAt(equipoModificado.getPuertos(), row, 6);
-			tEquipos.setValueAt(equipoModificado.getDireccionesIP(), row, 7);
 			tEquipos.setValueAt(estado, row, 8);
 
 			// Actualizar el equipo en el coordinador
@@ -483,6 +500,22 @@ public class ABMEquipos extends JPanel {
 		gbc.gridx = 1; // Columna del campo
 		crearJTextField(textField);
 		panel.add(textField, gbc);
+	}
+
+	private void guardarEquipoEnArchivo(Equipo equipo) {
+		try (FileWriter fw = new FileWriter("equipo.txt", true); // true para modo append
+				BufferedWriter bw = new BufferedWriter(fw);
+				PrintWriter out = new PrintWriter(bw)) {
+
+			// Escribe los datos del equipo en el archivo en el formato adecuado
+			out.println(equipo.getCodigo() + ";" + equipo.getDescripcion() + ";" + equipo.getMarca() + ";"
+					+ equipo.getModelo() + ";" + equipo.getTipoEquipo().getCodigo() + ","
+					+ equipo.getTipoEquipo().getDescripcion() + ";" + equipo.getUbicacion().getCodigo() + ","
+					+ equipo.getUbicacion().getDescripcion() + ";" + equipo.getEstado() + ";" + equipo.getPuertos()
+					+ ";" + equipo.getDireccionesIP());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

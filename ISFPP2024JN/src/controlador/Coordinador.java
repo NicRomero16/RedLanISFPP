@@ -274,6 +274,28 @@ public class Coordinador {
 		return false;
 	}
 
+	public boolean tieneConexiones(Equipo equipo) {
+		List<Conexion> conexiones = listarConexiones();
+		for (Conexion conexion : conexiones) {
+			if (conexion.getEquipo1() != null && conexion.getEquipo2() != null)
+				if ((conexion.getEquipo1().equals(equipo)) || (conexion.getEquipo2().equals(equipo)))
+					return true;
+		}
+		return false;
+	}
+
+	public List<Conexion> buscarConexiones(Equipo equipo) {
+		List<Conexion> conexiones = red.getConexiones();
+		List<Conexion> conexionesEq = new ArrayList<Conexion>();
+
+		for (Conexion conexion : conexiones)
+			if (conexion.getEquipo1() != null && conexion.getEquipo2() != null)
+				if (conexion.getEquipo1().equals(equipo) || conexion.getEquipo2().equals(equipo))
+					conexionesEq.add(conexion);
+		System.out.println(conexionesEq);
+		return conexionesEq;
+	}
+
 	public void agregarConexion(Conexion conexion) throws Exception {
 
 		if (getPuertosDisponibles(conexion.getEquipo1()) > 0 && getPuertosDisponibles(conexion.getEquipo2()) > 0) {
