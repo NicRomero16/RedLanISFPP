@@ -10,6 +10,7 @@ import java.util.TreeMap;
 
 import org.jgrapht.Graph;
 
+import excepciones.ConexionExistenteException;
 import excepciones.ConexionInexistenteException;
 import excepciones.EquipoExistenteException;
 import excepciones.EquipoInexistenteException;
@@ -170,22 +171,24 @@ public class Coordinador {
 		try {
 			red.agregarEquipo(equipo);
 		} catch (EquipoExistenteException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		calculo.update();
+		calculo.cargarDatos(listarConexiones());
 	}
-	
+
 	public void modificarEquipo(String codigo, Equipo equipoModificado) {
 		Equipo equipo = buscarEquipo(codigo);
 		red.modificarEquipo(equipo, equipoModificado);
 		calculo.update();
+		calculo.cargarDatos(listarConexiones());
 	}
 
 	public void eliminarEquipo(String codigo) {
 		Equipo equipo = buscarEquipo(codigo);
 		red.eliminarEquipo(equipo);
 		calculo.update();
+		calculo.cargarDatos(listarConexiones());
 	}
 
 	// interfaz grafica
@@ -229,6 +232,86 @@ public class Coordinador {
 			tipoCableList.add(tipoCable.getCodigo());
 		}
 		return tipoCableList.toArray(new String[0]);
+	}
+
+	public TipoPuerto buscarTipoPuerto(String codigo) {
+
+		return red.buscarTipoPuerto(codigo);
+	}
+
+	public TipoCable buscarTipoCable(String codigo) {
+
+		return red.buscarTipoCable(codigo);
+	}
+
+	public int getPuertosDisponibles(Equipo equipo) {
+		int totalPuertos = equipo.getCantidadPuertos();
+		int puertosEnUso = 0;
+		List<Conexion> conexionesActivas = listarConexiones();
+
+		for (Conexion conexion : conexionesActivas) {
+			if (conexion.getEquipo1().equals(equipo)) {
+				puertosEnUso++; // Cuenta el puerto usado en equipo1
+			}
+			if (conexion.getEquipo2().equals(equipo)) {
+				puertosEnUso++; // Cuenta el puerto usado en equipo2
+			}
+		}
+
+		return totalPuertos - puertosEnUso;
+	}
+
+	public boolean existeConexion(Equipo e1, Equipo e2) {
+		List<Conexion> conexiones = listarConexiones();
+
+		for (Conexion conexion : conexiones) {
+			// Verifica si los equipos de la conexión son e1 y e2 en cualquier orden
+			if ((conexion.getEquipo1().equals(e1) && conexion.getEquipo2().equals(e2))
+					|| (conexion.getEquipo1().equals(e2) && conexion.getEquipo2().equals(e1))) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void agregarConexion(Conexion conexion) throws Exception {
+
+		if (getPuertosDisponibles(conexion.getEquipo1()) > 0 && getPuertosDisponibles(conexion.getEquipo2()) > 0) {
+			try {
+				red.agregarConexion(conexion);
+				calculo.update();
+				calculo.cargarDatos(listarConexiones());
+			} catch (ConexionExistenteException e) {
+				throw new ConexionExistenteException("Error: Ya existe una conexión entre estos equipos.");
+			}
+		} else {
+			throw new Exception("Error: No hay puertos disponibles en uno o ambos equipos.");
+		}
+	}
+
+	public void borrarConexion(Conexion conexion) {
+		try {
+			red.borrarConexion(conexion);
+		} catch (ConexionInexistenteException e) {
+			e.printStackTrace();
+		}
+		calculo.update();
+		calculo.cargarDatos(listarConexiones());
+	}
+
+	public Conexion buscarConexion(Equipo equipo1, TipoPuerto tipoPuerto1, Equipo equipo2, TipoPuerto tipoPuerto2,
+			TipoCable tipoCable) {
+
+		List<Conexion> conexiones = listarConexiones();
+
+		for (Conexion conexion : conexiones) {
+			if (conexion.getEquipo1().equals(equipo1) && conexion.getTipoPuerto1().equals(tipoPuerto1)
+					&& conexion.getEquipo2().equals(equipo2) && conexion.getTipoPuerto2().equals(tipoPuerto2)
+					&& conexion.getTipoCable().equals(tipoCable)) {
+				return conexion;
+			}
+		}
+		return null;
 	}
 
 }

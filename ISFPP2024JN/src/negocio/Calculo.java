@@ -27,7 +27,6 @@ public class Calculo {
 
 	public Graph<Equipo, Conexion> cargarDatos(List<Conexion> conexiones) {
 
-		this.actualizar = false;
 		redGrafo = new DefaultUndirectedWeightedGraph<>(Conexion.class);
 
 		for (Conexion conexion : conexiones) {
@@ -45,13 +44,12 @@ public class Calculo {
 			}
 		}
 		return redGrafo;
-
 	}
 
 	public List<Equipo> mostrarEquiposIntermedios(Equipo origen, Equipo destino) throws EquipoInexistenteException {
 		if (this.actualizar) {
 			this.cargarDatos(coordinador.listarConexiones());
-
+			this.actualizar = false;
 		}
 		List<Equipo> camino = DijkstraShortestPath.findPathBetween(redGrafo, origen, destino).getVertexList();
 
@@ -65,7 +63,7 @@ public class Calculo {
 	public double velocidadMaxima(Equipo origen, Equipo destino) throws ConexionInexistenteException {
 		if (this.actualizar) {
 			this.cargarDatos(coordinador.listarConexiones()); // al avanzar el codigo tenemos q hacer el patron de
-																// diseño observer
+			this.actualizar = false; // diseño observer
 		}
 		DijkstraShortestPath<Equipo, Conexion> dijkstraAlg = new DijkstraShortestPath<>(redGrafo);
 		GraphPath<Equipo, Conexion> path = dijkstraAlg.getPath(origen, destino);
@@ -76,7 +74,7 @@ public class Calculo {
 
 		List<Conexion> recorrido = path.getEdgeList();
 
-		double velocidadMaxima = Double.MAX_VALUE;
+		double velocidadMaxima = 0;
 
 		for (Conexion conexion : recorrido) {
 
@@ -106,6 +104,7 @@ public class Calculo {
 	public Graph<Equipo, Conexion> getRed() {
 		if (this.actualizar) {
 			this.cargarDatos(coordinador.listarConexiones());
+			this.actualizar = false;
 		}
 		return redGrafo;
 	}
@@ -116,23 +115,26 @@ public class Calculo {
 
 	// interfaz grafica
 	public boolean realizarPingEquipo(Equipo equipoSelected) {
-		// Verificar el estado del equipo y devolver el mensaje correspondiente
+
 		if (equipoSelected == null)
 			throw new EquipoInexistenteException("El equipo no existe");
+
+		if (this.actualizar) {
+			this.cargarDatos(coordinador.listarConexiones());
+			this.actualizar = false;
+		}
 		return equipoSelected.getEstado();
 	}
 
 	public double velocidadMaximaEntreEquipos(Equipo origen, Equipo destino) {
 		if (this.actualizar) {
 			this.cargarDatos(coordinador.listarConexiones());
+			this.actualizar = false;
 		}
 		if (origen.equals(destino))
 			return 0;
-		// throw new Exception("Seleccione equipos diferentes");
-
 		if (!redGrafo.containsVertex(origen))
 			return -1;
-		// throw new Exception("Uno de los dos equipos no existe en la red");
 		if (!redGrafo.containsVertex(destino))
 			return -2;
 

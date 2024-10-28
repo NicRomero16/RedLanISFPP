@@ -6,7 +6,11 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
 import controlador.Coordinador;
+import excepciones.ArchivoExistenteException;
 import modelo.Conexion;
+import modelo.Equipo;
+import modelo.TipoCable;
+import modelo.TipoPuerto;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -16,9 +20,6 @@ import java.util.List;
 public class ConexionesABM extends JPanel {
 	private static final Color NEON_GRAY = new Color(60, 60, 60);
 	private static final Color NEON_GREEN = new Color(57, 255, 20);
-	// private static final int ANCHO_VENTANA_PRINCIPAL = 800;
-	// private static final int LARGO_VENTANA_PRINCIPAL = 600;
-
 	private DefaultTableModel tableModel;
 	private JTable table;
 	private JComboBox<String> comboBoxEquipo1;
@@ -38,7 +39,7 @@ public class ConexionesABM extends JPanel {
 		setLayout(null);
 		this.coordinador = coordinador;
 		this.conexiones = coordinador.listarConexiones();
-		itemConexion(); // Inicializa los componentes llamando al método itemConexion
+		itemConexion();
 	}
 
 	private void itemConexion() {
@@ -117,7 +118,7 @@ public class ConexionesABM extends JPanel {
 		table.setGridColor(NEON_GREEN);
 		table.setShowGrid(true);
 		table.setIntercellSpacing(new java.awt.Dimension(0, 0));
- 
+
 		for (int i = 0; i < conexiones.size(); i++) {
 			String[] conecAux = { conexiones.get(i).getEquipo1().getCodigo(),
 					conexiones.get(i).getTipoPuerto1().getCodigo(), conexiones.get(i).getEquipo2().getCodigo(),
@@ -133,12 +134,61 @@ public class ConexionesABM extends JPanel {
 		btnAgregar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				StringBuilder mensajesError = new StringBuilder();
 				String equipo1 = (String) comboBoxEquipo1.getSelectedItem();
 				String tipoPuerto1 = (String) comboBoxTipoPuerto1.getSelectedItem();
 				String equipo2 = (String) comboBoxEquipo2.getSelectedItem();
 				String tipoPuerto2 = (String) comboBoxTipoPuerto2.getSelectedItem();
 				String tipoCable = (String) comboBoxtipocable.getSelectedItem();
-				tableModel.addRow(new Object[] { equipo1, tipoPuerto1, equipo2, tipoPuerto2, tipoCable });
+
+				Equipo e1 = coordinador.buscarEquipo(equipo1);
+				TipoPuerto tP1 = coordinador.buscarTipoPuerto(tipoPuerto1);
+				Equipo e2 = coordinador.buscarEquipo(equipo2);
+				TipoPuerto tP2 = coordinador.buscarTipoPuerto(tipoPuerto2);
+				TipoCable tC = coordinador.buscarTipoCable(tipoCable);
+
+				if (e1 == null || e2 == null || tP1 == null || tP2 == null || tC == null) {
+					mostrarMensaje(
+							"Error: Verifica que todos los datos estén seleccionados y que los equipos sean diferentes.",
+							"Error", JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+
+				if (e1.equals(e2)) {
+					mostrarMensaje("Error: No se permite establecer una conexión entre el mismo equipo.", "Error",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+				if (coordinador.existeConexion(e1, e2)) {
+					mostrarMensaje("Error: Ya existe una conexión entre estos equipos.", "Error",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+				if (coordinador.getPuertosDisponibles(e1) <= 0) {
+					mensajesError.append("Error: No hay puertos disponibles en el equipo " + e1.getCodigo() + ".\n");
+				}
+				if (coordinador.getPuertosDisponibles(e2) <= 0) {
+					mensajesError.append("Error: No hay puertos disponibles en el equipo " + e2.getCodigo() + ".\n");
+				}
+
+				if (mensajesError.length() > 0) {
+					mostrarMensaje(mensajesError.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+				Conexion nuevaConexion = new Conexion(e1, tP1, e2, tP2, tC);
+
+				try {
+					coordinador.agregarConexion(nuevaConexion);
+
+					tableModel.addRow(new Object[] { equipo1, tipoPuerto1, equipo2, tipoPuerto2, tipoCable });
+					JOptionPane.showMessageDialog(null, "Conexión agregada exitosamente.");
+				} catch (Exception ex) {
+					JOptionPane.showMessageDialog(null, "Error inesperado al agregar la conexión: " + ex.getMessage(),
+							"Error", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 
@@ -147,7 +197,38 @@ public class ConexionesABM extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				int selectedRow = table.getSelectedRow();
 				if (selectedRow != -1) {
-					tableModel.removeRow(selectedRow);
+
+					int confirm = JOptionPane.showConfirmDialog(null, "¿Está seguro de borrar esta conexion?",
+							"Confirmar Eliminación", JOptionPane.YES_NO_OPTION);
+					if (confirm != JOptionPane.YES_OPTION) {
+						return;
+					}
+
+					String equipo1 = (String) tableModel.getValueAt(selectedRow, 0);
+					String tipoPuerto1 = (String) tableModel.getValueAt(selectedRow, 1);
+					String equipo2 = (String) tableModel.getValueAt(selectedRow, 2);
+					String tipoPuerto2 = (String) tableModel.getValueAt(selectedRow, 3);
+					String tipoCable = (String) tableModel.getValueAt(selectedRow, 4);
+
+					Equipo e1 = coordinador.buscarEquipo(equipo1);
+					TipoPuerto tP1 = coordinador.buscarTipoPuerto(tipoPuerto1);
+					Equipo e2 = coordinador.buscarEquipo(equipo2);
+					TipoPuerto tP2 = coordinador.buscarTipoPuerto(tipoPuerto2);
+					TipoCable tC = coordinador.buscarTipoCable(tipoCable);
+
+					if (!coordinador.existeConexion(e1, e2)) {
+						JOptionPane.showMessageDialog(null, "La conexión no existe en la red.");
+						return;
+					}
+					Conexion conexion = new Conexion(e1, tP1, e2, tP2, tC);
+
+					try {
+						coordinador.borrarConexion(conexion);
+						tableModel.removeRow(selectedRow);
+						JOptionPane.showMessageDialog(null, " Conexion borrado con exito");
+					} catch (Exception ex) {
+						JOptionPane.showMessageDialog(null, "Error al eliminar la conexión: " + ex.getMessage());
+					}
 				} else {
 					JOptionPane.showMessageDialog(null, "Seleccione una conexión para borrar.");
 				}
@@ -159,6 +240,7 @@ public class ConexionesABM extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				int selectedRow = table.getSelectedRow();
 				if (selectedRow != -1) {
+
 					comboBoxEquipo1.setSelectedItem(tableModel.getValueAt(selectedRow, 0));
 					comboBoxTipoPuerto1.setSelectedItem(tableModel.getValueAt(selectedRow, 1));
 					comboBoxEquipo2.setSelectedItem(tableModel.getValueAt(selectedRow, 2));
@@ -167,6 +249,7 @@ public class ConexionesABM extends JPanel {
 
 					btnActualizar.setVisible(true);
 					btnAgregar.setVisible(false);
+					btnModificar.setEnabled(false);
 				} else {
 					JOptionPane.showMessageDialog(null, "Seleccione una conexión para modificar.");
 				}
@@ -178,14 +261,76 @@ public class ConexionesABM extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				int selectedRow = table.getSelectedRow();
 				if (selectedRow != -1) {
-					tableModel.setValueAt(comboBoxEquipo1.getSelectedItem(), selectedRow, 0);
-					tableModel.setValueAt(comboBoxTipoPuerto1.getSelectedItem(), selectedRow, 1);
-					tableModel.setValueAt(comboBoxEquipo2.getSelectedItem(), selectedRow, 2);
-					tableModel.setValueAt(comboBoxTipoPuerto2.getSelectedItem(), selectedRow, 3);
-					tableModel.setValueAt(comboBoxtipocable.getSelectedItem(), selectedRow, 4);
+					StringBuilder mensajesError = new StringBuilder();
+					String nuevoEquipo1 = (String) comboBoxEquipo1.getSelectedItem();
+					String nuevoTipoPuerto1 = (String) comboBoxTipoPuerto1.getSelectedItem();
+					String nuevoEquipo2 = (String) comboBoxEquipo2.getSelectedItem();
+					String nuevoTipoPuerto2 = (String) comboBoxTipoPuerto2.getSelectedItem();
+					String nuevoTipoCable = (String) comboBoxtipocable.getSelectedItem();
+
+					Equipo e1 = coordinador.buscarEquipo(nuevoEquipo1);
+					TipoPuerto tP1 = coordinador.buscarTipoPuerto(nuevoTipoPuerto1);
+					Equipo e2 = coordinador.buscarEquipo(nuevoEquipo2);
+					TipoPuerto tP2 = coordinador.buscarTipoPuerto(nuevoTipoPuerto2);
+					TipoCable tC = coordinador.buscarTipoCable(nuevoTipoCable);
+
+					if (coordinador.getPuertosDisponibles(e1) <= 0) {
+						mensajesError
+								.append("Error: No hay puertos disponibles en el equipo " + e1.getCodigo() + ".\n");
+					}
+					if (coordinador.getPuertosDisponibles(e2) <= 0) {
+						mensajesError
+								.append("Error: No hay puertos disponibles en el equipo " + e2.getCodigo() + ".\n");
+					}
+
+					if (mensajesError.length() > 0) {
+						mostrarMensaje(mensajesError.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+
+					if (coordinador.existeConexion(e1, e2)) {
+						JOptionPane.showMessageDialog(null, "La conexión ya existe.");
+						return;
+					}
+					String equipo1Actual = (String) tableModel.getValueAt(selectedRow, 0);
+					String tipoPuerto1Actual = (String) tableModel.getValueAt(selectedRow, 1);
+					String equipo2Actual = (String) tableModel.getValueAt(selectedRow, 2);
+					String tipoPuerto2Actual = (String) tableModel.getValueAt(selectedRow, 3);
+					String tipoCableActual = (String) tableModel.getValueAt(selectedRow, 4);
+
+					Equipo e1a = coordinador.buscarEquipo(equipo1Actual);
+					TipoPuerto tP1a = coordinador.buscarTipoPuerto(tipoPuerto1Actual);
+					Equipo e2a = coordinador.buscarEquipo(equipo2Actual);
+					TipoPuerto tP2a = coordinador.buscarTipoPuerto(tipoPuerto2Actual);
+					TipoCable tCa = coordinador.buscarTipoCable(tipoCableActual);
+
+					Conexion conexionActual = coordinador.buscarConexion(e1a, tP1a, e2a, tP2a, tCa);
+					if (conexionActual == null) {
+						JOptionPane.showMessageDialog(null, "Error: No se encontró la conexión a actualizar.");
+						return;
+					}
+
+					try {
+
+						Conexion nuevaConexion = new Conexion(e1, tP1, e2, tP2, tC);
+
+						coordinador.borrarConexion(conexionActual);
+						coordinador.agregarConexion(nuevaConexion);
+
+						tableModel.setValueAt(nuevoEquipo1, selectedRow, 0);
+						tableModel.setValueAt(nuevoTipoPuerto1, selectedRow, 1);
+						tableModel.setValueAt(nuevoEquipo2, selectedRow, 2);
+						tableModel.setValueAt(nuevoTipoPuerto2, selectedRow, 3);
+						tableModel.setValueAt(nuevoTipoCable, selectedRow, 4);
+
+						JOptionPane.showMessageDialog(null, "Conexión actualizada exitosamente.");
+					} catch (Exception ex) {
+						JOptionPane.showMessageDialog(null, "Error al actualizar la conexión: " + ex.getMessage());
+					}
 
 					btnActualizar.setVisible(false);
 					btnAgregar.setVisible(true);
+					btnModificar.setEnabled(true);
 				} else {
 					JOptionPane.showMessageDialog(null, "Seleccione una conexión para actualizar.");
 				}
@@ -219,5 +364,9 @@ public class ConexionesABM extends JPanel {
 		JLabel label = new JLabel(text);
 		label.setForeground(NEON_GREEN);
 		return label;
+	}
+
+	private void mostrarMensaje(String mensaje, String titulo, int tipo) {
+		JOptionPane.showMessageDialog(null, mensaje, titulo, tipo);
 	}
 }

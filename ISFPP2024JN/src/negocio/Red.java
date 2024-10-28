@@ -165,4 +165,16 @@ public class Red {
 	public TreeMap<String, TipoPuerto> getTiposPuertos() {
 		return tiposPuertos;
 	}
+
+	public TipoPuerto buscarTipoPuerto(String codigo) {
+		if (!tiposPuertos.containsKey(codigo))
+			throw new EquipoInexistenteException("El tipo puerto no existe");
+		return tiposPuertos.get(codigo);
+	}
+
+	public TipoCable buscarTipoCable(String codigo) {
+		if (!tiposCables.containsKey(codigo))
+			throw new EquipoInexistenteException("El tipo cable no existe");
+		return tiposCables.get(codigo);
+	}
 }

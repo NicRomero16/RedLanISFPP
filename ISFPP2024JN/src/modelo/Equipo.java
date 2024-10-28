@@ -145,10 +145,13 @@ public class Equipo {
 	    return this.puertos.get(index).getTipoPuerto().getCodigo();
 	}
 
-	
-//	public String obtenerCodigoTipoPuerto(int index) {
-//		return this.puertos.get(index).getTipoPuerto().getCodigo();
-//	}
+	public int getCantidadPuertos() {
+	    int total = 0;
+	    for (Puerto puerto : puertos) {
+	        total += puerto.getCantidad();
+	    }
+	    return total;
+	}
 
 	@Override
 	public String toString() {
@@ -183,5 +186,7 @@ public class Equipo {
 			return "cantidad=" + cantidad + ", " + tipoPuerto;
 		}
 	}
+
+
 
 }
