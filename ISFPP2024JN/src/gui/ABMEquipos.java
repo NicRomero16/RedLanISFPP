@@ -30,8 +30,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.border.LineBorder;
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane.SystemMenuBar;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
@@ -53,15 +51,13 @@ public class ABMEquipos extends JPanel {
 		super();
 		this.coordinador = coordinador;
 		this.equipos = equipos;
-		crearPanelEquipo(); // Llamar al método para crear el panel de equipo
+		crearPanelEquipo(); 
 	}
 
 	public void crearPanelEquipo() {
-		// Crear el panel principal para el equipo
 		JPanel panelEquipo = new JPanel();
 		panelEquipo.setLayout(new BorderLayout());
 
-		// Crear el modelo de la tabla y asignar los nombres de las columnas
 		String ids[] = { "Codigo", "Descripcion", "Marca", "Modelo", "Tipo de equipo", "Ubicacion", "Puertos",
 				"Direcciones IP", "Estado", "Eliminar", "Modificar" };
 		DefaultTableModel tEquipos = new DefaultTableModel();
@@ -69,53 +65,50 @@ public class ABMEquipos extends JPanel {
 		tEquipos.setRowCount(0);
 
 		for (Equipo equipo : equipos.values()) {
-			Object[] fila = { equipo.getCodigo() != null ? equipo.getCodigo() : "", // Evitar null
-					equipo.getDescripcion() != null ? equipo.getDescripcion() : "", // Evitar null
-					equipo.getMarca() != null ? equipo.getMarca() : "", // Evitar null
-					equipo.getModelo() != null ? equipo.getModelo() : "", // Evitar null
+			Object[] fila = { equipo.getCodigo() != null ? equipo.getCodigo() : "", 
+					equipo.getDescripcion() != null ? equipo.getDescripcion() : "", 
+					equipo.getMarca() != null ? equipo.getMarca() : "", 
+					equipo.getModelo() != null ? equipo.getModelo() : "", 
 					(equipo.getTipoEquipo() != null ? equipo.getTipoEquipo().getCodigo() : "") + ", "
-							+ (equipo.getTipoEquipo() != null ? equipo.getTipoEquipo().getDescripcion() : ""), // Evitar
-																												// null
+							+ (equipo.getTipoEquipo() != null ? equipo.getTipoEquipo().getDescripcion() : ""), 
+																												
 					(equipo.getUbicacion() != null ? equipo.getUbicacion().getCodigo() : "") + ", "
 							+ (equipo.getUbicacion() != null ? equipo.getUbicacion().getDescripcion() : ""),
-					equipo.getPuertos() != null ? equipo.getPuertos() : "", // Evitar null
-					equipo.getDireccionesIP() != null ? equipo.getDireccionesIP() : "", // Evitar null
-					equipo.getEstado(), // Evitar null
-					"Eliminar", // Placeholder para acciones
-					"Modificar" // Placeholder para acciones
+					equipo.getPuertos() != null ? equipo.getPuertos() : "", 
+					equipo.getDireccionesIP() != null ? equipo.getDireccionesIP() : "", 
+					equipo.getEstado(),
+					"Eliminar", 
+					"Modificar" 
 			};
-			tEquipos.addRow(fila); // Agregar fila a la tabla
+			tEquipos.addRow(fila); 
 		}
 
-		// Inicializar la tabla y asignar el modelo
 		JTable tablaEquipos = new JTable(tEquipos) {
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				return false; // Hacer que ninguna celda sea editable
+				return false; 
 			}
 		};
 
-		// Cambiar el modo de selección para que solo se seleccionen celdas
 		tablaEquipos.setCellSelectionEnabled(true);
-		tablaEquipos.addMouseListener(new MouseAdapter() {// Añadir un MouseListener para detectar clics
+		tablaEquipos.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int row = tablaEquipos.rowAtPoint(e.getPoint());
 				int column = tablaEquipos.columnAtPoint(e.getPoint());
 
 				for (int i = 0; i < tEquipos.getRowCount(); i++) {
-					if (i < tEquipos.getRowCount()) { // No agregar a la fila del botón
-						tEquipos.setValueAt("Eliminar", i, 9); // Colocar "Eliminar" en la nueva columna
+					if (i < tEquipos.getRowCount()) { 
+						tEquipos.setValueAt("Eliminar", i, 9); 
 					}
 				}
 
 				for (int i = 0; i < tEquipos.getRowCount(); i++) {
-					if (i < tEquipos.getRowCount()) { // No agregar a la fila del botón
-						tEquipos.setValueAt("Modificar", i, 10); // Colocar "Eliminar" en la nueva columna
+					if (i < tEquipos.getRowCount()) { 
+						tEquipos.setValueAt("Modificar", i, 10); 
 					}
 				}
 
-				// Verificar si se hizo clic en la columna de "Eliminar"
 				if (column == 9) {
 					String codigo = tablaEquipos.getValueAt(row, 0).toString();
 					int confirmacion = JOptionPane.showConfirmDialog(null,
@@ -129,7 +122,7 @@ public class ABMEquipos extends JPanel {
 							for (Conexion conexion : conexiones)
 								coordinador.borrarConexion(conexion);
 						}
-						tEquipos.removeRow(row); // Eliminar la fila si se confirma
+						tEquipos.removeRow(row); 
 						coordinador.eliminarEquipo(codigo);
 						coordinador.cargarDatos();
 					}
@@ -142,28 +135,24 @@ public class ABMEquipos extends JPanel {
 				}
 			}
 		});
-		tablaEquipos.setBackground(Color.BLACK); // Fondo de la tabla
-		tablaEquipos.setForeground(NEON_GREEN); // Letras de la tabla
-		tablaEquipos.setGridColor(NEON_GREEN); // Bordes de la tabla
+		tablaEquipos.setBackground(Color.BLACK); 
+		tablaEquipos.setForeground(NEON_GREEN); 
+		tablaEquipos.setGridColor(NEON_GREEN); 
 
-		// Personalizar la cabecera
 		JTableHeader header = tablaEquipos.getTableHeader();
-		header.setBackground(Color.BLACK); // Fondo de la cabecera
-		header.setForeground(NEON_GREEN); // Color del texto de la cabecera
-		header.setFont(header.getFont().deriveFont(Font.BOLD, 14f)); // Fuente en negrita para la cabecera
+		header.setBackground(Color.BLACK); 
+		header.setForeground(NEON_GREEN); 
+		header.setFont(header.getFont().deriveFont(Font.BOLD, 14f)); 
 
-		// Configurar el JScrollPane para contener la tabla
 		JScrollPane pane = new JScrollPane(tablaEquipos);
 		pane.setBackground(Color.BLACK);
-		pane.getViewport().setBackground(Color.BLACK); // Color de fondo del viewport
+		pane.getViewport().setBackground(Color.BLACK); 
 
-		// Añadir el panel de scroll (con la tabla) al panel principal
 		panelEquipo.add(pane, BorderLayout.CENTER);
 
 		JButton btnAgregarEquipo = new JButton("Agregar equipo");
 		btnAgregarEquipo.addActionListener(e -> formularioAgregarEquipo(tEquipos));
 
-		// Agregar el panelEquipo a la instancia actual de ABMEquipos
 		this.setLayout(new BorderLayout());
 		this.add(panelEquipo, BorderLayout.CENTER);
 		this.add(btnAgregarEquipo, BorderLayout.SOUTH);
@@ -171,23 +160,20 @@ public class ABMEquipos extends JPanel {
 
 	public void formularioAgregarEquipo(DefaultTableModel table) {
 
-		// Crear un nuevo JDialog para el formulario
 		JDialog dialog = new JDialog((Frame) null, "Agregar equipo", true);
 		dialog.setTitle("Agregar Nuevo Equipo");
 		dialog.setSize(500, 500);
-		dialog.setLocationRelativeTo(null); // Centra el diálogo
+		dialog.setLocationRelativeTo(null); 
 
-		// Configurar el panel de formulario
 		JPanel panelFormulario = new JPanel();
-		panelFormulario.setLayout(new GridBagLayout()); // Usar GridBagLayout para mayor flexibilidad
+		panelFormulario.setLayout(new GridBagLayout()); 
 		panelFormulario.setBackground(Color.BLACK);
 		panelFormulario.setForeground(NEON_GREEN);
 
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.insets = new Insets(5, 5, 5, 5); // Espacio entre componentes
-		gbc.anchor = GridBagConstraints.WEST; // Alinear a la izquierda
+		gbc.insets = new Insets(5, 5, 5, 5); 
+		gbc.anchor = GridBagConstraints.WEST; 
 
-		// Definir los campos de texto
 		JTextField campoCodigo = new JTextField(15);
 		JTextField campoDescripcion = new JTextField(15);
 		JTextField campoMarca = new JTextField(15);
@@ -199,25 +185,21 @@ public class ABMEquipos extends JPanel {
 		JTextField campoDireccionesIP = new JTextField(15);
 		JTextField campoEstado = new JTextField(15);
 
-		// Método auxiliar para agregar etiquetas y campos
 		addLabelAndField(panelFormulario, gbc, "Código de equipo:", campoCodigo);
 		addLabelAndField(panelFormulario, gbc, "Descripción del equipo:", campoDescripcion);
 		addLabelAndField(panelFormulario, gbc, "Marca del equipo:", campoMarca);
 		addLabelAndField(panelFormulario, gbc, "Modelo del equipo:", campoModelo);
 
-		// Tipo de equipo
 		addLabelAndField(panelFormulario, gbc, "Código de tipo de equipo:", campoCodTipoEquipo);
 		addLabelAndField(panelFormulario, gbc, "Descripción de tipo de equipo:", campoDescTipoEquipo);
 
-		// Ubicación
 		addLabelAndField(panelFormulario, gbc, "Código de ubicación:", campoCodUbicacion);
 		addLabelAndField(panelFormulario, gbc, "Descripción de la ubicación:", campoDescUbicacion);
 
-		// Puertos
 		JLabel labelPuertos = new JLabel("Puertos:");
 		labelPuertos.setForeground(NEON_GREEN);
 		gbc.gridx = 0;
-		gbc.gridy++; // Nueva fila
+		gbc.gridy++; 
 		panelFormulario.add(labelPuertos, gbc);
 
 		Integer[] cantPuertos = new Integer[50];
@@ -227,14 +209,13 @@ public class ABMEquipos extends JPanel {
 		JComboBox<Integer> comboBoxPuertos = new JComboBox<>(cantPuertos);
 		comboBoxPuertos.setBackground(NEON_GRAY);
 		comboBoxPuertos.setForeground(NEON_GREEN);
-		gbc.gridx = 1; // Columna del comboBox
+		gbc.gridx = 1; 
 		panelFormulario.add(comboBoxPuertos, gbc);
 
-		// Puertos
 		JLabel labelTipoPuertos = new JLabel("Tipos de puerto:");
 		labelTipoPuertos.setForeground(NEON_GREEN);
 		gbc.gridx = 0;
-		gbc.gridy++; // Nueva fila
+		gbc.gridy++; 
 		panelFormulario.add(labelTipoPuertos, gbc);
 
 		TreeMap<String, TipoPuerto> tipoPuerto = coordinador.listarTipoPuertos();
@@ -252,16 +233,13 @@ public class ABMEquipos extends JPanel {
 		JComboBox<String> comboBoxTipoPuerto = new JComboBox<String>(listPuertos);
 		comboBoxTipoPuerto.setBackground(NEON_GRAY);
 		comboBoxTipoPuerto.setForeground(NEON_GREEN);
-		gbc.gridx = 1; // Columna del comboBox
+		gbc.gridx = 1; 
 		panelFormulario.add(comboBoxTipoPuerto, gbc);
 
-		// Direcciones IP
 		addLabelAndField(panelFormulario, gbc, "Direcciones IP:", campoDireccionesIP);
 
-		// Estado
 		addLabelAndField(panelFormulario, gbc, "Estado:", campoEstado);
 
-		// Botón para confirmar la adición
 		JButton btnAgregar = new JButton("Agregar");
 		btnAgregar.addActionListener(e -> {
 			if (equipos.containsKey(campoCodigo.getText())) {
@@ -277,8 +255,6 @@ public class ABMEquipos extends JPanel {
 
 			boolean estado = Boolean.parseBoolean(campoEstado.getText());
 
-			// Crear un arreglo de objetos para la nueva fila con los valores de cada
-			// JTextField
 			Object[] nuevaFila = { campoCodigo.getText(), campoDescripcion.getText(), campoMarca.getText(),
 					campoModelo.getText(), campoCodTipoEquipo.getText() + "," + campoDescTipoEquipo.getText(),
 					campoCodUbicacion.getText() + "," + campoDescUbicacion.getText(),
@@ -290,36 +266,31 @@ public class ABMEquipos extends JPanel {
 					new Ubicacion(campoCodUbicacion.getText(), campoDescUbicacion.getText()), estado);
 			coordinador.agregarEquipo(equipo);
 
-			// Agregar la nueva fila al modelo de la tabla
 			table.addRow(nuevaFila);
 
-			// Cerrar el diálogo después de agregar
 			dialog.dispose();
 		});
 
 		JButton cancelar = crearBotonCancelar(dialog);
 
-		// Agregar los botones al panel
 		gbc.gridx = 0;
-		gbc.gridy++; // Nueva fila
+		gbc.gridy++; 
 		panelFormulario.add(btnAgregar, gbc);
-		gbc.gridx = 1; // Columna del botón cancelar
+		gbc.gridx = 1; 
 		panelFormulario.add(cancelar, gbc);
 
 		dialog.add(panelFormulario);
-		dialog.setVisible(true); // Muestra el diálogo
+		dialog.setVisible(true); 
 		dialog.setResizable(false);
 	}
 
 	private void modificarEquipo(DefaultTableModel tEquipos, int row, Equipo equipo) {
 
-		// Crear un formulario para editar el equipo
 		JDialog dialog = new JDialog((Frame) null, "Modificar equipo", true);
 		dialog.setTitle("Modificar Equipo");
 		dialog.setSize(500, 500);
-		dialog.setLocationRelativeTo(null); // Centra el diálogo
+		dialog.setLocationRelativeTo(null); 
 
-		// Obtener los datos actuales de la fila
 		String codigoActual = equipo.getCodigo();
 		String descripcionActual = equipo.getCodigo();
 		String marcaActual = equipo.getMarca();
@@ -334,13 +305,11 @@ public class ABMEquipos extends JPanel {
 
 		String codigo = codigoActual;
 
-		// Crear un panel para el formulario
 		JPanel panelFormulario = new JPanel();
-		panelFormulario.setLayout(new GridLayout(0, 2)); // 9 etiquetas y 1 fila para los botones
+		panelFormulario.setLayout(new GridLayout(0, 2)); 
 		panelFormulario.setBackground(Color.BLACK);
 		panelFormulario.setForeground(NEON_GREEN);
 
-		// Campos individuales sin bucles
 		JLabel labelCodigo = new JLabel("Código de equipo:");
 		labelCodigo.setForeground(NEON_GREEN);
 		JTextField campoCodigo = new JTextField(codigoActual);
@@ -417,20 +386,15 @@ public class ABMEquipos extends JPanel {
 		panelFormulario.add(labelEstado);
 		panelFormulario.add(campoEstado);
 
-		// Botón para confirmar la modificación
 		JButton btnModificar = new JButton("Modificar");
 		btnModificar.addActionListener(e -> {
-			// Validar el estado del equipo
 			boolean estado = campoEstado.getText().equalsIgnoreCase("true");
 
-			// Crear un nuevo objeto Equipo con los valores modificados
 			Equipo equipoModificado = new Equipo(campoCodigo.getText(), campoDescripcion.getText(),
 					campoMarca.getText(), campoModelo.getText(),
 					new TipoEquipo(campoCodTipoEquipo.getText(), "," + campoDescTipoEquipo),
-					new Ubicacion(campoCodUbicacion.getText(), "," + campoDescUbicacion),
-					estado);
+					new Ubicacion(campoCodUbicacion.getText(), "," + campoDescUbicacion), estado);
 
-			// Actualizar el modelo de la tabla
 			tEquipos.setValueAt(equipoModificado.getCodigo(), row, 0);
 			tEquipos.setValueAt(equipoModificado.getDescripcion(), row, 1);
 			tEquipos.setValueAt(equipoModificado.getMarca(), row, 2);
@@ -439,24 +403,20 @@ public class ABMEquipos extends JPanel {
 			tEquipos.setValueAt(equipoModificado.getUbicacion(), row, 5);
 			tEquipos.setValueAt(estado, row, 8);
 
-			// Actualizar el equipo en el coordinador
-			coordinador.modificarEquipo(codigo, equipoModificado);
+			//Todavia no funciona bien
+			//coordinador.modificarEquipo(codigo, equipoModificado);
 
-			// Cerrar el diálogo después de modificar
 			dialog.dispose();
 		});
 
-		// Botón para cancelar
 		JButton btnCancelar = new JButton("Cancelar");
 		btnCancelar.addActionListener(e -> dialog.dispose());
 
-		// Agregar los botones al panel
 		panelFormulario.add(btnModificar);
 		panelFormulario.add(btnCancelar);
 
-		// Agregar el panel al diálogo
 		dialog.add(panelFormulario);
-		dialog.setVisible(true); // Muestra el diálogo
+		dialog.setVisible(true);
 		dialog.setResizable(false);
 	}
 
@@ -490,24 +450,23 @@ public class ABMEquipos extends JPanel {
 		return true;
 	}
 
-	// Método auxiliar para agregar etiqueta y campo al panel
 	private void addLabelAndField(JPanel panel, GridBagConstraints gbc, String labelText, JTextField textField) {
 		JLabel label = new JLabel(labelText);
 		label.setForeground(NEON_GREEN);
-		gbc.gridx = 0; // Columna de la etiqueta
-		gbc.gridy++; // Nueva fila
+		gbc.gridx = 0;
+		gbc.gridy++;
 		panel.add(label, gbc);
-		gbc.gridx = 1; // Columna del campo
+		gbc.gridx = 1;
 		crearJTextField(textField);
 		panel.add(textField, gbc);
 	}
 
+	@SuppressWarnings("unused")
 	private void guardarEquipoEnArchivo(Equipo equipo) {
-		try (FileWriter fw = new FileWriter("equipo.txt", true); // true para modo append
+		try (FileWriter fw = new FileWriter("equipo.txt", true);
 				BufferedWriter bw = new BufferedWriter(fw);
 				PrintWriter out = new PrintWriter(bw)) {
 
-			// Escribe los datos del equipo en el archivo en el formato adecuado
 			out.println(equipo.getCodigo() + ";" + equipo.getDescripcion() + ";" + equipo.getMarca() + ";"
 					+ equipo.getModelo() + ";" + equipo.getTipoEquipo().getCodigo() + ","
 					+ equipo.getTipoEquipo().getDescripcion() + ";" + equipo.getUbicacion().getCodigo() + ","
