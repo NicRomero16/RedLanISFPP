@@ -1,5 +1,5 @@
 AP01;APAulas1;;;AP;A01;1G,1;192.168.16.2;true;
-AP03;APAulas3;;;AP;A03;1G,1;192.168.16.4;true;
+AP03;APAulas3;;;AP;A03;1G,1;192.168.16.4;false;
 AP06;APAulas6;;;AP;A06;1G,1;192.168.16.7;true;
 AP07;APAulas7;;;AP;RAP;1G,1;192.168.16.8;true;
 AP08;APAulas8;;;AP;A08;1G,1;192.168.16.9;true;
@@ -13,7 +13,7 @@ SWMA;SWAdministración;;;SW;RMA;1G,8;192.168.16.117;true;
 SWOF;SWOficina;;;SW;OFI;1G,8;192.168.16.110;true;
 SWB1;Switch Biblioteca Arriba;;;SW;BT;1G,8;;true;
 SWB2;Switch Biblioteca Abajo;;;SW;BT;1G,8;;true;
-SWFT;Switch Fotocopiadora;;;SW;FOT;1G,8;;true;
+SWFT;Switch Fotocopiadora;;;SW;FOT;1G,8;;false;
 SWGR;Switch Gremio;;;SW;GRE;1G,8;;true;
 SWAP;SWAmpliación;;;SW;RAP;1G,8;192.168.16.118;true;
 SWL0;SWLabs5;;;SW;L05;1G,8;192.168.16.126;true;
