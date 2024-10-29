@@ -4,18 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Frame;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
@@ -30,8 +23,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.border.LineBorder;
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane.SystemMenuBar;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
@@ -47,8 +38,7 @@ public class ABMEquipos extends JPanel {
 	private TreeMap<String, Equipo> equipos;
 	private Coordinador coordinador;
 	private static final Color NEON_GREEN = new Color(57, 255, 20);
-	private static final Color NEON_GRAY = new Color(30, 30, 30);
-
+	
 	public ABMEquipos(TreeMap<String, Equipo> equipos, Coordinador coordinador) {
 		super();
 		this.coordinador = coordinador;
@@ -177,89 +167,62 @@ public class ABMEquipos extends JPanel {
 		dialog.setSize(500, 500);
 		dialog.setLocationRelativeTo(null); // Centra el diálogo
 
-		// Configurar el panel de formulario
-		JPanel panelFormulario = new JPanel();
-		panelFormulario.setLayout(new GridBagLayout()); // Usar GridBagLayout para mayor flexibilidad
-		panelFormulario.setBackground(Color.BLACK);
-		panelFormulario.setForeground(NEON_GREEN);
+		// Crear un panel para el formulario
+				JPanel panelFormulario = new JPanel();
+				panelFormulario.setLayout(new GridLayout(0, 2)); // 0 filas, 2 columnas
+				panelFormulario.setBackground(Color.BLACK);
+				panelFormulario.setForeground(NEON_GREEN);
 
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.insets = new Insets(5, 5, 5, 5); // Espacio entre componentes
-		gbc.anchor = GridBagConstraints.WEST; // Alinear a la izquierda
+				JLabel labelCodigo = new JLabel("Codigo de equipo");
+				JTextField campoCodigo = new JTextField();
+				crearJTextField(labelCodigo,panelFormulario,campoCodigo);
+				
+				JLabel labelDescripcion = new JLabel("Descripcion del equipo");
+				JTextField campoDescripcion = new JTextField();
+				crearJTextField(labelDescripcion,panelFormulario,campoDescripcion);
+				
+				JLabel labelMarca = new JLabel("Marca del equipo");
+				JTextField campoMarca = new JTextField();
+				crearJTextField(labelMarca,panelFormulario,campoMarca);
+				
+				JLabel labelModelo = new JLabel("Modelo del equipo");
+				JTextField campoModelo = new JTextField();
+				crearJTextField(labelModelo,panelFormulario,campoModelo);
+				
+				// Tipos de equipo
+				JLabel labelTipoEquipo = new JLabel("Tipo de equipo:");
+				String[] listTipoEq = obtenerTiposEquipos();
+				JComboBox<String> comboBoxTipoEquipos = new JComboBox<String>(listTipoEq);
+				crearComboBox(labelTipoEquipo,panelFormulario, comboBoxTipoEquipos);
 
-		// Definir los campos de texto
-		JTextField campoCodigo = new JTextField(15);
-		JTextField campoDescripcion = new JTextField(15);
-		JTextField campoMarca = new JTextField(15);
-		JTextField campoModelo = new JTextField(15);
-		JTextField campoCodTipoEquipo = new JTextField(15);
-		JTextField campoDescTipoEquipo = new JTextField(15);
-		JTextField campoCodUbicacion = new JTextField(15);
-		JTextField campoDescUbicacion = new JTextField(15);
-		JTextField campoDireccionesIP = new JTextField(15);
-		JTextField campoEstado = new JTextField(15);
+				// Ubicación
+				JLabel labelUbicacion = new JLabel("Ubicacion:");
+				String[] listUbicaciones = obtenerUbicaciones();
+				JComboBox<String> comboBoxUbicacion = new JComboBox<String>(listUbicaciones);
+				crearComboBox(labelUbicacion,panelFormulario, comboBoxUbicacion);
 
-		// Método auxiliar para agregar etiquetas y campos
-		addLabelAndField(panelFormulario, gbc, "Código de equipo:", campoCodigo);
-		addLabelAndField(panelFormulario, gbc, "Descripción del equipo:", campoDescripcion);
-		addLabelAndField(panelFormulario, gbc, "Marca del equipo:", campoMarca);
-		addLabelAndField(panelFormulario, gbc, "Modelo del equipo:", campoModelo);
+				// Puertos
+				JLabel labelPuertos = new JLabel("Cantidad de puertos:");
+				Integer[] cantPuertos = obtenerCantidadPuertos();
+				JComboBox<Integer> comboBoxPuertos = new JComboBox<>(cantPuertos);
+				crearComboBox(labelPuertos,panelFormulario, comboBoxPuertos);
 
-		// Tipo de equipo
-		addLabelAndField(panelFormulario, gbc, "Código de tipo de equipo:", campoCodTipoEquipo);
-		addLabelAndField(panelFormulario, gbc, "Descripción de tipo de equipo:", campoDescTipoEquipo);
+				// Tipos de puertos
+				JLabel labelTipoPuertos = new JLabel("Tipos de puertos:");
+				String[] listPuertos = obtenerTipoPuertos();
+				JComboBox<String> comboBoxTipoPuerto = new JComboBox<String>(listPuertos);
+				crearComboBox(labelTipoPuertos,panelFormulario, comboBoxTipoPuerto);
 
-		// Ubicación
-		addLabelAndField(panelFormulario, gbc, "Código de ubicación:", campoCodUbicacion);
-		addLabelAndField(panelFormulario, gbc, "Descripción de la ubicación:", campoDescUbicacion);
+				// Direcciones IP
+				JLabel labelDireccionesIP = new JLabel("Direccion IP");
+				JTextField campoDireccionesIP = new JTextField();
+				crearJTextField(labelDireccionesIP,panelFormulario,campoDireccionesIP);
 
-		// Puertos
-		JLabel labelPuertos = new JLabel("Puertos:");
-		labelPuertos.setForeground(NEON_GREEN);
-		gbc.gridx = 0;
-		gbc.gridy++; // Nueva fila
-		panelFormulario.add(labelPuertos, gbc);
-
-		Integer[] cantPuertos = new Integer[50];
-		for (int i = 0; i < 50; i++)
-			cantPuertos[i] = i + 1;
-
-		JComboBox<Integer> comboBoxPuertos = new JComboBox<>(cantPuertos);
-		comboBoxPuertos.setBackground(NEON_GRAY);
-		comboBoxPuertos.setForeground(NEON_GREEN);
-		gbc.gridx = 1; // Columna del comboBox
-		panelFormulario.add(comboBoxPuertos, gbc);
-
-		// Puertos
-		JLabel labelTipoPuertos = new JLabel("Tipos de puerto:");
-		labelTipoPuertos.setForeground(NEON_GREEN);
-		gbc.gridx = 0;
-		gbc.gridy++; // Nueva fila
-		panelFormulario.add(labelTipoPuertos, gbc);
-
-		TreeMap<String, TipoPuerto> tipoPuerto = coordinador.listarTipoPuertos();
-		List<String> tiposPuertos = new ArrayList<String>();
-		for (TipoPuerto tipos : tipoPuerto.values()) {
-			tiposPuertos.add(tipos.getCodigo());
-		}
-		String[] listPuertos = new String[tiposPuertos.size()];
-		int i = 0;
-		for (String tipos : tiposPuertos) {
-			listPuertos[i] = tipos;
-			i++;
-		}
-
-		JComboBox<String> comboBoxTipoPuerto = new JComboBox<String>(listPuertos);
-		comboBoxTipoPuerto.setBackground(NEON_GRAY);
-		comboBoxTipoPuerto.setForeground(NEON_GREEN);
-		gbc.gridx = 1; // Columna del comboBox
-		panelFormulario.add(comboBoxTipoPuerto, gbc);
-
-		// Direcciones IP
-		addLabelAndField(panelFormulario, gbc, "Direcciones IP:", campoDireccionesIP);
-
-		// Estado
-		addLabelAndField(panelFormulario, gbc, "Estado:", campoEstado);
+				// Estado
+				JLabel labelEstado = new JLabel("Estado:");
+				String[] estados = { "false", "true" };
+				JComboBox<String> comboBoxEstado = new JComboBox<String>(estados);
+				crearComboBox(labelEstado,panelFormulario, comboBoxEstado);
 
 		// Botón para confirmar la adición
 		JButton btnAgregar = new JButton("Agregar");
@@ -270,25 +233,35 @@ public class ABMEquipos extends JPanel {
 				return;
 			}
 
-			if (!verificarCampoEstado(campoEstado)) {
-				campoEstado.requestFocus();
-				return;
-			}
-
-			boolean estado = Boolean.parseBoolean(campoEstado.getText());
+			TipoEquipo tEquipo = coordinador.buscarTipoEquipo(comboBoxTipoEquipos.getSelectedItem().toString());
+			Ubicacion ubicacion = coordinador.buscarUbicacion(comboBoxUbicacion.getSelectedItem().toString());
 
 			// Crear un arreglo de objetos para la nueva fila con los valores de cada
 			// JTextField
 			Object[] nuevaFila = { campoCodigo.getText(), campoDescripcion.getText(), campoMarca.getText(),
-					campoModelo.getText(), campoCodTipoEquipo.getText() + "," + campoDescTipoEquipo.getText(),
-					campoCodUbicacion.getText() + "," + campoDescUbicacion.getText(),
+					campoModelo.getText(), tEquipo.getCodigo() + "," + tEquipo.getDescripcion(),
+					ubicacion.getCodigo() + "," + ubicacion.getDescripcion(),
 					comboBoxPuertos.getSelectedItem() + ", " + comboBoxTipoPuerto.getSelectedItem(),
-					campoDireccionesIP.getText(), estado };
+					campoDireccionesIP.getText(), comboBoxEstado.getSelectedItem() };
+
+			boolean estado = false;
+
+			if (comboBoxEstado.getSelectedItem() == "false")
+				estado = false;
+			else
+				estado = true;
+
+			int cantidadPuertos = comboBoxPuertos.getSelectedIndex() + 1;
+
+			TipoPuerto tipoPuerto1 = coordinador.buscarTipoPuerto(comboBoxTipoPuerto.getSelectedItem().toString());
 
 			Equipo equipo = new Equipo(campoCodigo.getText(), campoDescripcion.getText(), campoMarca.getText(),
-					campoModelo.getText(), new TipoEquipo(campoCodTipoEquipo.getText(), campoDescTipoEquipo.getText()),
-					new Ubicacion(campoCodUbicacion.getText(), campoDescUbicacion.getText()), estado);
+					campoModelo.getText(), tEquipo, ubicacion, estado);
+
+			coordinador.agregarPuertos(equipo, cantidadPuertos, tipoPuerto1);
+			coordinador.agregarDireccionesIP(equipo, campoDireccionesIP.getSelectedText());
 			coordinador.agregarEquipo(equipo);
+			coordinador.cargarDatos();
 
 			// Agregar la nueva fila al modelo de la tabla
 			table.addRow(nuevaFila);
@@ -299,12 +272,9 @@ public class ABMEquipos extends JPanel {
 
 		JButton cancelar = crearBotonCancelar(dialog);
 
-		// Agregar los botones al panel
-		gbc.gridx = 0;
-		gbc.gridy++; // Nueva fila
-		panelFormulario.add(btnAgregar, gbc);
-		gbc.gridx = 1; // Columna del botón cancelar
-		panelFormulario.add(cancelar, gbc);
+
+		panelFormulario.add(btnAgregar);
+		panelFormulario.add(cancelar);
 
 		dialog.add(panelFormulario);
 		dialog.setVisible(true); // Muestra el diálogo
@@ -312,7 +282,6 @@ public class ABMEquipos extends JPanel {
 	}
 
 	private void modificarEquipo(DefaultTableModel tEquipos, int row, Equipo equipo) {
-
 		// Crear un formulario para editar el equipo
 		JDialog dialog = new JDialog((Frame) null, "Modificar equipo", true);
 		dialog.setTitle("Modificar Equipo");
@@ -321,126 +290,106 @@ public class ABMEquipos extends JPanel {
 
 		// Obtener los datos actuales de la fila
 		String codigoActual = equipo.getCodigo();
-		String descripcionActual = equipo.getCodigo();
+		String descripcionActual = equipo.getDescripcion(); // Corregido de getCodigo() a getDescripcion()
 		String marcaActual = equipo.getMarca();
 		String modeloActual = equipo.getModelo();
-		String codTipoEquipoActual = equipo.getTipoEquipo().getCodigo();
-		String descTipoEquipoActual = equipo.getTipoEquipo().getDescripcion();
-		String codUbicacionActual = equipo.getUbicacion().getCodigo();
-		String descUbicacionActual = equipo.getUbicacion().getDescripcion();
+		String tipoEquipoActual = equipo.getTipoEquipo().getCodigo();
+		String ubicacionActual = equipo.getUbicacion().getCodigo();
 		String puertosActual = tEquipos.getValueAt(row, 6).toString();
 		String direccionesIPActual = tEquipos.getValueAt(row, 7).toString();
 		String estadoActual = tEquipos.getValueAt(row, 8).toString();
 
-		String codigo = codigoActual;
-
 		// Crear un panel para el formulario
 		JPanel panelFormulario = new JPanel();
-		panelFormulario.setLayout(new GridLayout(0, 2)); // 9 etiquetas y 1 fila para los botones
+		panelFormulario.setLayout(new GridLayout(0, 2)); // 0 filas, 2 columnas
 		panelFormulario.setBackground(Color.BLACK);
 		panelFormulario.setForeground(NEON_GREEN);
 
 		// Campos individuales sin bucles
-		JLabel labelCodigo = new JLabel("Código de equipo:");
-		labelCodigo.setForeground(NEON_GREEN);
+		JLabel labelCodigo = new JLabel("Codigo de equipo");
 		JTextField campoCodigo = new JTextField(codigoActual);
-		crearJTextField(campoCodigo);
-		panelFormulario.add(labelCodigo);
-		panelFormulario.add(campoCodigo);
-
-		JLabel labelDescripcion = new JLabel("Descripción del equipo:");
-		labelDescripcion.setForeground(NEON_GREEN);
+		crearJTextField(labelCodigo,panelFormulario,campoCodigo);
+		
+		JLabel labelDescripcion = new JLabel("Descripcion del equipo");
 		JTextField campoDescripcion = new JTextField(descripcionActual);
-		crearJTextField(campoDescripcion);
-		panelFormulario.add(labelDescripcion);
-		panelFormulario.add(campoDescripcion);
-
-		JLabel labelMarca = new JLabel("Marca del equipo:");
-		labelMarca.setForeground(NEON_GREEN);
+		crearJTextField(labelDescripcion,panelFormulario,campoDescripcion);
+		
+		JLabel labelMarca = new JLabel("Marca del equipo");
 		JTextField campoMarca = new JTextField(marcaActual);
-		crearJTextField(campoMarca);
-		panelFormulario.add(labelMarca);
-		panelFormulario.add(campoMarca);
-
-		JLabel labelModelo = new JLabel("Modelo del equipo:");
-		labelModelo.setForeground(NEON_GREEN);
+		crearJTextField(labelMarca,panelFormulario,campoMarca);
+		
+		JLabel labelModelo = new JLabel("Modelo del equipo");
 		JTextField campoModelo = new JTextField(modeloActual);
-		crearJTextField(campoModelo);
-		panelFormulario.add(labelModelo);
-		panelFormulario.add(campoModelo);
+		crearJTextField(labelModelo,panelFormulario,campoModelo);
+		
+		// Tipos de equipo
+		JLabel labelTipoEquipo = new JLabel("Tipo de equipo:");
+		String[] listTipoEq = obtenerTiposEquipos();
+		JComboBox<String> comboBoxTipoEquipos = new JComboBox<String>(listTipoEq);
+		crearComboBox(labelTipoEquipo,panelFormulario, comboBoxTipoEquipos);
+		comboBoxTipoEquipos.setSelectedItem(tipoEquipoActual); // Establecer el último dato
+		
+		// Ubicación
+		JLabel labelUbicacion = new JLabel("Ubicacion:");
+		String[] listUbicaciones = obtenerUbicaciones();
+		JComboBox<String> comboBoxUbicacion = new JComboBox<String>(listUbicaciones);
+		crearComboBox(labelUbicacion,panelFormulario, comboBoxUbicacion);
+		comboBoxUbicacion.setSelectedItem(ubicacionActual); // Establecer el último dato
 
-		JLabel labelTipoEquipo1 = new JLabel("Codigo de tipo de equipo:");
-		JLabel labelTipoEquipo2 = new JLabel("Descripcion de tipo de equipo:");
-		labelTipoEquipo1.setForeground(NEON_GREEN);
-		labelTipoEquipo2.setForeground(NEON_GREEN);
+		// Puertos
+		JLabel labelPuertos = new JLabel("Cantidad de puertos:");
+		Integer[] cantPuertos = obtenerCantidadPuertos();
+		JComboBox<Integer> comboBoxPuertos = new JComboBox<>(cantPuertos);
+		crearComboBox(labelPuertos,panelFormulario, comboBoxPuertos);
+		comboBoxPuertos.setSelectedItem(puertosActual); // Establecer el último dato
 
-		JTextField campoCodTipoEquipo = new JTextField(codTipoEquipoActual);
-		JTextField campoDescTipoEquipo = new JTextField(descTipoEquipoActual);
-		crearJTextField(campoCodTipoEquipo);
-		crearJTextField(campoDescTipoEquipo);
-		panelFormulario.add(labelTipoEquipo1);
-		panelFormulario.add(campoCodTipoEquipo);
-		panelFormulario.add(labelTipoEquipo2);
-		panelFormulario.add(campoDescTipoEquipo);
-
-		JLabel labelCodUbicacion = new JLabel("Codigo de ubicación:");
-		JLabel labelDescUbicacion = new JLabel("Descripcion de la ubicacion:");
-		labelCodUbicacion.setForeground(NEON_GREEN);
-		labelDescUbicacion.setForeground(NEON_GREEN);
-		JTextField campoCodUbicacion = new JTextField(codUbicacionActual);
-		JTextField campoDescUbicacion = new JTextField(descUbicacionActual);
-		crearJTextField(campoCodUbicacion);
-		crearJTextField(campoDescUbicacion);
-		panelFormulario.add(labelCodUbicacion);
-		panelFormulario.add(campoCodUbicacion);
-		panelFormulario.add(labelDescUbicacion);
-		panelFormulario.add(campoDescUbicacion);
-
-		JLabel labelPuertos = new JLabel("Puertos:");
-		labelPuertos.setForeground(NEON_GREEN);
-		JTextField campoPuertos = new JTextField(puertosActual);
-		crearJTextField(campoPuertos);
-		panelFormulario.add(labelPuertos);
-		panelFormulario.add(campoPuertos);
-
-		JLabel labelDireccionesIP = new JLabel("Direcciones IP:");
-		labelDireccionesIP.setForeground(NEON_GREEN);
+		// Tipos de puertos
+		JLabel labelTipoPuertos = new JLabel("Tipos de puertos:");
+		String[] listPuertos = obtenerTipoPuertos();
+		JComboBox<String> comboBoxTipoPuerto = new JComboBox<String>(listPuertos);
+		crearComboBox(labelTipoPuertos,panelFormulario, comboBoxTipoPuerto);
+		
+		// Direcciones IP
+		JLabel labelDireccionesIP = new JLabel("Direcciones IP");
 		JTextField campoDireccionesIP = new JTextField(direccionesIPActual);
-		crearJTextField(campoDireccionesIP);
-		panelFormulario.add(labelDireccionesIP);
-		panelFormulario.add(campoDireccionesIP);
-
+		crearJTextField(labelDireccionesIP,panelFormulario,campoDireccionesIP);
+		
+		// Estado
 		JLabel labelEstado = new JLabel("Estado:");
-		labelEstado.setForeground(NEON_GREEN);
-		JTextField campoEstado = new JTextField(estadoActual);
-		crearJTextField(campoEstado);
-		panelFormulario.add(labelEstado);
-		panelFormulario.add(campoEstado);
+		String[] estados = { "false", "true" };
+		JComboBox<String> comboBoxEstado = new JComboBox<String>(estados);
+		crearComboBox(labelEstado,panelFormulario, comboBoxEstado);
+		comboBoxEstado.setSelectedItem(estadoActual); // Establecer el último dato
 
 		// Botón para confirmar la modificación
 		JButton btnModificar = new JButton("Modificar");
 		btnModificar.addActionListener(e -> {
-			// Validar el estado del equipo
-			boolean estado = campoEstado.getText().equalsIgnoreCase("true");
+
+			TipoEquipo tipoEquipo = coordinador.buscarTipoEquipo(comboBoxTipoEquipos.getSelectedItem().toString());
+			Ubicacion ubicacion = coordinador.buscarUbicacion(comboBoxUbicacion.getSelectedItem().toString());
+
+			boolean estado = false;
+
+			if (comboBoxEstado.getSelectedItem() == "false")
+				estado = false;
+			else
+				estado = true;
 
 			// Crear un nuevo objeto Equipo con los valores modificados
 			Equipo equipoModificado = new Equipo(campoCodigo.getText(), campoDescripcion.getText(),
-					campoMarca.getText(), campoModelo.getText(),
-					new TipoEquipo(campoCodTipoEquipo.getText(), "," + campoDescTipoEquipo),
-					new Ubicacion(campoCodUbicacion.getText(), "," + campoDescUbicacion),
-					estado);
+					campoMarca.getText(), campoModelo.getText(), tipoEquipo, ubicacion, estado);
 
 			// Actualizar el modelo de la tabla
 			tEquipos.setValueAt(equipoModificado.getCodigo(), row, 0);
 			tEquipos.setValueAt(equipoModificado.getDescripcion(), row, 1);
 			tEquipos.setValueAt(equipoModificado.getMarca(), row, 2);
 			tEquipos.setValueAt(equipoModificado.getModelo(), row, 3);
-			tEquipos.setValueAt(equipoModificado.getTipoEquipo(), row, 4);
-			tEquipos.setValueAt(equipoModificado.getUbicacion(), row, 5);
+			tEquipos.setValueAt(equipoModificado.getTipoEquipo().getDescripcion(), row, 4); // Corregido
+			tEquipos.setValueAt(equipoModificado.getUbicacion().getDescripcion(), row, 5); // Corregido
 			tEquipos.setValueAt(estado, row, 8);
 
 			// Actualizar el equipo en el coordinador
-			coordinador.modificarEquipo(codigo, equipoModificado);
+			coordinador.modificarEquipo(codigoActual, equipoModificado); // Corregido
 
 			// Cerrar el diálogo después de modificar
 			dialog.dispose();
@@ -450,7 +399,7 @@ public class ABMEquipos extends JPanel {
 		JButton btnCancelar = new JButton("Cancelar");
 		btnCancelar.addActionListener(e -> dialog.dispose());
 
-		// Agregar los botones al panel
+		// Agregar los botones al panel, ocupando una sola fila
 		panelFormulario.add(btnModificar);
 		panelFormulario.add(btnCancelar);
 
@@ -470,52 +419,78 @@ public class ABMEquipos extends JPanel {
 		});
 		return btnCancelar;
 	}
-
-	public JTextField crearJTextField(JTextField text) {
+	
+	public void crearJTextField(JLabel label, JPanel panel,JTextField text) {
+		label.setForeground(NEON_GREEN);
 		text.setBackground(Color.BLACK);
 		text.setForeground(NEON_GREEN);
 		text.setCaretColor(Color.GREEN);
 		text.setBorder(BorderFactory.createLineBorder(Color.GREEN, 1));
-		return text;
+		panel.add(label);
+		panel.add(text);
 	}
 
-	public boolean verificarCampoEstado(JTextField campoEstado) {
-		String text = campoEstado.getText().toLowerCase();
-		if (!text.equals("true") && !text.equals("false")) {
-			JOptionPane.showMessageDialog(null, "El estado es invalido, ingrese 'true' o 'false' como valor válido",
-					"Error", JOptionPane.ERROR_MESSAGE);
-			campoEstado.setText("");
-			return false;
-		}
-		return true;
-	}
-
-	// Método auxiliar para agregar etiqueta y campo al panel
-	private void addLabelAndField(JPanel panel, GridBagConstraints gbc, String labelText, JTextField textField) {
-		JLabel label = new JLabel(labelText);
+	public void crearComboBox(JLabel label, JPanel panel, JComboBox<?> comboBox) {
 		label.setForeground(NEON_GREEN);
-		gbc.gridx = 0; // Columna de la etiqueta
-		gbc.gridy++; // Nueva fila
-		panel.add(label, gbc);
-		gbc.gridx = 1; // Columna del campo
-		crearJTextField(textField);
-		panel.add(textField, gbc);
+		comboBox.setBackground(Color.BLACK);
+		comboBox.setForeground(NEON_GREEN);
+		comboBox.setBorder(BorderFactory.createLineBorder(NEON_GREEN, 3));
+		panel.add(label);
+		panel.add(comboBox);
 	}
 
-	private void guardarEquipoEnArchivo(Equipo equipo) {
-		try (FileWriter fw = new FileWriter("equipo.txt", true); // true para modo append
-				BufferedWriter bw = new BufferedWriter(fw);
-				PrintWriter out = new PrintWriter(bw)) {
+	private String[] obtenerTiposEquipos() {
+		TreeMap<String, TipoEquipo> tipoEquipos = coordinador.listarTipoEquipos();
+		List<String> listTipoEquipos = new ArrayList<String>();
 
-			// Escribe los datos del equipo en el archivo en el formato adecuado
-			out.println(equipo.getCodigo() + ";" + equipo.getDescripcion() + ";" + equipo.getMarca() + ";"
-					+ equipo.getModelo() + ";" + equipo.getTipoEquipo().getCodigo() + ","
-					+ equipo.getTipoEquipo().getDescripcion() + ";" + equipo.getUbicacion().getCodigo() + ","
-					+ equipo.getUbicacion().getDescripcion() + ";" + equipo.getEstado() + ";" + equipo.getPuertos()
-					+ ";" + equipo.getDireccionesIP());
-		} catch (IOException e) {
-			e.printStackTrace();
+		for (TipoEquipo tipos : tipoEquipos.values()) {
+			listTipoEquipos.add(tipos.getCodigo());
 		}
+		String[] listTipoEq = new String[listTipoEquipos.size()];
+		int i1 = 0;
+		for (String tipos : listTipoEquipos) {
+			listTipoEq[i1] = tipos;
+			i1++;
+		}
+		return listTipoEq;
 	}
 
+	private String[] obtenerUbicaciones() {
+		TreeMap<String, Ubicacion> ubicaciones = coordinador.listarUbicaciones();
+		List<String> ubi = new ArrayList<String>();
+
+		for (Ubicacion ubicacion : ubicaciones.values()) {
+			ubi.add(ubicacion.getCodigo());
+		}
+
+		String[] listUbicaciones = new String[ubi.size()];
+		int i2 = 0;
+		for (String ubicacion : ubi) {
+			listUbicaciones[i2] = ubicacion;
+			i2++;
+		}
+		return listUbicaciones;
+	}
+
+	private Integer[] obtenerCantidadPuertos() {
+		Integer[] cantPuertos = new Integer[50];
+		for (int i3 = 0; i3 < 50; i3++)
+			cantPuertos[i3] = i3 + 1;
+		return cantPuertos;
+	}
+
+	private String[] obtenerTipoPuertos() {
+		TreeMap<String, TipoPuerto> tipoPuerto = coordinador.listarTipoPuertos();
+		List<String> tiposPuertos = new ArrayList<String>();
+		for (TipoPuerto tipos : tipoPuerto.values()) {
+			tiposPuertos.add(tipos.getCodigo());
+		}
+		String[] listPuertos = new String[tiposPuertos.size()];
+		int i = 0;
+		for (String tipos : tiposPuertos) {
+			listPuertos[i] = tipos;
+			i++;
+		}
+		return listPuertos;
+	}
 }

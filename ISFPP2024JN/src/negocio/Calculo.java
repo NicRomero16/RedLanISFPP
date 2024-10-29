@@ -93,26 +93,6 @@ public class Calculo {
 		return velocidadMaxima;
 	}
 
-	public Coordinador getCoordinador() {
-		return coordinador;
-	}
-
-	public void setCoordinador(Coordinador coordinador) {
-		this.coordinador = coordinador;
-	}
-
-	public Graph<Equipo, Conexion> getRed() {
-		if (this.actualizar) {
-			this.cargarDatos(coordinador.listarConexiones());
-			this.actualizar = false;
-		}
-		return redGrafo;
-	}
-
-	public void update() {
-		this.actualizar = true;
-	}
-
 	// interfaz grafica
 	public boolean realizarPingEquipo(Equipo equipoSelected) {
 
@@ -161,4 +141,25 @@ public class Calculo {
 
 		return velocidadMaxima;
 	}
+
+	public void update() {
+		this.actualizar = true;
+	}
+	
+	public Graph<Equipo, Conexion> getRed() {
+		if (this.actualizar) {
+			this.cargarDatos(coordinador.listarConexiones());
+			this.actualizar = false;
+		}
+		return redGrafo;
+	}
+
+	public Coordinador getCoordinador() {
+		return coordinador;
+	}
+
+	public void setCoordinador(Coordinador coordinador) {
+		this.coordinador = coordinador;
+	}
+
 }

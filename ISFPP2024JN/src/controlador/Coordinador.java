@@ -18,7 +18,9 @@ import interfaz.Interfaz;
 import modelo.Conexion;
 import modelo.Equipo;
 import modelo.TipoCable;
+import modelo.TipoEquipo;
 import modelo.TipoPuerto;
+import modelo.Ubicacion;
 
 public class Coordinador {
 	private Red red;
@@ -28,6 +30,12 @@ public class Coordinador {
 	public Coordinador(Red red) {
 		calculo = new Calculo();
 		this.red = red;
+	}
+
+	// interfaz grafica
+	public Graph<Equipo, Conexion> cargarDatos() {
+
+		return calculo.cargarDatos(listarConexiones());
 	}
 
 	public void imprimirGrafo() {
@@ -127,76 +135,6 @@ public class Coordinador {
 		}
 	}
 
-	public void setEmpresa(Red empresa) {
-		this.red = empresa;
-	}
-
-	public Calculo getCalculo() {
-		return calculo;
-	}
-
-	public void setCalculo(Calculo calculo) {
-		this.calculo = calculo;
-	}
-
-	public Interfaz getInterfaz() {
-		return interfaz;
-	}
-
-	public void setInterfaz(Interfaz interfaz) {
-		this.interfaz = interfaz;
-	}
-
-	public Equipo buscarEquipo(String codigo) {
-		return red.buscarEquipo(codigo);
-	}
-
-	public TreeMap<String, Equipo> listarEquipos() {
-		return red.getEquipos();
-	}
-
-	public List<Conexion> listarConexiones() {
-		return red.getConexiones();
-	}
-
-	public TreeMap<String, TipoPuerto> listarTipoPuertos() {
-		return red.getTiposPuertos();
-	}
-
-	public TreeMap<String, TipoCable> listarTipoCables() {
-		return red.getTiposCables();
-	}
-
-	public void agregarEquipo(Equipo equipo) {
-		try {
-			red.agregarEquipo(equipo);
-		} catch (EquipoExistenteException e) {
-			e.printStackTrace();
-		}
-		calculo.update();
-		calculo.cargarDatos(listarConexiones());
-	}
-
-	public void modificarEquipo(String codigo, Equipo equipoModificado) {
-		Equipo equipo = buscarEquipo(codigo);
-		red.modificarEquipo(equipo, equipoModificado);
-		calculo.update();
-		calculo.cargarDatos(listarConexiones());
-	}
-
-	public void eliminarEquipo(String codigo) {
-		Equipo equipo = buscarEquipo(codigo);
-		red.eliminarEquipo(equipo);
-		calculo.update();
-		calculo.cargarDatos(listarConexiones());
-	}
-
-	// interfaz grafica
-	public Graph<Equipo, Conexion> cargarDatos() {
-
-		return calculo.cargarDatos(listarConexiones());
-	}
-
 	public boolean realizarPingEquipo(String equipoSelected) {
 		return calculo.realizarPingEquipo(red.buscarEquipo(equipoSelected));
 	}
@@ -232,16 +170,6 @@ public class Coordinador {
 			tipoCableList.add(tipoCable.getCodigo());
 		}
 		return tipoCableList.toArray(new String[0]);
-	}
-
-	public TipoPuerto buscarTipoPuerto(String codigo) {
-
-		return red.buscarTipoPuerto(codigo);
-	}
-
-	public TipoCable buscarTipoCable(String codigo) {
-
-		return red.buscarTipoCable(codigo);
 	}
 
 	public int getPuertosDisponibles(Equipo equipo) {
@@ -334,6 +262,104 @@ public class Coordinador {
 			}
 		}
 		return null;
+	}
+
+	public void agregarPuertos(Equipo equipo, int cantidad, TipoPuerto tipoPuerto) {
+		equipo.agregarPuerto(cantidad, tipoPuerto);
+	}
+
+	public void agregarDireccionesIP(Equipo equipo, String ip) {
+		equipo.agregarDireccionIP(ip);
+	}
+
+	public TipoEquipo buscarTipoEquipo(String codigo) {
+		return red.buscarTipoEquipo(codigo);
+	}
+
+	public Ubicacion buscarUbicacion(String codigo) {
+		return red.buscarUbicacion(codigo);
+	}
+
+	public Equipo buscarEquipo(String codigo) {
+		return red.buscarEquipo(codigo);
+	}
+
+	public void agregarEquipo(Equipo equipo) {
+		try {
+			red.agregarEquipo(equipo);
+		} catch (EquipoExistenteException e) {
+			e.printStackTrace();
+		}
+		calculo.update();
+		calculo.cargarDatos(listarConexiones());
+	}
+
+	public void modificarEquipo(String codigo, Equipo equipoModificado) {
+		Equipo equipo = buscarEquipo(codigo);
+		red.modificarEquipo(equipo, equipoModificado);
+		calculo.update();
+		calculo.cargarDatos(listarConexiones());
+	}
+
+	public void eliminarEquipo(String codigo) {
+		Equipo equipo = buscarEquipo(codigo);
+		red.eliminarEquipo(equipo);
+		calculo.update();
+		calculo.cargarDatos(listarConexiones());
+	}
+
+	public TipoPuerto buscarTipoPuerto(String codigo) {
+
+		return red.buscarTipoPuerto(codigo);
+	}
+
+	public TipoCable buscarTipoCable(String codigo) {
+
+		return red.buscarTipoCable(codigo);
+	}
+
+	public TreeMap<String, Equipo> listarEquipos() {
+		return red.getEquipos();
+	}
+
+	public List<Conexion> listarConexiones() {
+		return red.getConexiones();
+	}
+
+	public TreeMap<String, TipoPuerto> listarTipoPuertos() {
+		return red.getTiposPuertos();
+	}
+
+	public TreeMap<String, TipoCable> listarTipoCables() {
+		return red.getTiposCables();
+	}
+
+	public TreeMap<String, Ubicacion> listarUbicaciones() {
+		return red.getUbicaciones();
+	}
+
+	public TreeMap<String, TipoEquipo> listarTipoEquipos() {
+		return red.getTiposEquipos();
+	}
+
+	public void setEmpresa(Red empresa) {
+		this.red = empresa;
+	}
+
+	public Calculo getCalculo() {
+		return calculo;
+	}
+
+	public void setCalculo(Calculo calculo) {
+		this.calculo = calculo;
+	}
+
+	public Interfaz getInterfaz() {
+		return interfaz;
+	}
+
+	public void setInterfaz(Interfaz interfaz) {
+		this.interfaz = interfaz;
 	}
 
 }

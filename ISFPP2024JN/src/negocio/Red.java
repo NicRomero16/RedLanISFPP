@@ -45,13 +45,6 @@ public class Red {
 	private TreeMap<String, TipoPuerto> tiposPuertos;
 	private TipoPuertoService tipoPuertoService;
 
-	public static Red getRed() {
-		if (red == null) {
-			red = new Red();
-		}
-		return red;
-	}
-
 	private Red() {
 		super();
 		tiposEquipos = new TreeMap<String, TipoEquipo>();
@@ -90,7 +83,7 @@ public class Red {
 	public void modificarEquipo(Equipo equipo, Equipo equipoModificado) {
 		System.out.print(buscarEquipo(equipo.getCodigo()));
 		equipos.put(equipo.getCodigo(), equipoModificado);
-		equipoService.actualizar(equipo,equipoModificado);
+		equipoService.actualizar(equipo, equipoModificado);
 	}
 
 	public void eliminarEquipo(Equipo equipo) {
@@ -103,7 +96,6 @@ public class Red {
 		if (!equipos.containsKey(codigo))
 			throw new EquipoInexistenteException("El equipo no existe");
 		return equipos.get(codigo);
-
 	}
 
 	public void agregarConexion(Conexion conexion) throws ConexionExistenteException {
@@ -132,6 +124,33 @@ public class Red {
 		if (pos == -1)
 			throw new ConexionInexistenteException("La conexion no existe");
 		return conexiones.get(pos);
+	}
+
+	public TipoPuerto buscarTipoPuerto(String codigo) {
+		if (!tiposPuertos.containsKey(codigo))
+			throw new EquipoInexistenteException("El tipo puerto no existe");
+		return tiposPuertos.get(codigo);
+	}
+
+	public TipoCable buscarTipoCable(String codigo) {
+		if (!tiposCables.containsKey(codigo))
+			throw new EquipoInexistenteException("El tipo cable no existe");
+		return tiposCables.get(codigo);
+	}
+
+	public TipoEquipo buscarTipoEquipo(String codigo) {
+		return tiposEquipos.get(codigo);
+	}
+
+	public Ubicacion buscarUbicacion(String codigo) {
+		return ubicaciones.get(codigo);
+	}
+
+	public static Red getRed() {
+		if (red == null) {
+			red = new Red();
+		}
+		return red;
 	}
 
 	public String getNombre() {
@@ -164,17 +183,5 @@ public class Red {
 
 	public TreeMap<String, TipoPuerto> getTiposPuertos() {
 		return tiposPuertos;
-	}
-
-	public TipoPuerto buscarTipoPuerto(String codigo) {
-		if (!tiposPuertos.containsKey(codigo))
-			throw new EquipoInexistenteException("El tipo puerto no existe");
-		return tiposPuertos.get(codigo);
-	}
-
-	public TipoCable buscarTipoCable(String codigo) {
-		if (!tiposCables.containsKey(codigo))
-			throw new EquipoInexistenteException("El tipo cable no existe");
-		return tiposCables.get(codigo);
 	}
 }
