@@ -1,22 +1,29 @@
 package gui;
 
-import javax.swing.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
 import controlador.Coordinador;
-import excepciones.ArchivoExistenteException;
 import modelo.Conexion;
 import modelo.Equipo;
 import modelo.TipoCable;
 import modelo.TipoPuerto;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List;
-
+@SuppressWarnings("serial")
 public class ConexionesABM extends JPanel {
 	private static final Color NEON_GRAY = new Color(60, 60, 60);
 	private static final Color NEON_GREEN = new Color(57, 255, 20);
@@ -261,7 +268,6 @@ public class ConexionesABM extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				int selectedRow = table.getSelectedRow();
 				if (selectedRow != -1) {
-					StringBuilder mensajesError = new StringBuilder();
 					String nuevoEquipo1 = (String) comboBoxEquipo1.getSelectedItem();
 					String nuevoTipoPuerto1 = (String) comboBoxTipoPuerto1.getSelectedItem();
 					String nuevoEquipo2 = (String) comboBoxEquipo2.getSelectedItem();
@@ -274,24 +280,6 @@ public class ConexionesABM extends JPanel {
 					TipoPuerto tP2 = coordinador.buscarTipoPuerto(nuevoTipoPuerto2);
 					TipoCable tC = coordinador.buscarTipoCable(nuevoTipoCable);
 
-					if (coordinador.getPuertosDisponibles(e1) <= 0) {
-						mensajesError
-								.append("Error: No hay puertos disponibles en el equipo " + e1.getCodigo() + ".\n");
-					}
-					if (coordinador.getPuertosDisponibles(e2) <= 0) {
-						mensajesError
-								.append("Error: No hay puertos disponibles en el equipo " + e2.getCodigo() + ".\n");
-					}
-
-					if (mensajesError.length() > 0) {
-						mostrarMensaje(mensajesError.toString(), "Error", JOptionPane.ERROR_MESSAGE);
-						return;
-					}
-
-					if (coordinador.existeConexion(e1, e2)) {
-						JOptionPane.showMessageDialog(null, "La conexión ya existe.");
-						return;
-					}
 					String equipo1Actual = (String) tableModel.getValueAt(selectedRow, 0);
 					String tipoPuerto1Actual = (String) tableModel.getValueAt(selectedRow, 1);
 					String equipo2Actual = (String) tableModel.getValueAt(selectedRow, 2);

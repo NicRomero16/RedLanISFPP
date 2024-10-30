@@ -28,15 +28,44 @@ public class Equipo {
 		this.direccionesIP = new ArrayList<String>();
 		this.estado = estado;
 	}
-	
+
 	public void agregarDireccionIP(String ip) {
 		this.direccionesIP.add(ip);
 	}
 
 	public void agregarPuerto(int cantidad, TipoPuerto tipoPuerto) {
-		this.puertos.add(new Puerto(cantidad, tipoPuerto));
+		Puerto puerto = new Puerto(cantidad, tipoPuerto);
+		this.puertos.add(puerto);
 	}
-	
+
+	public boolean contieneIp(String ip) {
+		return direccionesIP.contains(ip);
+	}
+
+	public boolean contieneEquipo(String equipo) {
+		return codigo.contains(equipo);
+	}
+
+	public String obtenerCodigoTipoPuerto(int index) {
+		if (index < 0 || index >= puertos.size()) {
+			return ""; // Índice fuera de rango, devuelve cadena vacía o lanza una excepción
+						// personalizada
+		}
+		Puerto puerto = puertos.get(index);
+		if (puerto.getTipoPuerto() == null) {
+			return ""; // Retorna cadena vacía si TipoPuerto es null
+		}
+		return this.puertos.get(index).getTipoPuerto().getCodigo();
+	}
+
+	public int getCantidadPuertos() {
+		int total = 0;
+		for (Puerto puerto : puertos) {
+			total += puerto.getCantidad();
+		}
+		return total;
+	}
+
 	public String getDescripcion() {
 		return descripcion;
 	}
@@ -126,33 +155,6 @@ public class Equipo {
 		return Objects.equals(codigo, other.codigo);
 	}
 
-	public boolean contieneIp(String ip) {
-		return direccionesIP.contains(ip);
-	}
-
-	public boolean contieneEquipo(String equipo) {
-		return codigo.contains(equipo);
-	}
-
-	public String obtenerCodigoTipoPuerto(int index) {
-	    if (index < 0 || index >= puertos.size()) {
-	        return ""; // Índice fuera de rango, devuelve cadena vacía o lanza una excepción personalizada
-	    }
-	    Puerto puerto = puertos.get(index);
-	    if (puerto.getTipoPuerto() == null) {
-	        return ""; // Retorna cadena vacía si TipoPuerto es null
-	    }
-	    return this.puertos.get(index).getTipoPuerto().getCodigo();
-	}
-
-	public int getCantidadPuertos() {
-	    int total = 0;
-	    for (Puerto puerto : puertos) {
-	        total += puerto.getCantidad();
-	    }
-	    return total;
-	}
-	
 	@Override
 	public String toString() {
 		return "\nEquipo [\n codigo=" + codigo + ", \n descripcion=" + descripcion + ", \n marca=" + marca
@@ -186,7 +188,5 @@ public class Equipo {
 			return "cantidad=" + cantidad + ", " + tipoPuerto;
 		}
 	}
-
-
 
 }

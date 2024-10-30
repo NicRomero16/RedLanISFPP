@@ -52,6 +52,7 @@ public class EquipoSecuencialDAO implements EquipoDAO {
 					modelo = null;
 				TipoEquipo tipoEquipo = tipoEquipos.get(read.next());
 				Ubicacion ubicacion = ubicaciones.get(read.next());
+				
 				String[] puertos = read.next().split(",");
 				String[] direccionesIP = read.next().split(",");
 				Boolean estado = read.nextBoolean();
