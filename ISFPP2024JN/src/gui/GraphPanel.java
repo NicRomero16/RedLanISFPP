@@ -1,7 +1,7 @@
 package gui;
 
 import java.awt.Color;
-import java.awt.Font;
+import java.awt.Font; // Importar la clase Font
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -16,7 +16,6 @@ import javax.swing.JPanel;
 import modelo.Conexion;
 import modelo.Equipo;
 
-@SuppressWarnings("serial")
 public class GraphPanel extends JPanel {
 
 	private List<Equipo> equipos;
@@ -45,28 +44,38 @@ public class GraphPanel extends JPanel {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				Point clickPoint = e.getPoint();
-				boolean clickedOnNode = false; 
+				boolean clickedOnNode = false; // Variable para verificar si se hizo clic en un nodo
 
 				for (Equipo equipo : equipos) {
 					Point pos = posiciones.get(equipo);
 					if (pos != null && pos.distance(clickPoint) <= 35) {
+						// Si se hace clic en un nodo, lo seleccionamos
 						nodoSeleccionado = equipo;
 						posicionInicial = clickPoint;
 						posicionInicialNodo = pos;
 
+						// Crear el texto de información
 						StringBuilder infoBuilder = new StringBuilder();
 						infoBuilder.append("Equipo: ").append(equipo.getCodigo()).append(" \tDescripción: ")
 								.append(equipo.getDescripcion()).append(" \tUbicación: ");
 
+						// Verificación de la ubicación
 						if (equipo.getUbicacion() != null) {
 							infoBuilder.append(equipo.getUbicacion().getDescripcion());
 						} else {
 							infoBuilder.append("Sin ubicación actualmente");
 						}
 
-						String status = equipo.getEstado() ? "Disponible" : "Desconectado";
+						
+						String status;
+						if (equipo.getEstado()) {
+							status = "Disponible";
+						} else {
+							status = "Desconectado";
+						}
 						infoBuilder.append(" \tEstado: ").append(status);
 
+						// Agregar conexiones
 						infoBuilder.append("\nConectado a: \n");
 						for (Conexion conexion : conexiones) {
 							if (conexion.getEquipo1().equals(equipo)) {
@@ -76,14 +85,15 @@ public class GraphPanel extends JPanel {
 							}
 						}
 
-						infoTexto = infoBuilder.toString(); 
-						clickedOnNode = true; 
+						infoTexto = infoBuilder.toString(); // Asignar texto de información
+						clickedOnNode = true; // Se hizo clic en un nodo
 						break;
 					}
 				}
 
+				// Si no se hizo clic en un nodo, ocultar la información
 				if (!clickedOnNode) {
-					infoTexto = null; 
+					infoTexto = null; // Ocultar información
 				}
 
 				repaint();
@@ -91,8 +101,8 @@ public class GraphPanel extends JPanel {
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				nodoSeleccionado = null; 
-				repaint(); 
+				nodoSeleccionado = null; // Desbloquear el nodo
+				repaint(); // Redibujar el panel
 			}
 		});
 
@@ -100,14 +110,15 @@ public class GraphPanel extends JPanel {
 			@Override
 			public void mouseDragged(MouseEvent e) {
 				if (nodoSeleccionado != null) {
+					// Mover el nodo seleccionado
 					Point nuevaPosicion = e.getPoint();
 					int dx = (int) (nuevaPosicion.getX() - posicionInicial.getX());
 					int dy = (int) (nuevaPosicion.getY() - posicionInicial.getY());
 					Point nuevaPos = new Point(posicionInicialNodo.x + dx, posicionInicialNodo.y + dy);
-					posiciones.put(nodoSeleccionado, nuevaPos); 
-					posicionInicialNodo = nuevaPos; 
-					posicionInicial = nuevaPos; 
-					repaint(); 
+					posiciones.put(nodoSeleccionado, nuevaPos); // Actualizar posición en el mapa
+					posicionInicialNodo = nuevaPos; // Actualizar posición inicial del nodo
+					posicionInicial = nuevaPos; // Actualizar la posición del mouse
+					repaint(); // Redibujar el panel
 				}
 			}
 		});
@@ -136,19 +147,13 @@ public class GraphPanel extends JPanel {
 		Graphics2D g2d = (Graphics2D) g;
 
 		int nodoRadius = 55;
-
+		g2d.setColor(Color.GREEN);
 		for (Conexion conexion : conexiones) {
 			Equipo equipo1 = conexion.getEquipo1();
 			Equipo equipo2 = conexion.getEquipo2();
 			Point pos1 = posiciones.get(equipo1);
 			Point pos2 = posiciones.get(equipo2);
-			
 			if (pos1 != null && pos2 != null) {
-				if (equipo1.getEstado() && equipo2.getEstado()) {
-					g2d.setColor(Color.GREEN); 
-				} else {
-					g2d.setColor(Color.RED); 
-				}
 				g2d.drawLine(pos1.x, pos1.y, pos2.x, pos2.y);
 			}
 		}
@@ -156,27 +161,24 @@ public class GraphPanel extends JPanel {
 		for (Equipo equipo : equipos) {
 			Point pos = posiciones.get(equipo);
 			if (pos != null) {
-				if (equipo.getEstado()) {
-					g2d.setColor(Color.CYAN); 
-				} else {
-					g2d.setColor(Color.GRAY); 
-				}
+				g2d.setColor(Color.CYAN);
 				g2d.fillOval(pos.x - nodoRadius / 2, pos.y - nodoRadius / 2, nodoRadius, nodoRadius);
 				g2d.setColor(Color.BLACK);
 
+				// Establecer una fuente más gruesa (negrita)
 				g2d.setFont(new Font("Arial", Font.BOLD, 18));
 				g2d.drawString(equipo.getCodigo(), pos.x - g2d.getFontMetrics().stringWidth(equipo.getCodigo()) / 2,
-						pos.y + 5) ;
+						pos.y + 5);
 			}
-		} 
+		}
 
 		if (infoTexto != null) {
 			g2d.setColor(Color.BLUE);
-			String[] lineas = infoTexto.split("\n");
-			int y = 20;
+			String[] lineas = infoTexto.split("\n"); // Usar \n para dividir las líneas
+			int y = 20; // Posición vertical inicial para el texto
 			for (String linea : lineas) {
 				g2d.drawString(linea, 10, y);
-				y += 15;
+				y += 15; // Aumentar la posición vertical para la siguiente línea
 			}
 		}
 	}

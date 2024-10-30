@@ -28,7 +28,12 @@ public class Equipo {
 		this.direccionesIP = new ArrayList<String>();
 		this.estado = estado;
 	}
-
+	
+	public List<String> listarDireccionesIP() {
+		System.out.println(direccionesIP);
+		return direccionesIP;
+	}
+	
 	public void agregarDireccionIP(String ip) {
 		this.direccionesIP.add(ip);
 	}
@@ -48,8 +53,7 @@ public class Equipo {
 
 	public String obtenerCodigoTipoPuerto(int index) {
 		if (index < 0 || index >= puertos.size()) {
-			return ""; // Índice fuera de rango, devuelve cadena vacía o lanza una excepción
-						// personalizada
+			return ""; 
 		}
 		Puerto puerto = puertos.get(index);
 		if (puerto.getTipoPuerto() == null) {

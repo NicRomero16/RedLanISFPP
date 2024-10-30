@@ -81,7 +81,6 @@ public class Red {
 	}
 
 	public void modificarEquipo(Equipo equipo, Equipo equipoModificado) {
-		System.out.print(buscarEquipo(equipo.getCodigo()));
 		equipos.put(equipo.getCodigo(), equipoModificado);
 		equipoService.actualizar(equipo, equipoModificado);
 	}

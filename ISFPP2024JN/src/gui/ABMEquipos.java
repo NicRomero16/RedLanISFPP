@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridLayout;
@@ -33,13 +34,12 @@ import modelo.TipoEquipo;
 import modelo.TipoPuerto;
 import modelo.Ubicacion;
 
-@SuppressWarnings("serial")
 public class ABMEquipos extends JPanel {
 
 	private TreeMap<String, Equipo> equipos;
 	private Coordinador coordinador;
 	private static final Color NEON_GREEN = new Color(57, 255, 20);
-	
+
 	public ABMEquipos(TreeMap<String, Equipo> equipos, Coordinador coordinador) {
 		super();
 		this.coordinador = coordinador;
@@ -60,21 +60,22 @@ public class ABMEquipos extends JPanel {
 		tEquipos.setRowCount(0);
 
 		for (Equipo equipo : equipos.values()) {
-			Object[] fila = { equipo.getCodigo() != null ? equipo.getCodigo() : "", // Evitar null
-					equipo.getDescripcion() != null ? equipo.getDescripcion() : "", // Evitar null
-					equipo.getMarca() != null ? equipo.getMarca() : "", // Evitar null
-					equipo.getModelo() != null ? equipo.getModelo() : "", // Evitar null
+			TipoPuerto tPuerto = coordinador.buscarTipoPuerto(equipo.obtenerCodigoTipoPuerto(0));
+			Object[] fila = { equipo.getCodigo() != null ? equipo.getCodigo() : "",
+					equipo.getDescripcion() != null ? equipo.getDescripcion() : "",
+					equipo.getMarca() != null ? equipo.getMarca() : "",
+					equipo.getModelo() != null ? equipo.getModelo() : "",
 					(equipo.getTipoEquipo() != null ? equipo.getTipoEquipo().getCodigo() : "") + ", "
-							+ (equipo.getTipoEquipo() != null ? equipo.getTipoEquipo().getDescripcion() : ""), // Evitar
-																												// null
-					(equipo.getUbicacion() != null ? equipo.getUbicacion().getCodigo() : "") + ", "
-							+ (equipo.getUbicacion() != null ? equipo.getUbicacion().getDescripcion() : ""),
-					equipo.getPuertos() != null ? equipo.getPuertos() : "", // Evitar null
-					equipo.getDireccionesIP() != null ? equipo.getDireccionesIP() : "", // Evitar null
-					equipo.getEstado(), // Evitar null
-					"Eliminar", // Placeholder para acciones
-					"Modificar" // Placeholder para acciones
-			};
+							+ equipo.getTipoEquipo().getDescripcion(),
+					(equipo.getUbicacion() != null
+							? (equipo.getUbicacion().getCodigo() + "," + equipo.getUbicacion().getDescripcion())
+							: ""),
+					(equipo.getPuertos() != null
+							? (equipo.getCantidadPuertos() + "," + tPuerto.getCodigo() + "," + tPuerto.getDescripcion()
+									+ "," + tPuerto.getVelocidad())
+							: ""),
+					equipo.getDireccionesIP() != null ? equipo.getDireccionesIP() : "", equipo.getEstado(), "Eliminar",
+					"Modificar" };
 			tEquipos.addRow(fila); // Agregar fila a la tabla
 		}
 
@@ -152,7 +153,7 @@ public class ABMEquipos extends JPanel {
 		panelEquipo.add(pane, BorderLayout.CENTER);
 
 		JButton btnAgregarEquipo = new JButton("Agregar equipo");
-		btnAgregarEquipo.addActionListener(e -> formularioAgregarEquipo(tEquipos));
+		btnAgregarEquipo.addActionListener(e -> formularioAgregarEquipo(tablaEquipos, tEquipos));
 
 		// Agregar el panelEquipo a la instancia actual de ABMEquipos
 		this.setLayout(new BorderLayout());
@@ -160,7 +161,7 @@ public class ABMEquipos extends JPanel {
 		this.add(btnAgregarEquipo, BorderLayout.SOUTH);
 	}
 
-	public void formularioAgregarEquipo(DefaultTableModel table) {
+	public void formularioAgregarEquipo(JTable tablaEquipos, DefaultTableModel table) {
 
 		// Crear un nuevo JDialog para el formulario
 		JDialog dialog = new JDialog((Frame) null, "Agregar equipo", true);
@@ -169,61 +170,77 @@ public class ABMEquipos extends JPanel {
 		dialog.setLocationRelativeTo(null); // Centra el diálogo
 
 		// Crear un panel para el formulario
-				JPanel panelFormulario = new JPanel();
-				panelFormulario.setLayout(new GridLayout(0, 2)); // 0 filas, 2 columnas
-				panelFormulario.setBackground(Color.BLACK);
-				panelFormulario.setForeground(NEON_GREEN);
+		JPanel panelFormulario = new JPanel();
+		panelFormulario.setLayout(new GridLayout(12, 2)); // 0 filas, 2 columnas
+		panelFormulario.setBackground(Color.BLACK);
+		panelFormulario.setForeground(NEON_GREEN);
 
-				JLabel labelCodigo = new JLabel("Codigo de equipo");
-				JTextField campoCodigo = new JTextField();
-				crearJTextField(labelCodigo,panelFormulario,campoCodigo);
-				
-				JLabel labelDescripcion = new JLabel("Descripcion del equipo");
-				JTextField campoDescripcion = new JTextField();
-				crearJTextField(labelDescripcion,panelFormulario,campoDescripcion);
-				
-				JLabel labelMarca = new JLabel("Marca del equipo");
-				JTextField campoMarca = new JTextField();
-				crearJTextField(labelMarca,panelFormulario,campoMarca);
-				
-				JLabel labelModelo = new JLabel("Modelo del equipo");
-				JTextField campoModelo = new JTextField();
-				crearJTextField(labelModelo,panelFormulario,campoModelo);
-				
-				// Tipos de equipo
-				JLabel labelTipoEquipo = new JLabel("Tipo de equipo:");
-				String[] listTipoEq = obtenerTiposEquipos();
-				JComboBox<String> comboBoxTipoEquipos = new JComboBox<String>(listTipoEq);
-				crearComboBox(labelTipoEquipo,panelFormulario, comboBoxTipoEquipos);
+		JLabel labelCodigo = new JLabel("Codigo de equipo");
+		JTextField campoCodigo = new JTextField();
+		crearJTextField(labelCodigo, panelFormulario, campoCodigo);
 
-				// Ubicación
-				JLabel labelUbicacion = new JLabel("Ubicacion:");
-				String[] listUbicaciones = obtenerUbicaciones();
-				JComboBox<String> comboBoxUbicacion = new JComboBox<String>(listUbicaciones);
-				crearComboBox(labelUbicacion,panelFormulario, comboBoxUbicacion);
+		JLabel labelDescripcion = new JLabel("Descripcion del equipo");
+		JTextField campoDescripcion = new JTextField();
+		crearJTextField(labelDescripcion, panelFormulario, campoDescripcion);
 
-				// Puertos
-				JLabel labelPuertos = new JLabel("Cantidad de puertos:");
-				Integer[] cantPuertos = obtenerCantidadPuertos();
-				JComboBox<Integer> comboBoxPuertos = new JComboBox<>(cantPuertos);
-				crearComboBox(labelPuertos,panelFormulario, comboBoxPuertos);
+		JLabel labelMarca = new JLabel("Marca del equipo");
+		JTextField campoMarca = new JTextField();
+		crearJTextField(labelMarca, panelFormulario, campoMarca);
 
-				// Tipos de puertos
-				JLabel labelTipoPuertos = new JLabel("Tipos de puertos:");
-				String[] listPuertos = obtenerTipoPuertos();
-				JComboBox<String> comboBoxTipoPuerto = new JComboBox<String>(listPuertos);
-				crearComboBox(labelTipoPuertos,panelFormulario, comboBoxTipoPuerto);
+		JLabel labelModelo = new JLabel("Modelo del equipo");
+		JTextField campoModelo = new JTextField();
+		crearJTextField(labelModelo, panelFormulario, campoModelo);
 
-				// Direcciones IP
-				JLabel labelDireccionesIP = new JLabel("Direccion IP");
-				JTextField campoDireccionesIP = new JTextField();
-				crearJTextField(labelDireccionesIP,panelFormulario,campoDireccionesIP);
+		// Tipos de equipo
+		JLabel labelTipoEquipo = new JLabel("Tipo de equipo:");
+		String[] listTipoEq = obtenerTiposEquipos();
+		JComboBox<String> comboBoxTipoEquipos = new JComboBox<String>(listTipoEq);
+		crearComboBox(labelTipoEquipo, panelFormulario, comboBoxTipoEquipos);
 
-				// Estado
-				JLabel labelEstado = new JLabel("Estado:");
-				String[] estados = { "false", "true" };
-				JComboBox<String> comboBoxEstado = new JComboBox<String>(estados);
-				crearComboBox(labelEstado,panelFormulario, comboBoxEstado);
+		// Ubicación
+		JLabel labelUbicacion = new JLabel("Ubicacion:");
+		String[] listUbicaciones = obtenerUbicaciones();
+		JComboBox<String> comboBoxUbicacion = new JComboBox<String>(listUbicaciones);
+		crearComboBox(labelUbicacion, panelFormulario, comboBoxUbicacion);
+
+		// Puertos
+		JLabel labelPuertos = new JLabel("Cantidad de puertos:");
+		Integer[] cantPuertos = obtenerCantidadPuertos();
+		JComboBox<Integer> comboBoxPuertos = new JComboBox<>(cantPuertos);
+		crearComboBox(labelPuertos, panelFormulario, comboBoxPuertos);
+
+		// Tipos de puertos
+		JLabel labelTipoPuertos = new JLabel("Tipos de puertos:");
+		String[] listPuertos = obtenerTipoPuertos();
+		JComboBox<String> comboBoxTipoPuerto = new JComboBox<String>(listPuertos);
+		crearComboBox(labelTipoPuertos, panelFormulario, comboBoxTipoPuerto);
+
+		// Direcciones IP
+		JLabel labelDireccionesIP = new JLabel("Direccion IP");
+		labelDireccionesIP.setForeground(NEON_GREEN);
+		panelFormulario.add(labelDireccionesIP);
+		List<String> direccionesIP = new ArrayList<String>();
+		JButton btnAgregarDireccionIP = new JButton("Agregar direccion IP");
+		btnAgregarDireccionIP.setBackground(Color.BLACK);
+		btnAgregarDireccionIP.setForeground(NEON_GREEN);
+		btnAgregarDireccionIP.setBorder(BorderFactory.createLineBorder(NEON_GREEN, 2));
+		btnAgregarDireccionIP.setPreferredSize(new Dimension(100, 10));
+		btnAgregarDireccionIP.addActionListener(e -> {
+			String direccionIP = agregarDireccionIP();
+			if (direccionesIP.contains(direccionIP)) {
+				JOptionPane.showMessageDialog(null, "La direccion ya fue agregada", "Error",
+						JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+			direccionesIP.add(direccionIP);
+		});
+		panelFormulario.add(btnAgregarDireccionIP);
+
+		// Estado
+		JLabel labelEstado = new JLabel("Estado:");
+		String[] estados = { "false", "true" };
+		JComboBox<String> comboBoxEstado = new JComboBox<String>(estados);
+		crearComboBox(labelEstado, panelFormulario, comboBoxEstado);
 
 		// Botón para confirmar la adición
 		JButton btnAgregar = new JButton("Agregar");
@@ -234,16 +251,25 @@ public class ABMEquipos extends JPanel {
 				return;
 			}
 
+			if (campoCodigo.getText().trim().equals("")) {
+				JOptionPane.showMessageDialog(null, "El codigo de equipo no puede ser nulo", "Error",
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
 			TipoEquipo tEquipo = coordinador.buscarTipoEquipo(comboBoxTipoEquipos.getSelectedItem().toString());
 			Ubicacion ubicacion = coordinador.buscarUbicacion(comboBoxUbicacion.getSelectedItem().toString());
+			int cantidadPuertos = comboBoxPuertos.getSelectedIndex() + 1;
+			TipoPuerto tipoPuerto = coordinador.buscarTipoPuerto(comboBoxTipoPuerto.getSelectedItem().toString());
 
 			// Crear un arreglo de objetos para la nueva fila con los valores de cada
 			// JTextField
 			Object[] nuevaFila = { campoCodigo.getText(), campoDescripcion.getText(), campoMarca.getText(),
 					campoModelo.getText(), tEquipo.getCodigo() + "," + tEquipo.getDescripcion(),
 					ubicacion.getCodigo() + "," + ubicacion.getDescripcion(),
-					comboBoxPuertos.getSelectedItem() + ", " + comboBoxTipoPuerto.getSelectedItem(),
-					campoDireccionesIP.getText(), comboBoxEstado.getSelectedItem() };
+					cantidadPuertos + ", " + tipoPuerto.getCodigo() + ", " + tipoPuerto.getDescripcion() + ", "
+							+ tipoPuerto.getVelocidad(),
+					direccionesIP, comboBoxEstado.getSelectedItem() };
 
 			boolean estado = false;
 
@@ -252,17 +278,12 @@ public class ABMEquipos extends JPanel {
 			else
 				estado = true;
 
-			int cantidadPuertos = comboBoxPuertos.getSelectedIndex() + 1;
-
-			TipoPuerto tipoPuerto1 = coordinador.buscarTipoPuerto(comboBoxTipoPuerto.getSelectedItem().toString());
-
 			Equipo equipo = new Equipo(campoCodigo.getText(), campoDescripcion.getText(), campoMarca.getText(),
 					campoModelo.getText(), tEquipo, ubicacion, estado);
-
-			coordinador.agregarPuertos(equipo, cantidadPuertos, tipoPuerto1);
-			coordinador.agregarDireccionesIP(equipo, campoDireccionesIP.getSelectedText());
+			for (String direccion : direccionesIP)
+				equipo.agregarDireccionIP(direccion);
+			equipo.agregarPuerto(cantidadPuertos, tipoPuerto);
 			coordinador.agregarEquipo(equipo);
-			coordinador.cargarDatos();
 
 			// Agregar la nueva fila al modelo de la tabla
 			table.addRow(nuevaFila);
@@ -272,8 +293,6 @@ public class ABMEquipos extends JPanel {
 		});
 
 		JButton cancelar = crearBotonCancelar(dialog);
-
-
 		panelFormulario.add(btnAgregar);
 		panelFormulario.add(cancelar);
 
@@ -290,14 +309,7 @@ public class ABMEquipos extends JPanel {
 		dialog.setLocationRelativeTo(null); // Centra el diálogo
 
 		// Obtener los datos actuales de la fila
-		String codigoActual = equipo.getCodigo();
-		String descripcionActual = equipo.getDescripcion(); // Corregido de getCodigo() a getDescripcion()
-		String marcaActual = equipo.getMarca();
-		String modeloActual = equipo.getModelo();
-		String tipoEquipoActual = equipo.getTipoEquipo().getCodigo();
-		String ubicacionActual = equipo.getUbicacion().getCodigo();
-		String puertosActual = tEquipos.getValueAt(row, 6).toString();
-		String direccionesIPActual = tEquipos.getValueAt(row, 7).toString();
+		String direccionesIPActual = equipo.getDireccionesIP().toString();
 		String estadoActual = tEquipos.getValueAt(row, 8).toString();
 
 		// Crear un panel para el formulario
@@ -308,66 +320,92 @@ public class ABMEquipos extends JPanel {
 
 		// Campos individuales sin bucles
 		JLabel labelCodigo = new JLabel("Codigo de equipo");
-		JTextField campoCodigo = new JTextField(codigoActual);
-		crearJTextField(labelCodigo,panelFormulario,campoCodigo);
-		
+		JTextField campoCodigo = new JTextField(equipo.getCodigo());
+		crearJTextField(labelCodigo, panelFormulario, campoCodigo);
+
 		JLabel labelDescripcion = new JLabel("Descripcion del equipo");
-		JTextField campoDescripcion = new JTextField(descripcionActual);
-		crearJTextField(labelDescripcion,panelFormulario,campoDescripcion);
-		
+		JTextField campoDescripcion = new JTextField(equipo.getDescripcion());
+		crearJTextField(labelDescripcion, panelFormulario, campoDescripcion);
+
 		JLabel labelMarca = new JLabel("Marca del equipo");
-		JTextField campoMarca = new JTextField(marcaActual);
-		crearJTextField(labelMarca,panelFormulario,campoMarca);
-		
+		JTextField campoMarca = new JTextField(equipo.getMarca());
+		crearJTextField(labelMarca, panelFormulario, campoMarca);
+
 		JLabel labelModelo = new JLabel("Modelo del equipo");
-		JTextField campoModelo = new JTextField(modeloActual);
-		crearJTextField(labelModelo,panelFormulario,campoModelo);
-		
+		JTextField campoModelo = new JTextField(equipo.getModelo());
+		crearJTextField(labelModelo, panelFormulario, campoModelo);
+
 		// Tipos de equipo
 		JLabel labelTipoEquipo = new JLabel("Tipo de equipo:");
 		String[] listTipoEq = obtenerTiposEquipos();
 		JComboBox<String> comboBoxTipoEquipos = new JComboBox<String>(listTipoEq);
-		crearComboBox(labelTipoEquipo,panelFormulario, comboBoxTipoEquipos);
-		comboBoxTipoEquipos.setSelectedItem(tipoEquipoActual); // Establecer el último dato
-		
+		crearComboBox(labelTipoEquipo, panelFormulario, comboBoxTipoEquipos);
+		comboBoxTipoEquipos.setSelectedItem(equipo.getTipoEquipo().getCodigo()); // Establecer el último dato
+
 		// Ubicación
 		JLabel labelUbicacion = new JLabel("Ubicacion:");
 		String[] listUbicaciones = obtenerUbicaciones();
 		JComboBox<String> comboBoxUbicacion = new JComboBox<String>(listUbicaciones);
-		crearComboBox(labelUbicacion,panelFormulario, comboBoxUbicacion);
-		comboBoxUbicacion.setSelectedItem(ubicacionActual); // Establecer el último dato
+		crearComboBox(labelUbicacion, panelFormulario, comboBoxUbicacion);
+		comboBoxUbicacion.setSelectedItem(equipo.getUbicacion().getCodigo()); // Establecer el último dato
 
 		// Puertos
 		JLabel labelPuertos = new JLabel("Cantidad de puertos:");
 		Integer[] cantPuertos = obtenerCantidadPuertos();
 		JComboBox<Integer> comboBoxPuertos = new JComboBox<>(cantPuertos);
-		crearComboBox(labelPuertos,panelFormulario, comboBoxPuertos);
-		comboBoxPuertos.setSelectedItem(puertosActual); // Establecer el último dato
+		crearComboBox(labelPuertos, panelFormulario, comboBoxPuertos);
+		comboBoxPuertos.setSelectedItem(equipo.getCantidadPuertos()); // Establecer el último dato
 
 		// Tipos de puertos
 		JLabel labelTipoPuertos = new JLabel("Tipos de puertos:");
 		String[] listPuertos = obtenerTipoPuertos();
 		JComboBox<String> comboBoxTipoPuerto = new JComboBox<String>(listPuertos);
-		crearComboBox(labelTipoPuertos,panelFormulario, comboBoxTipoPuerto);
-		
+		crearComboBox(labelTipoPuertos, panelFormulario, comboBoxTipoPuerto);
+		comboBoxTipoPuerto.setSelectedItem(equipo.obtenerCodigoTipoPuerto(0));
+
 		// Direcciones IP
-		JLabel labelDireccionesIP = new JLabel("Direcciones IP");
-		JTextField campoDireccionesIP = new JTextField(direccionesIPActual);
-		crearJTextField(labelDireccionesIP,panelFormulario,campoDireccionesIP);
-		
+		JLabel labelDireccionesIP = new JLabel("Direccion IP");
+		labelDireccionesIP.setForeground(NEON_GREEN);
+		panelFormulario.add(labelDireccionesIP);
+		List<String> direccionesIP = new ArrayList<String>();
+		direccionesIP.add(direccionesIPActual);
+		JButton btnAgregarDireccionIP = new JButton("Agregar direccion IP");
+		btnAgregarDireccionIP.setBackground(Color.BLACK);
+		btnAgregarDireccionIP.setForeground(NEON_GREEN);
+		btnAgregarDireccionIP.setBorder(BorderFactory.createLineBorder(NEON_GREEN, 2));
+		btnAgregarDireccionIP.setPreferredSize(new Dimension(100, 10));
+		btnAgregarDireccionIP.addActionListener(e -> {
+			String direccionIP = agregarDireccionIP();
+			if (direccionesIP.contains(direccionIP)) {
+				JOptionPane.showMessageDialog(null, "La direccion ya fue agregada", "Error",
+						JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+			direccionesIP.add(direccionIP);
+		});
+		panelFormulario.add(btnAgregarDireccionIP);
+
 		// Estado
 		JLabel labelEstado = new JLabel("Estado:");
 		String[] estados = { "false", "true" };
 		JComboBox<String> comboBoxEstado = new JComboBox<String>(estados);
-		crearComboBox(labelEstado,panelFormulario, comboBoxEstado);
-		comboBoxEstado.setSelectedItem(estadoActual); // Establecer el último dato
+		crearComboBox(labelEstado, panelFormulario, comboBoxEstado);
+		comboBoxEstado.setSelectedItem(estadoActual);
 
 		// Botón para confirmar la modificación
 		JButton btnModificar = new JButton("Modificar");
 		btnModificar.addActionListener(e -> {
 
+			if (campoCodigo.getText().trim().equals("")) {
+				JOptionPane.showMessageDialog(null, "El codigo de equipo no puede ser nulo", "Error",
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
 			TipoEquipo tipoEquipo = coordinador.buscarTipoEquipo(comboBoxTipoEquipos.getSelectedItem().toString());
 			Ubicacion ubicacion = coordinador.buscarUbicacion(comboBoxUbicacion.getSelectedItem().toString());
+			int cantidadPuertos = comboBoxPuertos.getSelectedIndex() + 1;
+			TipoPuerto tipoPuerto = coordinador.buscarTipoPuerto(comboBoxTipoPuerto.getSelectedItem().toString());
 
 			boolean estado = false;
 
@@ -385,12 +423,22 @@ public class ABMEquipos extends JPanel {
 			tEquipos.setValueAt(equipoModificado.getDescripcion(), row, 1);
 			tEquipos.setValueAt(equipoModificado.getMarca(), row, 2);
 			tEquipos.setValueAt(equipoModificado.getModelo(), row, 3);
-			tEquipos.setValueAt(equipoModificado.getTipoEquipo().getDescripcion(), row, 4); // Corregido
-			tEquipos.setValueAt(equipoModificado.getUbicacion().getDescripcion(), row, 5); // Corregido
-			tEquipos.setValueAt(estado, row, 8);
+			tEquipos.setValueAt(equipoModificado.getTipoEquipo().getCodigo() + ","
+					+ equipoModificado.getTipoEquipo().getDescripcion(), row, 4);
+			tEquipos.setValueAt(equipoModificado.getUbicacion().getCodigo() + ","
+					+ equipoModificado.getUbicacion().getDescripcion(), row, 5);
+			tEquipos.setValueAt(comboBoxPuertos.getSelectedItem().toString() + "," + tipoPuerto.getCodigo() + ","
+					+ tipoPuerto.getDescripcion() + "," + tipoPuerto.getVelocidad(), row, 6);
+			tEquipos.setValueAt(direccionesIP, row, 7);
+			tEquipos.setValueAt(comboBoxEstado.getSelectedItem().toString(), row, 8);
 
-			// Actualizar el equipo en el coordinador
-			coordinador.modificarEquipo(codigoActual, equipoModificado); // Corregido
+			for (String direccion : direccionesIP)
+				equipoModificado.agregarDireccionIP(direccion);
+			equipoModificado.agregarPuerto(cantidadPuertos, tipoPuerto);
+			coordinador.modificarEquipo(equipo.getCodigo(), equipoModificado); // Corregido
+			coordinador.agregarDireccionesIP(equipo, direccionesIPActual);
+
+			coordinador.cargarDatos();
 
 			// Cerrar el diálogo después de modificar
 			dialog.dispose();
@@ -420,8 +468,8 @@ public class ABMEquipos extends JPanel {
 		});
 		return btnCancelar;
 	}
-	
-	public void crearJTextField(JLabel label, JPanel panel,JTextField text) {
+
+	public void crearJTextField(JLabel label, JPanel panel, JTextField text) {
 		label.setForeground(NEON_GREEN);
 		text.setBackground(Color.BLACK);
 		text.setForeground(NEON_GREEN);
@@ -494,4 +542,37 @@ public class ABMEquipos extends JPanel {
 		}
 		return listPuertos;
 	}
+
+	private String agregarDireccionIP() {
+		String direccionIP;
+		TreeMap<String, Equipo> equipos = coordinador.listarEquipos();
+
+		while (true) {
+			direccionIP = JOptionPane.showInputDialog(null, "Dirección IP:", "Agregar dirección IP",
+					JOptionPane.QUESTION_MESSAGE);
+
+			if (direccionIP == null || direccionIP.isEmpty())
+				break;
+
+			boolean direccionExiste = false;
+
+			// Verificar si la dirección IP ya existe en algún equipo
+			for (Equipo e : equipos.values()) {
+				List<String> direccionesIP = coordinador.listarDireccionesIP(e);
+				if (direccionesIP.contains(direccionIP)) {
+					direccionExiste = true;
+					JOptionPane.showMessageDialog(null, "La dirección IP ya existe", "Advertencia",
+							JOptionPane.WARNING_MESSAGE);
+					break;
+				}
+			}
+
+			// Si la dirección no existe, salir del bucle
+			if (!direccionExiste) {
+				break;
+			}
+		}
+		return direccionIP;
+	}
+
 }

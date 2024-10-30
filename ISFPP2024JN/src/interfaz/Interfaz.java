@@ -9,6 +9,7 @@ import excepciones.EquipoInexistenteException;
 import modelo.Conexion;
 import modelo.Equipo;
 import modelo.TipoEquipo;
+import modelo.TipoPuerto;
 import modelo.Ubicacion;
 
 public class Interfaz {
@@ -41,6 +42,8 @@ public class Interfaz {
 	public Equipo agregarNuevoEquipo() {
 		Equipo equipo = new Equipo("adf", "asf", null, null, new TipoEquipo("asf", "jota"),
 				new Ubicacion("A01", "Aula 1"), false);
+		equipo.agregarDireccionIP("123");
+		equipo.agregarPuerto(40, new TipoPuerto("cod","codeado",10));
 		return equipo;
 	}
 

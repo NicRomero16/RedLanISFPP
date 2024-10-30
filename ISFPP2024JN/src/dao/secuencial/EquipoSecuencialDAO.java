@@ -2,9 +2,11 @@ package dao.secuencial;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Formatter;
 import java.util.FormatterClosedException;
+import java.util.List;
 import java.util.TreeMap;
 import java.util.ResourceBundle;
 import java.util.Scanner;
@@ -52,7 +54,7 @@ public class EquipoSecuencialDAO implements EquipoDAO {
 					modelo = null;
 				TipoEquipo tipoEquipo = tipoEquipos.get(read.next());
 				Ubicacion ubicacion = ubicaciones.get(read.next());
-				
+
 				String[] puertos = read.next().split(",");
 				String[] direccionesIP = read.next().split(",");
 				Boolean estado = read.nextBoolean();
@@ -79,6 +81,18 @@ public class EquipoSecuencialDAO implements EquipoDAO {
 
 			for (Equipo e : map.values()) {
 
+				String codigo;
+				if (e.getCodigo() == null)
+					codigo = "";
+				else
+					codigo = e.getCodigo();
+
+				String descripcion;
+				if (e.getDescripcion() == null)
+					descripcion = "";
+				else
+					descripcion = e.getDescripcion();
+
 				String marca;
 				if (e.getMarca() == null)
 					marca = "";
@@ -90,21 +104,21 @@ public class EquipoSecuencialDAO implements EquipoDAO {
 					modelo = "";
 				else
 					modelo = e.getModelo();
+
 				String ubicacion;
 				if (e.getUbicacion() == null)
 					ubicacion = "";
 				else
 					ubicacion = e.getUbicacion().getCodigo();
+
 				String tipoEquipo;
 				if (e.getTipoEquipo() == null)
 					tipoEquipo = "";
-				else 
+				else
 					tipoEquipo = e.getTipoEquipo().getCodigo();
-				
 
-				outFile.format("%s;%s;%s;%s;%s;%s;%s;%s;%s;\n", e.getCodigo(), e.getDescripcion(), marca, modelo,
-						tipoEquipo, ubicacion, portTypeFormatter(e), ipAdressFormatter(e),
-						String.valueOf(e.getEstado()));
+				outFile.format("%s;%s;%s;%s;%s;%s;%s;%s;%s;\n", codigo, descripcion, marca, modelo, tipoEquipo,
+						ubicacion, portTypeFormatter(e), ipAdressFormatter(e), String.valueOf(e.getEstado()));
 			}
 		} catch (FileNotFoundException fileNotFoundException) {
 			System.err.println("Error creating file.");
@@ -132,10 +146,9 @@ public class EquipoSecuencialDAO implements EquipoDAO {
 		StringBuilder sb = new StringBuilder();
 		if (equipo.getPuertos().isEmpty() || equipo.getPuertos() == null)
 			return ",0";
-		 System.out.println(equipo.getCodigo()+" "+equipo.obtenerCodigoTipoPuerto(0));
 		sb.append(equipo.obtenerCodigoTipoPuerto(0));
 		sb.append(",");
-		sb.append(equipo.getPuertos().size());
+		sb.append(equipo.getCantidadPuertos());
 		return sb.toString();
 	}
 
@@ -202,7 +215,6 @@ public class EquipoSecuencialDAO implements EquipoDAO {
 
 		for (TipoPuerto tp : ds.values())
 			tipoPuerto.put(tp.getCodigo(), tp);
-
 		return tipoPuerto;
 	}
 }

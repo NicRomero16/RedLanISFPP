@@ -15,6 +15,7 @@ import controlador.Coordinador;
 import excepciones.ConexionInexistenteException;
 import excepciones.EquipoExistenteException;
 import excepciones.EquipoInexistenteException;
+import interfaz.Interfaz;
 import modelo.Conexion;
 import modelo.Equipo;
 import modelo.TipoCable;
@@ -120,7 +121,7 @@ class CalculoTest {
 
 		calculo.cargarDatos(conexiones);
 
-		double velocidadMaxima = calculo.velocidadMaximaEntreEquipos(origen, destino);
+		double velocidadMaxima = calculo.velocidadMaxima(origen, destino);
 
 		double velocidadEsperada = 1000; 
 		assertEquals(velocidadEsperada, velocidadMaxima);
@@ -134,7 +135,7 @@ class CalculoTest {
 				new Ubicacion("A04", "Aula 4"), true);
 
 		Exception exception = assertThrows(ConexionInexistenteException.class, () -> {
-			calculo.velocidadMaximaEntreEquipos(origen, destino);
+			calculo.velocidadMaxima(origen, destino);
 		});
 
 		assertEquals("No existe una conexion entre los equipos " + origen + " y " + destino, exception.getMessage());

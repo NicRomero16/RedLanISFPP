@@ -174,33 +174,25 @@ public class AplicacionGui extends JFrame {
 		crearBoton(botonMostrarEquipos);
 		botonMostrarEquipos.setBounds(540, 76, 200, 40);
 
-		JLabel labelSeleccionarUnEquipo = new JLabel("Selecione un equipo: ");
-		labelSeleccionarUnEquipo.setForeground(neonGreen);
-		labelSeleccionarUnEquipo.setBounds(540, 155, 200, 40);
+		JButton botonRealizarPingEquipo = new JButton("Realizar Ping a un equipo");
+		crearBoton(botonRealizarPingEquipo);
+		botonRealizarPingEquipo.setBounds(540, 176, 200, 40);
 
 		JComboBox<String> comboBoxEquipoPing = new JComboBox<String>(listaDeEquipos);
 		crearComboBox(comboBoxEquipoPing);
-		comboBoxEquipoPing.setBounds(540, 185, 200, 40);
-
-		JButton botonRealizarPingEquipo = new JButton("Realizar Ping a un equipo");
-		crearBoton(botonRealizarPingEquipo);
-		botonRealizarPingEquipo.setBounds(540, 230, 200, 40);
-
-		JLabel labelSeleccionarEquipos = new JLabel("Selecione los equipos: ");
-		labelSeleccionarEquipos.setForeground(neonGreen);
-		labelSeleccionarEquipos.setBounds(540, 260, 200, 40);
-
-		JComboBox<String> comboBoxVelMaxEquip1 = new JComboBox<>(listaDeEquipos);
-		crearComboBox(comboBoxVelMaxEquip1);
-		comboBoxVelMaxEquip1.setBounds(540, 290, 200, 40);
-
-		JComboBox<String> comboBoxVelMaxEquip2 = new JComboBox<>(listaDeEquipos);
-		crearComboBox(comboBoxVelMaxEquip2);
-		comboBoxVelMaxEquip2.setBounds(540, 340, 200, 40);
+		comboBoxEquipoPing.setBounds(540, 236, 200, 40);
 
 		JButton botonVelocidadMaxEntreEquipos = new JButton("Velocidad maxima entre equipos");
 		crearBoton(botonVelocidadMaxEntreEquipos);
-		botonVelocidadMaxEntreEquipos.setBounds(540, 385, 200, 40);
+		botonVelocidadMaxEntreEquipos.setBounds(540, 286, 200, 40);
+
+		JComboBox<String> comboBoxVelMaxEquip1 = new JComboBox<>(listaDeEquipos);
+		crearComboBox(comboBoxVelMaxEquip1);
+		comboBoxVelMaxEquip1.setBounds(540, 350, 200, 40);
+
+		JComboBox<String> comboBoxVelMaxEquip2 = new JComboBox<>(listaDeEquipos);
+		crearComboBox(comboBoxVelMaxEquip2);
+		comboBoxVelMaxEquip2.setBounds(540, 400, 200, 40);
 
 		JButton botonMotrarConexionesGrafo = new JButton("Ver Conexiones");
 		crearBoton(botonMotrarConexionesGrafo);
@@ -208,8 +200,7 @@ public class AplicacionGui extends JFrame {
 
 		JButton botonMotrarMasConsultas = new JButton("Mas consultas");
 		crearBoton(botonMotrarMasConsultas);
-		botonMotrarMasConsultas.setBounds(540, 440, 200, 40);
-		botonMotrarMasConsultas.setFont(botonMotrarMasConsultas.getFont().deriveFont(25f));
+		botonMotrarMasConsultas.setBounds(540, 450, 200, 40);
 
 		JLabel labelTitulo = new JLabel("Redes");
 		labelTitulo.setForeground(neonGreen);
@@ -220,6 +211,14 @@ public class AplicacionGui extends JFrame {
 		labelSubTitulo.setForeground(neonGreen);
 		labelSubTitulo.setBounds(570, 30, 200, 30);
 		labelSubTitulo.setFont(labelTitulo.getFont().deriveFont(30f));
+
+		JLabel labelSeleccionarUnEquipo = new JLabel("Selecione un equipo: ");
+		labelSeleccionarUnEquipo.setForeground(neonGreen);
+		labelSeleccionarUnEquipo.setBounds(540, 206, 200, 40);
+
+		JLabel labelSeleccionarEquipos = new JLabel("Selecione los equipos: ");
+		labelSeleccionarEquipos.setForeground(neonGreen);
+		labelSeleccionarEquipos.setBounds(540, 320, 200, 40);
 
 		botonMotrarConexionesGrafo.addActionListener(new ActionListener() {
 			@Override
@@ -242,66 +241,38 @@ public class AplicacionGui extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String equipoSelected = (String) comboBoxEquipoPing.getSelectedItem();
+				if (equipoSelected != null) {
+					boolean ping = coordinador.realizarPingEquipo(equipoSelected);
+					if ((ping == true) || (ping == false)) {
 
-				boolean ping = coordinador.realizarPingEquipo(equipoSelected);
-
-				if (ping) {
-					textAreaGrande.setText("Estado del " + equipoSelected + ": Conectado");
-
-				} else {
-					textAreaGrande.setText("Estado del " + equipoSelected + ": Desconectado");
+						textAreaGrande.setText("Estado del equipo: " + ping);
+					}
+					textAreaGrande.setFont(new Font("Arial", Font.BOLD, 20));
 				}
-
-				textAreaGrande.setFont(new Font("Arial", Font.BOLD, 20));
 			}
 		});
 
 		botonVelocidadMaxEntreEquipos.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+
 				String equipo1 = (String) comboBoxVelMaxEquip1.getSelectedItem();
 				String equipo2 = (String) comboBoxVelMaxEquip2.getSelectedItem();
 
-				double velocidad = coordinador.velocidadMaximaEntreEquipos(equipo1, equipo2);
-
+				double velocidad = coordinador.VelocidadMaximaEntreEquipos(equipo1, equipo2);
+				if (velocidad > 0) {
+					textAreaGrande.setText("Velocidad: " + velocidad);
+				}
+				if (velocidad == 0) {
+					textAreaGrande.setText("Seleccione equipos diferentes, Porfavor. ");
+				}
 				if (velocidad == -1) {
-					mostrarMensaje("Por favor, seleccione equipos diferentes.");
-					return;
+					textAreaGrande.setText("el equipo " + equipo1 + " no tiene conexiones en la red.");
 				}
 				if (velocidad == -2) {
-					mostrarMensaje("Uno o ambos equipos no tienen conexiones activas en la red.");
-					return;
-				}
-				if (velocidad == -3) {
-					mostrarMensaje("No hay un camino entre los equipos.");
-					return;
-				}
-				if (velocidad == -4) {
-					mostrarMensaje("Error: uno o más puertos o cables tienen velocidad nula.");
-					return;
-				}
-				if (velocidad == -5) {
-					mostrarMensaje("No hay conexiones activas entre los equipos seleccionados.");
-					return;
-				}
-				if (velocidad <= 0) {
-					mostrarMensaje("Error inesperado al calcular la velocidad máxima.");
-					return;
+					textAreaGrande.setText("el equipo " + equipo2 + " no tiene conexiones en la red.");
 				}
 
-				mostrarMensaje("Velocidad máxima entre equipos: " + velocidad + " Mbps");
-			}
-
-			/**
-			 * Muestra un mensaje en el área de texto grande. Este método se utiliza para
-			 * mostrar errores o la velocidad máxima calculada entre los equipos
-			 * seleccionados.
-			 *
-			 * @param mensaje El mensaje a mostrar al usuario, que puede ser un error o la
-			 *                velocidad máxima en Mbps.
-			 */
-			private void mostrarMensaje(String mensaje) {
-				textAreaGrande.setText(mensaje);
 				textAreaGrande.setFont(new Font("Arial", Font.BOLD, 16));
 			}
 		});
@@ -427,61 +398,23 @@ public class AplicacionGui extends JFrame {
 		return panel;
 	}
 
-	/**
-	 * Define los colores de fondo y de primer plano para la barra de menú
-	 * especificada.
-	 *
-	 * @param menuBar La barra de menú a la que se le asignarán los colores. Se
-	 *                espera que sea un objeto de tipo JMenuBar.
-	 * 
-	 * @see JMenuBar
-	 */
 	public void definirColoresItems(JMenuBar menuBar) {
 		menuBar.setBackground(Color.BLACK);
 		menuBar.setForeground(NEON_GREEN);
 	}
 
-	/**
-	 * Define los colores de fondo y de primer plano para el elemento de menú
-	 * especificado.
-	 *
-	 * @param item El elemento de menú al que se le asignarán los colores. Se espera
-	 *             que sea un objeto de tipo JMenuItem.
-	 * 
-	 * @see JMenuItem
-	 */
 	public void definirColoresItems(JMenuItem item) {
 		item.setBackground(Color.BLACK);
 		item.setForeground(NEON_GREEN);
 	}
 
-	/**
-	 * Configura el JComboBox especificado con un fondo, un color de texto y un
-	 * borde personalizados.
-	 *
-	 * @param comboBox El JComboBox que se desea personalizar. Se espera que sea un
-	 *                 objeto de tipo JComboBox<String>.
-	 * @return El JComboBox configurado con los colores y bordes especificados.
-	 * 
-	 * @see JComboBox
-	 */
 	private JComboBox<String> crearComboBox(JComboBox<String> comboBox) {
-		comboBox.setBackground(NEON_GRAY);
-		comboBox.setForeground(NEON_GREEN);
-		comboBox.setBorder(new LineBorder(NEON_GREEN, 2));
+		comboBox.setBackground(NEON_GRAY); // Fondo gris
+		comboBox.setForeground(NEON_GREEN); // Texto verde
+		comboBox.setBorder(new LineBorder(NEON_GREEN, 2)); // Borde verde
 		return comboBox;
 	}
 
-	/**
-	 * Configura el JButton especificado con un fondo, un color de texto y un borde
-	 * personalizados.
-	 *
-	 * @param boton El JButton que se desea personalizar. Se espera que sea un
-	 *              objeto de tipo JButton.
-	 * @return El JButton configurado con los colores y bordes especificados.
-	 * 
-	 * @see JButton
-	 */
 	private JButton crearBoton(JButton boton) {
 		boton.setBackground(Color.BLACK);
 		boton.setForeground(NEON_GREEN);

@@ -1,5 +1,8 @@
 package controlador;
 
+import negocio.Calculo;
+import negocio.Red;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -10,6 +13,7 @@ import org.jgrapht.Graph;
 import excepciones.ConexionExistenteException;
 import excepciones.ConexionInexistenteException;
 import excepciones.EquipoExistenteException;
+import excepciones.EquipoInexistenteException;
 import interfaz.Interfaz;
 import modelo.Conexion;
 import modelo.Equipo;
@@ -17,8 +21,6 @@ import modelo.TipoCable;
 import modelo.TipoEquipo;
 import modelo.TipoPuerto;
 import modelo.Ubicacion;
-import negocio.Calculo;
-import negocio.Red;
 
 public class Coordinador {
 	private Red red;
@@ -30,6 +32,7 @@ public class Coordinador {
 		this.red = red;
 	}
 
+	// interfaz grafica
 	public Graph<Equipo, Conexion> cargarDatos() {
 
 		return calculo.cargarDatos(listarConexiones());
@@ -41,54 +44,47 @@ public class Coordinador {
 	}
 
 	public String imprimirConexionesGrafo() {
+
 		Set<Conexion> edges = calculo.getRed().edgeSet();
+
 		StringBuilder resultado = new StringBuilder();
 
 		for (Conexion edge : edges) {
-			resultado.append("=== Conexion ===\n\n");
+			resultado.append("Conexion:  \n");
 
-			resultado.append("Equipo Origen:\n").append(" - Codigo: ").append(edge.getEquipo1().getCodigo())
-					.append("\n").append(" - Descripción: ").append(edge.getEquipo1().getDescripcion()).append("\n")
-					.append(" - Marca: ").append(edge.getEquipo1().getMarca()).append("\n").append(" - Modelo: ")
-					.append(edge.getEquipo1().getModelo()).append("\n").append(" - Tipo de Equipo: ")
-					.append(edge.getEquipo1().getTipoEquipo()).append("\n").append(" - Ubicación: ")
-					.append(edge.getEquipo1().getUbicacion()).append("\n").append(" - Puertos: ")
-					.append(edge.getEquipo1().getPuertos()).append("\n").append(" - Direcciones IP: ")
-					.append(edge.getEquipo1().getDireccionesIP()).append("\n").append(" - Estado: ")
-					.append(edge.getEquipo1().getEstado()).append("\n").append(" - Tipo de Puerto: ")
-					.append(edge.getTipoPuerto1()).append("\n\n");
+			resultado.append("Equipo origen: \n Codigo: " + edge.getEquipo1().getCodigo() + "\n Decripcion: "
+					+ edge.getEquipo1().getDescripcion() + "\n Marca: " + edge.getEquipo1().getMarca() + "\n Modelo: "
+					+ edge.getEquipo1().getModelo() + "\n " + edge.getEquipo1().getTipoEquipo() + "\n "
+					+ edge.getEquipo1().getUbicacion() + "\n " + edge.getEquipo1().getPuertos() + "\n Direciones IP: "
+					+ edge.getEquipo1().getDireccionesIP() + "\n Estado: " + edge.getEquipo1().getEstado() + "\n "
+					+ edge.getTipoPuerto1() + "\n");
+			resultado.append("\nEquipo destino: \n Codigo: " + edge.getEquipo2().getCodigo() + "\n Decripcion: "
+					+ edge.getEquipo2().getDescripcion() + "\n Marca: " + edge.getEquipo2().getMarca() + "\n Modelo: "
+					+ edge.getEquipo2().getModelo() + "\n " + edge.getEquipo2().getTipoEquipo() + "\n "
+					+ edge.getEquipo2().getUbicacion() + "\n " + edge.getEquipo2().getPuertos() + "\n Direciones IP: "
+					+ edge.getEquipo2().getDireccionesIP() + "\n Estado: " + edge.getEquipo2().getEstado() + "\n "
+					+ edge.getTipoPuerto2() + "\n");
+			resultado.append(" \nTipo de cable de la conexion: \n " + edge.getTipoCable() + "\n");
+			resultado.append("================================================================\n");
 
-			resultado.append("Equipo Destino:\n").append(" - Codigo: ").append(edge.getEquipo2().getCodigo())
-					.append("\n").append(" - Descripción: ").append(edge.getEquipo2().getDescripcion()).append("\n")
-					.append(" - Marca: ").append(edge.getEquipo2().getMarca()).append("\n").append(" - Modelo: ")
-					.append(edge.getEquipo2().getModelo()).append("\n").append(" - Tipo de Equipo: ")
-					.append(edge.getEquipo2().getTipoEquipo()).append("\n").append(" - Ubicación: ")
-					.append(edge.getEquipo2().getUbicacion()).append("\n").append(" - Puertos: ")
-					.append(edge.getEquipo2().getPuertos()).append("\n").append(" - Direcciones IP: ")
-					.append(edge.getEquipo2().getDireccionesIP()).append("\n").append(" - Estado: ")
-					.append(edge.getEquipo2().getEstado()).append("\n").append(" - Tipo de Puerto: ")
-					.append(edge.getTipoPuerto2()).append("\n\n");
-
-			resultado.append("Tipo de Cable:\n").append(" - ").append(edge.getTipoCable()).append("\n\n");
-
-			resultado.append("========================================\n\n");
 		}
 		return resultado.toString();
 	}
 
 	public String imprimirEquipos() {
-		TreeMap<String, Equipo> equipos = listarEquipos();
+		TreeMap<String, Equipo> edges = listarEquipos();
+
 		StringBuilder resultado = new StringBuilder();
 
-		for (Equipo equipo : equipos.values()) {
-			resultado.append("=== Equipo: ").append(equipo.getCodigo()).append(" ===\n\n").append(" - Descripción: ")
-					.append(equipo.getDescripcion()).append("\n").append(" - Marca: ").append(equipo.getMarca())
-					.append("\n").append(" - Modelo: ").append(equipo.getModelo()).append("\n")
-					.append(" - Tipo de Equipo: ").append(equipo.getTipoEquipo()).append("\n").append(" - Ubicación: ")
-					.append(equipo.getUbicacion()).append("\n").append(" - Puertos: ").append(equipo.getPuertos())
-					.append("\n").append(" - Direcciones IP: ").append(equipo.getDireccionesIP()).append("\n")
-					.append(" - Estado: ").append(equipo.getEstado()).append("\n\n")
-					.append("========================================\n\n");
+		for (Equipo edge : edges.values()) {
+
+			resultado.append("Equipo: " + edge.getCodigo() + "\n");
+
+			resultado.append("Decripcion: " + edge.getDescripcion() + "\n Marca: " + edge.getMarca() + "\n Modelo: "
+					+ edge.getModelo() + "\n " + edge.getTipoEquipo() + "\n " + edge.getUbicacion() + "\n "
+					+ edge.getPuertos() + "\n Direciones IP: " + edge.getDireccionesIP() + "\n Estado: "
+					+ edge.getEstado() + "\n");
+			resultado.append("================================================================\n");
 		}
 
 		return resultado.toString();
@@ -98,6 +94,16 @@ public class Coordinador {
 		String resultado = "Los equipos intermedios entre " + origen.getCodigo() + " y " + destino.getCodigo()
 				+ " son: \n" + calculo.mostrarEquiposIntermedios(origen, destino);
 		interfaz.mostrarEquiposIntermedios(resultado);
+	}
+
+	public void velocidadMaxima(Equipo origen, Equipo destino) {
+		try {
+			String resultado = "la velocidad maxima entre el " + origen.getCodigo() + " y " + destino.getCodigo()
+					+ " es de " + calculo.velocidadMaxima(origen, destino) + " Mbps ";
+			interfaz.mostrarVelocidadMaxima(resultado);
+		} catch (ConexionInexistenteException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void ping(String ip) {
@@ -133,15 +139,10 @@ public class Coordinador {
 		return calculo.realizarPingEquipo(red.buscarEquipo(equipoSelected));
 	}
 
-	public double velocidadMaximaEntreEquipos(String equipo1, String equipo2) {
+	public double VelocidadMaximaEntreEquipos(String equipo1, String equipo2) {
 
 		return calculo.velocidadMaximaEntreEquipos(red.buscarEquipo(equipo1), red.buscarEquipo(equipo2));
 
-	}
-
-	public void velocidadMaximaEntreEquipos(Equipo equipo, Equipo equipo2) {
-
-		calculo.velocidadMaximaEntreEquipos(equipo, equipo2);
 	}
 
 	public String[] devolverEquipoCodigos() {
@@ -192,6 +193,7 @@ public class Coordinador {
 		List<Conexion> conexiones = listarConexiones();
 
 		for (Conexion conexion : conexiones) {
+			// Verifica si los equipos de la conexión son e1 y e2 en cualquier orden
 			if ((conexion.getEquipo1().equals(e1) && conexion.getEquipo2().equals(e2))
 					|| (conexion.getEquipo1().equals(e2) && conexion.getEquipo2().equals(e1))) {
 				return true;
@@ -289,7 +291,6 @@ public class Coordinador {
 			e.printStackTrace();
 		}
 		calculo.update();
-		calculo.cargarDatos(listarConexiones());
 	}
 
 	public void modificarEquipo(String codigo, Equipo equipoModificado) {
@@ -338,6 +339,10 @@ public class Coordinador {
 
 	public TreeMap<String, TipoEquipo> listarTipoEquipos() {
 		return red.getTiposEquipos();
+	}
+	
+	public List<String> listarDireccionesIP(Equipo equipo) {
+		return equipo.getDireccionesIP();
 	}
 
 	public void setEmpresa(Red empresa) {
