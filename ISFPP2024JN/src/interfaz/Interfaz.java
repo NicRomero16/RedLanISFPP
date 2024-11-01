@@ -120,7 +120,7 @@ public class Interfaz {
 		System.out.println(
 				"=========================================================================================================");
 	}
-
+	
 	public void setCoordinador(Coordinador coordinador) {
 		this.coordinador = coordinador;
 	}

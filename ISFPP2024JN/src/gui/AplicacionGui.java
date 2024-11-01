@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -20,6 +21,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
 import org.jgrapht.Graph;
@@ -39,6 +41,7 @@ public class AplicacionGui extends JFrame {
 	private JTextArea textAreaGrafo;
 	private JPanel panel;
 	private JPanel nuevaPantalla;
+	private JPanel nuevaPantalla2;
 
 	private static final Color NEON_GREEN = new Color(57, 255, 20);
 	private static final Color NEON_GRAY = new Color(30, 30, 30);
@@ -143,11 +146,13 @@ public class AplicacionGui extends JFrame {
 		panelCentral = crearPanelPrincipal(NEON_GREEN, NEON_GRAY, Color.BLACK, Color.WHITE);
 		panel = crearPantallaGrafico(NEON_GREEN, NEON_GRAY, Color.BLACK, Color.WHITE);
 		nuevaPantalla = crearNuevaPantalla(NEON_GREEN, NEON_GRAY, Color.BLACK, Color.WHITE);
+		nuevaPantalla2 = crearNuevaPantalla2(NEON_GREEN, NEON_GRAY, Color.BLACK, Color.WHITE);
 		add(paneles);
 
 		paneles.add(panelCentral, "panelPrincipal");
 		paneles.add(panel, "pantallaGrafico");
 		paneles.add(nuevaPantalla, "nuevaPantalla");
+		paneles.add(nuevaPantalla2, "nuevaPantalla2");
 
 		setVisible(true);
 	}
@@ -281,7 +286,7 @@ public class AplicacionGui extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				CardLayout cardLayout = (CardLayout) paneles.getLayout();
-				cardLayout.show(paneles, "nuevaPantalla");
+				cardLayout.show(paneles, "nuevaPantalla2");
 			}
 		});
 
@@ -387,6 +392,70 @@ public class AplicacionGui extends JFrame {
 		nuevaPantalla.add(labelSubTitulo);
 		nuevaPantalla.add(scrollGrafo);
 
+		nuevaPantalla.add(botonVolver);
+		return nuevaPantalla;
+	}
+
+	private JPanel crearNuevaPantalla2(Color neonGreen, Color neonGray, Color neonBlack, Color neonWhite) {
+		JPanel nuevaPantalla = new JPanel();
+		nuevaPantalla.setBackground(neonBlack);
+		nuevaPantalla.setLayout(null);
+
+		this.textAreaGrande = new JTextArea();
+		textAreaGrande.setBackground(neonGray);
+		textAreaGrande.setForeground(neonGreen);
+		textAreaGrande.setBorder(new LineBorder(neonGreen, 2));
+		textAreaGrande.setCaretColor(neonWhite);
+		textAreaGrande.setEditable(false);
+
+		scrollGrande = new JScrollPane(textAreaGrande);
+		scrollGrande.setBounds(20, 70, 500, 400);
+		scrollGrande.setBorder(new LineBorder(neonGreen, 2));
+		panelCentral.add(scrollGrande);
+
+		JLabel labelDireccionIP = new JLabel("Ingrese una direccion IP:");
+		labelDireccionIP.setForeground(neonGreen);
+		labelDireccionIP.setBounds(20, 20, 500, 40);
+
+		JTextField txtDireccionIP = new JTextField();
+		txtDireccionIP.setForeground(neonGreen);
+		txtDireccionIP.setBackground(neonBlack);
+		txtDireccionIP.setCaretColor(neonGreen);
+		txtDireccionIP.setBorder(BorderFactory.createLineBorder(neonGreen, 2));
+		txtDireccionIP.setBounds(540, 76, 200, 40);
+
+		JButton botonRangoIP = new JButton("Ver rango direccion IP");
+		crearBoton(botonRangoIP);
+		botonRangoIP.setBounds(540, 125, 200, 40);
+
+		JButton botonVolver = new JButton("Volver");
+		crearBoton(botonVolver);
+		botonVolver.setBounds(540, 450, 200, 40);
+
+		JLabel labelTitulo = new JLabel("Redes");
+		labelTitulo.setForeground(neonGreen);
+		labelTitulo.setBounds(20, 20, 500, 40);
+		labelTitulo.setFont(labelTitulo.getFont().deriveFont(30f));
+
+		botonRangoIP.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				TreeMap<String, Equipo> equipos = coordinador.rangoIP(txtDireccionIP.getText());
+				textAreaGrande.setText(equipos.toString());
+			}
+		});
+
+		botonVolver.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				cardLayout.show(paneles, "panelPrincipal");
+			}
+		});
+
+		nuevaPantalla.add(botonRangoIP);
+		nuevaPantalla.add(txtDireccionIP);
+		nuevaPantalla.add(labelTitulo);
+		nuevaPantalla.add(scrollGrande);
 		nuevaPantalla.add(botonVolver);
 		return nuevaPantalla;
 	}

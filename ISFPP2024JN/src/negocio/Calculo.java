@@ -1,6 +1,7 @@
 package negocio;
 
 import java.util.List;
+import java.util.TreeMap;
 
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
@@ -142,10 +143,22 @@ public class Calculo {
 		return velocidadMaxima;
 	}
 
+	public TreeMap<String, Equipo> rangoIp(String direccionIP) {
+		TreeMap<String, Equipo> equipos1 = coordinador.listarEquipos();
+		TreeMap<String, Equipo> equipos2 = new TreeMap<String, Equipo>();
+		for (Equipo equipo : equipos1.values()) {
+			List<String> ips = equipo.getDireccionesIP();
+			for (String ip : ips)
+				if (ip.startsWith(direccionIP))
+					equipos2.put(equipo.getCodigo(), equipo);
+		}
+		return equipos2;
+	}
+
 	public void update() {
 		this.actualizar = true;
 	}
-	
+
 	public Graph<Equipo, Conexion> getRed() {
 		if (this.actualizar) {
 			this.cargarDatos(coordinador.listarConexiones());

@@ -33,6 +33,7 @@ public class AplicacionConsultas {
 //		 
 //		 miAplicacion.buscarEquipo();
 		// miAplicacion.eliminarEquipo();
+		miAplicacion.rangoIp();
 	}
 
 	private void iniciar() {
@@ -100,6 +101,11 @@ public class AplicacionConsultas {
 	// Buscar un equipo
 	private void buscarEquipo() {
 		interfaz.buscarEquipo();
+	}
+	
+	private void rangoIp() {
+		String direccion = interfaz.ingresarIP();
+		coordinador.rangoIP(direccion);
 	}
 
 }
