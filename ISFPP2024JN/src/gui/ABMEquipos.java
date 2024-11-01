@@ -21,12 +21,10 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -585,7 +583,6 @@ public class ABMEquipos extends JPanel {
 			panelTabla.setLayout(new BorderLayout());
 			panelTabla.add(scrollPane, BorderLayout.CENTER);
 
-			// Crear un panel para los botones
 			JPanel panelBotones = new JPanel();
 			panelBotones.setLayout(new BoxLayout(panelBotones, BoxLayout.X_AXIS));
 			JButton btnEliminar = new JButton("Eliminar");
@@ -608,10 +605,12 @@ public class ABMEquipos extends JPanel {
 				}
 			});
 
+			JButton btnCancelar = new JButton("Regresar");
+
 			panelBotones.add(btnAgregarDireccionIP);
 			panelBotones.add(btnEliminar);
+			panelBotones.add(btnCancelar);
 
-			// Añadir el panel de botones al panel principal
 			panelTabla.add(panelBotones, BorderLayout.SOUTH);
 
 			JDialog dialogTabla = new JDialog(dialog, "Direcciones IP", false);
@@ -619,6 +618,10 @@ public class ABMEquipos extends JPanel {
 			dialogTabla.pack();
 			dialogTabla.setVisible(true);
 			dialogTabla.setLocationRelativeTo(null);
+
+			btnCancelar.addActionListener(ev -> {
+				dialogTabla.dispose();
+			});
 		});
 		return false;
 	}
