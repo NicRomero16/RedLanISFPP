@@ -13,16 +13,20 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -61,21 +65,12 @@ public class ABMEquipos extends JPanel {
 
 		for (Equipo equipo : equipos.values()) {
 			TipoPuerto tPuerto = coordinador.buscarTipoPuerto(equipo.obtenerCodigoTipoPuerto(0));
-			Object[] fila = { equipo.getCodigo() != null ? equipo.getCodigo() : "",
-					equipo.getDescripcion() != null ? equipo.getDescripcion() : "",
-					equipo.getMarca() != null ? equipo.getMarca() : "",
-					equipo.getModelo() != null ? equipo.getModelo() : "",
-					(equipo.getTipoEquipo() != null ? equipo.getTipoEquipo().getCodigo() : "") + ", "
-							+ equipo.getTipoEquipo().getDescripcion(),
-					(equipo.getUbicacion() != null
-							? (equipo.getUbicacion().getCodigo() + "," + equipo.getUbicacion().getDescripcion())
-							: ""),
-					(equipo.getPuertos() != null
-							? (equipo.getCantidadPuertos() + "," + tPuerto.getCodigo() + "," + tPuerto.getDescripcion()
-									+ "," + tPuerto.getVelocidad())
-							: ""),
-					equipo.getDireccionesIP() != null ? String.join(", ", equipo.getDireccionesIP()) : "",
-					equipo.getEstado(), "Eliminar", "Modificar" };
+			Object[] fila = { equipo.getCodigo(), equipo.getDescripcion(), equipo.getMarca(), equipo.getModelo(),
+					(equipo.getTipoEquipo().getCodigo() + ", " + equipo.getTipoEquipo().getDescripcion()),
+					(equipo.getUbicacion().getCodigo() + "," + equipo.getUbicacion().getDescripcion()),
+					((equipo.getCantidadPuertos() + "," + tPuerto.getCodigo() + "," + tPuerto.getDescripcion() + ","
+							+ tPuerto.getVelocidad())),
+					String.join(", ", equipo.getDireccionesIP()), equipo.getEstado(), "Eliminar", "Modificar" };
 			tEquipos.addRow(fila);
 		}
 
@@ -169,7 +164,7 @@ public class ABMEquipos extends JPanel {
 
 		// Crear un panel para el formulario
 		JPanel panelFormulario = new JPanel();
-		panelFormulario.setLayout(new GridLayout(12, 2)); // 12 filas, 2 columnas
+		panelFormulario.setLayout(new GridLayout(0, 2));
 		panelFormulario.setBackground(Color.BLACK);
 		panelFormulario.setForeground(NEON_GREEN);
 
@@ -213,22 +208,9 @@ public class ABMEquipos extends JPanel {
 		JComboBox<String> comboBoxTipoPuerto = new JComboBox<String>(listPuertos);
 		crearComboBox(labelTipoPuertos, panelFormulario, comboBoxTipoPuerto);
 
-		// Direcciones IP
-		JLabel labelDireccionesIP = new JLabel("Direccion IP");
-		labelDireccionesIP.setForeground(NEON_GREEN);
-		panelFormulario.add(labelDireccionesIP);
 		List<String> direccionesIP = new ArrayList<String>();
-		JButton btnAgregarDireccionIP = new JButton("Agregar direccion IP");
-		btnAgregarDireccionIP.setBackground(Color.BLACK);
-		btnAgregarDireccionIP.setForeground(NEON_GREEN);
-		btnAgregarDireccionIP.setBorder(BorderFactory.createLineBorder(NEON_GREEN, 2));
-		btnAgregarDireccionIP.setPreferredSize(new Dimension(100, 10));
-		btnAgregarDireccionIP.addActionListener(e -> {
-			String direccionIP = agregarDireccionIP();
-			if (direccionIP.trim().equals(""))
-				direccionesIP.add(direccionIP);
-		});
-		panelFormulario.add(btnAgregarDireccionIP);
+
+		verDireccionesIP(dialog, panelFormulario, direccionesIP);
 
 		// Estado
 		JLabel labelEstado = new JLabel("Estado:");
@@ -256,8 +238,6 @@ public class ABMEquipos extends JPanel {
 			int cantidadPuertos = comboBoxPuertos.getSelectedIndex() + 1;
 			TipoPuerto tipoPuerto = coordinador.buscarTipoPuerto(comboBoxTipoPuerto.getSelectedItem().toString());
 
-			// Crear un arreglo de objetos para la nueva fila con los valores de cada
-			// JTextField
 			Object[] nuevaFila = { campoCodigo.getText(), campoDescripcion.getText(), campoMarca.getText(),
 					campoModelo.getText(), tEquipo.getCodigo() + "," + tEquipo.getDescripcion(),
 					ubicacion.getCodigo() + "," + ubicacion.getDescripcion(),
@@ -300,8 +280,9 @@ public class ABMEquipos extends JPanel {
 		dialog.setLocationRelativeTo(null); // Centra el diálogo
 
 		// Obtener los datos actuales de la fila
-		List<String> direccionesIP = equipo.getDireccionesIP();
-		System.out.println(direccionesIP);
+		List<String> direccionesIP = equipo.getDireccionesIP().stream().filter(ip -> !ip.trim().isEmpty())
+				.collect(Collectors.toList());
+
 		String estadoActual = tEquipos.getValueAt(row, 8).toString();
 
 		// Crear un panel para el formulario
@@ -355,22 +336,7 @@ public class ABMEquipos extends JPanel {
 		crearComboBox(labelTipoPuertos, panelFormulario, comboBoxTipoPuerto);
 		comboBoxTipoPuerto.setSelectedItem(equipo.obtenerCodigoTipoPuerto(0));
 
-		// Direcciones IP
-		JLabel labelDireccionesIP = new JLabel("Direccion IP");
-		labelDireccionesIP.setForeground(NEON_GREEN);
-		panelFormulario.add(labelDireccionesIP);
-
-		JButton btnAgregarDireccionIP = new JButton("Agregar direccion IP");
-		btnAgregarDireccionIP.setBackground(Color.BLACK);
-		btnAgregarDireccionIP.setForeground(NEON_GREEN);
-		btnAgregarDireccionIP.setBorder(BorderFactory.createLineBorder(NEON_GREEN, 2));
-		btnAgregarDireccionIP.setPreferredSize(new Dimension(100, 10));
-		btnAgregarDireccionIP.addActionListener(e -> {
-			String direccionIP = agregarDireccionIP();
-			if (!direccionIP.trim().equals(""))
-				direccionesIP.add(direccionIP);
-		});
-		panelFormulario.add(btnAgregarDireccionIP);
+		verDireccionesIP(dialog, panelFormulario, direccionesIP);
 
 		// Estado
 		JLabel labelEstado = new JLabel("Estado:");
@@ -405,6 +371,8 @@ public class ABMEquipos extends JPanel {
 			Equipo equipoModificado = new Equipo(campoCodigo.getText(), campoDescripcion.getText(),
 					campoMarca.getText(), campoModelo.getText(), tipoEquipo, ubicacion, estado);
 
+			String direccionesIPTexto = String.join(", ", direccionesIP);
+
 			// Actualizar el modelo de la tabla
 			tEquipos.setValueAt(equipoModificado.getCodigo(), row, 0);
 			tEquipos.setValueAt(equipoModificado.getDescripcion(), row, 1);
@@ -416,8 +384,8 @@ public class ABMEquipos extends JPanel {
 					+ equipoModificado.getUbicacion().getDescripcion(), row, 5);
 			tEquipos.setValueAt(comboBoxPuertos.getSelectedItem().toString() + "," + tipoPuerto.getCodigo() + ","
 					+ tipoPuerto.getDescripcion() + "," + tipoPuerto.getVelocidad(), row, 6);
-			tEquipos.setValueAt(
-					direccionesIP != null && !direccionesIP.isEmpty() ? String.join(", ", direccionesIP) : "", row, 7);
+			tEquipos.setValueAt(direccionesIPTexto, row, 7);
+
 			tEquipos.setValueAt(comboBoxEstado.getSelectedItem().toString(), row, 8);
 
 			for (String direccion : direccionesIP)
@@ -465,11 +433,20 @@ public class ABMEquipos extends JPanel {
 		panel.add(text);
 	}
 
+	public void agregar(JLabel label, JPanel panel, JButton btn) {
+		label.setForeground(NEON_GREEN);
+		btn.setBackground(Color.BLACK);
+		btn.setForeground(NEON_GREEN);
+		btn.setBorder(BorderFactory.createLineBorder(NEON_GREEN, 2));
+		panel.add(label);
+		panel.add(btn);
+	}
+
 	public void crearComboBox(JLabel label, JPanel panel, JComboBox<?> comboBox) {
 		label.setForeground(NEON_GREEN);
 		comboBox.setBackground(Color.BLACK);
 		comboBox.setForeground(NEON_GREEN);
-		comboBox.setBorder(BorderFactory.createLineBorder(NEON_GREEN, 3));
+		comboBox.setBorder(BorderFactory.createLineBorder(NEON_GREEN, 2));
 		panel.add(label);
 		panel.add(comboBox);
 	}
@@ -529,15 +506,14 @@ public class ABMEquipos extends JPanel {
 		return listPuertos;
 	}
 
-	public String agregarDireccionIP() {
+	private String agregarDireccionIP() {
 		JDialog dialog = new JDialog((Frame) null, "Agregar direccionIP", true);
 		dialog.setTitle("Modificar Equipo");
 		dialog.setSize(300, 100);
-		dialog.setLocationRelativeTo(null); // Centra el diálogo
+		dialog.setLocationRelativeTo(null);
 
-		// Crear un panel para el formulario
 		JPanel panelFormulario = new JPanel();
-		panelFormulario.setLayout(new GridLayout(0, 2)); // 12 filas, 2 columnas
+		panelFormulario.setLayout(new GridLayout(0, 2));
 		panelFormulario.setBackground(Color.BLACK);
 		panelFormulario.setForeground(NEON_GREEN);
 
@@ -549,14 +525,14 @@ public class ABMEquipos extends JPanel {
 
 		JButton btnAgregar = new JButton("Agregar");
 		btnAgregar.addActionListener(e -> {
-			if (campoDireccionIP.getText() == null || campoDireccionIP.getText().isEmpty()) {
+			if (campoDireccionIP.getText() == null || campoDireccionIP.getText().trim().equals("")) {
 				JOptionPane.showMessageDialog(null, "No ingreso ninguna direccionIP", "Advertencia",
 						JOptionPane.WARNING_MESSAGE);
 				return;
 			}
 
 			for (Equipo eq : equipos.values()) {
-				List<String> direccionesIP = coordinador.listarDireccionesIP(eq);
+				List<String> direccionesIP = eq.getDireccionesIP();
 				if (direccionesIP.contains(campoDireccionIP.getText())) {
 					JOptionPane.showMessageDialog(null, "La dirección IP ya existe", "Advertencia",
 							JOptionPane.WARNING_MESSAGE);
@@ -578,4 +554,72 @@ public class ABMEquipos extends JPanel {
 		return campoDireccionIP.getText();
 	}
 
+	public boolean verDireccionesIP(JDialog dialog, JPanel panel, List<String> direccionesIP) {
+		JLabel labelVerDireccionesIP = new JLabel("Direcciones IP:");
+		JButton btnVerDireccionesIP = new JButton("Ver, Agregar o Eliminar");
+		agregar(labelVerDireccionesIP, panel, btnVerDireccionesIP);
+		btnVerDireccionesIP.addActionListener(e -> {
+			String[] columnNames = { "Dirección IP" };
+			String[][] data = new String[direccionesIP.size()][1];
+
+			for (int i = 0; i < direccionesIP.size(); i++) {
+				data[i][0] = direccionesIP.get(i);
+			}
+
+			DefaultTableModel model = new DefaultTableModel(data, columnNames);
+			JTable tablaDireccionesIP = new JTable(model);
+			tablaDireccionesIP.setPreferredScrollableViewportSize(new Dimension(100, 100));
+			tablaDireccionesIP.setFillsViewportHeight(true);
+			tablaDireccionesIP.setBackground(Color.BLACK);
+			tablaDireccionesIP.setForeground(NEON_GREEN);
+			tablaDireccionesIP.setGridColor(NEON_GREEN);
+
+			JTableHeader header = tablaDireccionesIP.getTableHeader();
+			header.setBackground(Color.BLACK);
+			header.setForeground(NEON_GREEN);
+			header.setFont(header.getFont().deriveFont(Font.BOLD, 14f));
+
+			JScrollPane scrollPane = new JScrollPane(tablaDireccionesIP);
+
+			JPanel panelTabla = new JPanel();
+			panelTabla.setLayout(new BorderLayout());
+			panelTabla.add(scrollPane, BorderLayout.CENTER);
+
+			// Crear un panel para los botones
+			JPanel panelBotones = new JPanel();
+			panelBotones.setLayout(new BoxLayout(panelBotones, BoxLayout.X_AXIS));
+			JButton btnEliminar = new JButton("Eliminar");
+			btnEliminar.addActionListener(ev -> {
+				int selectedRow = tablaDireccionesIP.getSelectedRow();
+				if (selectedRow != -1) {
+					model.removeRow(selectedRow);
+					direccionesIP.remove(selectedRow);
+				} else
+					JOptionPane.showMessageDialog(null, "Por favor, selecciona una dirección IP para eliminar.",
+							"Error", JOptionPane.ERROR_MESSAGE);
+			});
+
+			JButton btnAgregarDireccionIP = new JButton("Agregar");
+			btnAgregarDireccionIP.addActionListener(ev -> {
+				String direccionIP = agregarDireccionIP();
+				if (!direccionIP.trim().equals("")) {
+					direccionesIP.add(direccionIP);
+					model.addRow(new String[] { direccionIP });
+				}
+			});
+
+			panelBotones.add(btnAgregarDireccionIP);
+			panelBotones.add(btnEliminar);
+
+			// Añadir el panel de botones al panel principal
+			panelTabla.add(panelBotones, BorderLayout.SOUTH);
+
+			JDialog dialogTabla = new JDialog(dialog, "Direcciones IP", false);
+			dialogTabla.add(panelTabla);
+			dialogTabla.pack();
+			dialogTabla.setVisible(true);
+			dialogTabla.setLocationRelativeTo(null);
+		});
+		return false;
+	}
 }

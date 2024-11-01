@@ -131,15 +131,15 @@ public class EquipoSecuencialDAO implements EquipoDAO {
 	}
 
 	private String ipAdressFormatter(Equipo equipo) {
-		StringBuilder sb = new StringBuilder();
-		if (equipo.getDireccionesIP().isEmpty() || equipo.getDireccionesIP() == null)
+		if (equipo.getDireccionesIP() == null || equipo.getDireccionesIP().isEmpty())
 			return "";
-		for (String ip : equipo.getDireccionesIP()) {
-			sb.append(ip);
-			sb.append(",");
-		}
-		sb.deleteCharAt(sb.length() - 1);
-		return sb.toString();
+
+		StringBuilder sb = new StringBuilder();
+		for (String ip : equipo.getDireccionesIP())
+			if (!ip.trim().isEmpty())
+				sb.append(",").append(ip);
+
+		return sb.length() > 0 ? sb.substring(1) : "";
 	}
 
 	private String portTypeFormatter(Equipo equipo) {

@@ -340,10 +340,6 @@ public class Coordinador {
 	public TreeMap<String, TipoEquipo> listarTipoEquipos() {
 		return red.getTiposEquipos();
 	}
-	
-	public List<String> listarDireccionesIP(Equipo equipo) {
-		return equipo.getDireccionesIP();
-	}
 
 	public void setEmpresa(Red empresa) {
 		this.red = empresa;
