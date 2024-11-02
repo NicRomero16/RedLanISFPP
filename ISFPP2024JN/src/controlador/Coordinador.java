@@ -139,11 +139,13 @@ public class Coordinador {
 		return calculo.realizarPingEquipo(red.buscarEquipo(equipoSelected));
 	}
 
-	public TreeMap<String,Equipo> rangoIP(String ip) {
+	public String rangoIP(String ip) {
 		TreeMap<String, Equipo> equipos = calculo.rangoIp(ip);
-		for (Equipo e : equipos.values())
-			System.out.println(e.getCodigo() + "=" + e.getEstado());
-		return equipos;
+		StringBuilder resultado = new StringBuilder();
+		for (Equipo equipo : equipos.values()) {
+			resultado.append("Equipo = " + equipo.getCodigo() + ", Estado = " + equipo.getEstado() + "\n");
+		}
+		return resultado.toString();
 	}
 
 	public double VelocidadMaximaEntreEquipos(String equipo1, String equipo2) {

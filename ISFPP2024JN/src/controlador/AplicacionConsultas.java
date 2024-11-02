@@ -33,7 +33,7 @@ public class AplicacionConsultas {
 //		 
 //		 miAplicacion.buscarEquipo();
 		// miAplicacion.eliminarEquipo();
-		miAplicacion.rangoIp();
+		//miAplicacion.rangoIp();
 	}
 
 	private void iniciar() {
