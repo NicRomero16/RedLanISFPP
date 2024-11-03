@@ -369,4 +369,10 @@ public class Coordinador {
 		this.interfaz = interfaz;
 	}
 
+	public double velocidadMaximaEntreEquipos(String equipo1, String equipo2) {
+
+		return calculo.velocidadMaximaEntreEquipos(red.buscarEquipo(equipo1), red.buscarEquipo(equipo2));
+
+	}
+
 }

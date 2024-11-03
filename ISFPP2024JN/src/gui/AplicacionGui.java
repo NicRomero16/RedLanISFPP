@@ -145,15 +145,12 @@ public class AplicacionGui extends JFrame {
 
 		panelCentral = crearPanelPrincipal(NEON_GREEN, NEON_GRAY, Color.BLACK, Color.WHITE);
 		panel = crearPantallaGrafico(NEON_GREEN, NEON_GRAY, Color.BLACK, Color.WHITE);
-		// nuevaPantalla = crearNuevaPantalla(NEON_GREEN, NEON_GRAY, Color.BLACK,
-		// Color.WHITE);
-		nuevaPantalla2 = crearNuevaPantalla2(NEON_GREEN, NEON_GRAY, Color.BLACK, Color.WHITE);
+		nuevaPantalla = crearNuevaPantalla(NEON_GREEN, NEON_GRAY, Color.BLACK, Color.WHITE);
 		add(paneles);
 
 		paneles.add(panelCentral, "panelPrincipal");
 		paneles.add(panel, "pantallaGrafico");
-		// paneles.add(nuevaPantalla, "nuevaPantalla");
-		paneles.add(nuevaPantalla2, "nuevaPantalla2");
+		paneles.add(nuevaPantalla, "nuevaPantalla");
 
 		setVisible(true);
 	}
@@ -259,38 +256,66 @@ public class AplicacionGui extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String equipoSelected = (String) comboBoxEquipoPing.getSelectedItem();
-				if (equipoSelected != null) {
-					boolean ping = coordinador.realizarPingEquipo(equipoSelected);
-					if ((ping == true) || (ping == false)) {
 
-						textAreaGrande.setText("Estado del equipo: " + ping);
-					}
-					textAreaGrande.setFont(new Font("Arial", Font.BOLD, 20));
+				boolean ping = coordinador.realizarPingEquipo(equipoSelected);
+
+				if (ping) {
+					textAreaGrande.setText("Estado del " + equipoSelected + ": Conectado");
+
+				} else {
+					textAreaGrande.setText("Estado del " + equipoSelected + ": Desconectado");
 				}
+
+				textAreaGrande.setFont(new Font("Arial", Font.BOLD, 20));
 			}
 		});
 
 		botonVelocidadMaxEntreEquipos.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
 				String equipo1 = (String) comboBoxVelMaxEquip1.getSelectedItem();
 				String equipo2 = (String) comboBoxVelMaxEquip2.getSelectedItem();
 
-				double velocidad = coordinador.VelocidadMaximaEntreEquipos(equipo1, equipo2);
-				if (velocidad > 0) {
-					textAreaGrande.setText("Velocidad: " + velocidad);
-				}
-				if (velocidad == 0) {
-					textAreaGrande.setText("Seleccione equipos diferentes, Porfavor. ");
-				}
+				double velocidad = coordinador.velocidadMaximaEntreEquipos(equipo1, equipo2);
+
 				if (velocidad == -1) {
-					textAreaGrande.setText("el equipo " + equipo1 + " no tiene conexiones en la red.");
+					mostrarMensaje("Por favor, seleccione equipos diferentes.");
+					return;
 				}
 				if (velocidad == -2) {
-					textAreaGrande.setText("el equipo " + equipo2 + " no tiene conexiones en la red.");
+					mostrarMensaje("Uno o ambos equipos no tienen conexiones activas en la red.");
+					return;
+				}
+				if (velocidad == -3) {
+					mostrarMensaje("No hay un camino entre los equipos.");
+					return;
+				}
+				if (velocidad == -4) {
+					mostrarMensaje("Error: uno o más puertos o cables tienen velocidad nula.");
+					return;
+				}
+				if (velocidad == -5) {
+					mostrarMensaje("No hay conexiones activas entre los equipos seleccionados.");
+					return;
+				}
+				if (velocidad <= 0) {
+					mostrarMensaje("Error inesperado al calcular la velocidad máxima.");
+					return;
 				}
 
+				mostrarMensaje("Velocidad máxima entre equipos: " + velocidad + " Mbps");
+			}
+
+			/**
+			 * Muestra un mensaje en el área de texto grande. Este método se utiliza para
+			 * mostrar errores o la velocidad máxima calculada entre los equipos
+			 * seleccionados.
+			 *
+			 * @param mensaje El mensaje a mostrar al usuario, que puede ser un error o la
+			 *                velocidad máxima en Mbps.
+			 */
+			private void mostrarMensaje(String mensaje) {
+				textAreaGrande.setText(mensaje);
 				textAreaGrande.setFont(new Font("Arial", Font.BOLD, 16));
 			}
 		});
@@ -299,7 +324,7 @@ public class AplicacionGui extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				CardLayout cardLayout = (CardLayout) paneles.getLayout();
-				cardLayout.show(paneles, "nuevaPantalla2");
+				cardLayout.show(paneles, "nuevaPantalla");
 			}
 		});
 
@@ -311,88 +336,88 @@ public class AplicacionGui extends JFrame {
 		return panelCentral;
 	}
 
-//	private JPanel crearNuevaPantalla(Color neonGreen, Color neonGray, Color neonBlack, Color neonWhite) {
-//		JPanel nuevaPantalla = new JPanel();
-//		nuevaPantalla.setBackground(neonBlack);
-//		nuevaPantalla.setLayout(null);
-//
-//		textAreaGrafo = new JTextArea();
-//		textAreaGrafo.setBackground(neonGray);
-//		textAreaGrafo.setForeground(neonGreen);
-//		textAreaGrafo.setBorder(new LineBorder(neonGreen, 2));
-//		textAreaGrafo.setCaretColor(neonWhite);
-//		textAreaGrafo.setEditable(false);
-//
-//		JScrollPane scrollGrafo = new JScrollPane(textAreaGrafo);
-//		scrollGrafo.setBounds(20, 70, 500, 400);
-//		scrollGrafo.setBorder(new LineBorder(neonGreen, 2));
-//
-//		String[] listaDeEquipos = coordinador.devolverEquipoCodigos();
-//
-//		JButton botonMostrarEquipos = new JButton("Ver Equipos");
-//		crearBoton(nuevaPantalla, botonMostrarEquipos);
-//		botonMostrarEquipos.setBounds(540, 76, 200, 40);
-//
-//		JButton botonRealizarPingEquipo = new JButton("Realizar Ping a un equipo");
-//		crearBoton(nuevaPantalla, botonRealizarPingEquipo);
-//		botonRealizarPingEquipo.setBounds(540, 176, 200, 40);
-//
-//		JComboBox<String> comboBoxEquipoPing = new JComboBox<String>(listaDeEquipos);
-//		crearComboBox(nuevaPantalla, comboBoxEquipoPing);
-//		comboBoxEquipoPing.setBounds(540, 236, 200, 40);
-//
-//		JButton botonVelocidadMaxEntreEquipos = new JButton("Velocidad maxima entre equipos");
-//		crearBoton(nuevaPantalla, botonVelocidadMaxEntreEquipos);
-//		botonVelocidadMaxEntreEquipos.setBounds(540, 286, 200, 40);
-//
-//		JComboBox<String> comboBoxVelMaxEquip1 = new JComboBox<>(listaDeEquipos);
-//		crearComboBox(nuevaPantalla, comboBoxVelMaxEquip1);
-//		comboBoxVelMaxEquip1.setBounds(540, 350, 200, 40);
-//
-//		JComboBox<String> comboBoxVelMaxEquip2 = new JComboBox<>(listaDeEquipos);
-//		crearComboBox(nuevaPantalla, comboBoxVelMaxEquip2);
-//		comboBoxVelMaxEquip2.setBounds(540, 400, 200, 40);
-//
-//		JButton botonMotrarConexionesGrafo = new JButton("Ver Conexiones");
-//		crearBoton(nuevaPantalla, botonMotrarConexionesGrafo);
-//		botonMotrarConexionesGrafo.setBounds(540, 125, 200, 40);
-//
-//		JButton botonVolver = new JButton("Volver");
-//		crearBoton(nuevaPantalla, botonVolver);
-//		botonVolver.setBounds(540, 450, 200, 40);
-//
-//		JLabel labelTitulo = new JLabel("Redes");
-//		labelTitulo.setForeground(neonGreen);
-//		labelTitulo.setBounds(20, 20, 500, 40);
-//		labelTitulo.setFont(labelTitulo.getFont().deriveFont(30f));
-//
-//		JLabel labelSubTitulo = new JLabel("Consultas");
-//		labelSubTitulo.setForeground(neonGreen);
-//		labelSubTitulo.setBounds(570, 30, 200, 30);
-//		labelSubTitulo.setFont(labelTitulo.getFont().deriveFont(30f));
-//
-//		JLabel labelSeleccionarUnEquipo = new JLabel("Selecione un equipo: ");
-//		labelSeleccionarUnEquipo.setForeground(neonGreen);
-//		labelSeleccionarUnEquipo.setBounds(540, 206, 200, 40);
-//
-//		JLabel labelSeleccionarEquipos = new JLabel("Selecione los equipos: ");
-//		labelSeleccionarEquipos.setForeground(neonGreen);
-//		labelSeleccionarEquipos.setBounds(540, 320, 200, 40);
-//
-//		botonVolver.addActionListener(new ActionListener() {
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//
-//				cardLayout.show(paneles, "panelPrincipal");
-//			}
-//		});
-//		nuevaPantalla.add(labelTitulo);
-//		nuevaPantalla.add(labelSubTitulo);
-//		nuevaPantalla.add(scrollGrafo);
-//
-//		nuevaPantalla.add(botonVolver);
-//		return nuevaPantalla;
-//	}
+	private JPanel crearNuevaPantalla(Color neonGreen, Color neonGray, Color neonBlack, Color neonWhite) {
+		JPanel nuevaPantalla = new JPanel();
+		nuevaPantalla.setBackground(neonBlack);
+		nuevaPantalla.setLayout(null);
+
+		textAreaGrafo = new JTextArea();
+		textAreaGrafo.setBackground(neonGray);
+		textAreaGrafo.setForeground(neonGreen);
+		textAreaGrafo.setBorder(new LineBorder(neonGreen, 2));
+		textAreaGrafo.setCaretColor(neonWhite);
+		textAreaGrafo.setEditable(false);
+
+		JScrollPane scrollGrafo = new JScrollPane(textAreaGrafo);
+		scrollGrafo.setBounds(20, 70, 500, 400);
+		scrollGrafo.setBorder(new LineBorder(neonGreen, 2));
+
+		String[] listaDeEquipos = coordinador.devolverEquipoCodigos();
+
+		JButton botonMostrarEquipos = new JButton("ACA pone los metodos");
+		crearBoton(nuevaPantalla, botonMostrarEquipos);
+		botonMostrarEquipos.setBounds(540, 76, 200, 40);
+
+		JButton botonRealizarPingEquipo = new JButton("no es necesario crear ");
+		crearBoton(nuevaPantalla, botonRealizarPingEquipo);
+		botonRealizarPingEquipo.setBounds(540, 176, 200, 40);
+
+		JComboBox<String> comboBoxEquipoPing = new JComboBox<String>(listaDeEquipos);
+		crearComboBox(nuevaPantalla, comboBoxEquipoPing);
+		comboBoxEquipoPing.setBounds(540, 236, 200, 40);
+
+		JButton botonVelocidadMaxEntreEquipos = new JButton("otra nueva pantalla");
+		crearBoton(nuevaPantalla, botonVelocidadMaxEntreEquipos);
+		botonVelocidadMaxEntreEquipos.setBounds(540, 286, 200, 40);
+
+		JComboBox<String> comboBoxVelMaxEquip1 = new JComboBox<>(listaDeEquipos);
+		crearComboBox(nuevaPantalla, comboBoxVelMaxEquip1);
+		comboBoxVelMaxEquip1.setBounds(540, 350, 200, 40);
+
+		JComboBox<String> comboBoxVelMaxEquip2 = new JComboBox<>(listaDeEquipos);
+		crearComboBox(nuevaPantalla, comboBoxVelMaxEquip2);
+		comboBoxVelMaxEquip2.setBounds(540, 400, 200, 40);
+
+		JButton botonMotrarConexionesGrafo = new JButton("ya tenemos este");
+		crearBoton(nuevaPantalla, botonMotrarConexionesGrafo);
+		botonMotrarConexionesGrafo.setBounds(540, 125, 200, 40);
+
+		JButton botonVolver = new JButton("Volver");
+		crearBoton(nuevaPantalla, botonVolver);
+		botonVolver.setBounds(540, 450, 200, 40);
+
+		JLabel labelTitulo = new JLabel("Redes");
+		labelTitulo.setForeground(neonGreen);
+		labelTitulo.setBounds(20, 20, 500, 40);
+		labelTitulo.setFont(labelTitulo.getFont().deriveFont(30f));
+
+		JLabel labelSubTitulo = new JLabel("Consultas");
+		labelSubTitulo.setForeground(neonGreen);
+		labelSubTitulo.setBounds(570, 30, 200, 30);
+		labelSubTitulo.setFont(labelTitulo.getFont().deriveFont(30f));
+
+		JLabel labelSeleccionarUnEquipo = new JLabel("Selecione un equipo: ");
+		labelSeleccionarUnEquipo.setForeground(neonGreen);
+		labelSeleccionarUnEquipo.setBounds(540, 206, 200, 40);
+
+		JLabel labelSeleccionarEquipos = new JLabel("Selecione los equipos: ");
+		labelSeleccionarEquipos.setForeground(neonGreen);
+		labelSeleccionarEquipos.setBounds(540, 320, 200, 40);
+
+		botonVolver.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				cardLayout.show(paneles, "panelPrincipal");
+			}
+		});
+		nuevaPantalla.add(labelTitulo);
+		nuevaPantalla.add(labelSubTitulo);
+		nuevaPantalla.add(scrollGrafo);
+
+		nuevaPantalla.add(botonVolver);
+		return nuevaPantalla;
+	}
 
 	private JPanel crearNuevaPantalla2(Color neonGreen, Color neonGray, Color neonBlack, Color neonWhite) {
 		JPanel nuevaPantalla = new JPanel();
