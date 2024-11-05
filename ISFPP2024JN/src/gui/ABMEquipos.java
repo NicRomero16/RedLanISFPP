@@ -203,7 +203,7 @@ public class ABMEquipos extends JPanel {
 
 		// Tipos de puertos
 		JLabel labelTipoPuertos = new JLabel("Tipos de puertos:");
-		String[] listPuertos = obtenerTipoPuertos();
+		String[] listPuertos = coordinador.devolverTipoPuertoCodigo();
 		JComboBox<String> comboBoxTipoPuerto = new JComboBox<String>(listPuertos);
 		crearComboBox(labelTipoPuertos, panelFormulario, comboBoxTipoPuerto);
 
@@ -330,7 +330,7 @@ public class ABMEquipos extends JPanel {
 
 		// Tipos de puertos
 		JLabel labelTipoPuertos = new JLabel("Tipos de puertos:");
-		String[] listPuertos = obtenerTipoPuertos();
+		String[] listPuertos = coordinador.devolverTipoPuertoCodigo();
 		JComboBox<String> comboBoxTipoPuerto = new JComboBox<String>(listPuertos);
 		crearComboBox(labelTipoPuertos, panelFormulario, comboBoxTipoPuerto);
 		comboBoxTipoPuerto.setSelectedItem(equipo.obtenerCodigoTipoPuerto(0));
@@ -488,21 +488,6 @@ public class ABMEquipos extends JPanel {
 		for (int i3 = 0; i3 < 50; i3++)
 			cantPuertos[i3] = i3 + 1;
 		return cantPuertos;
-	}
-
-	private String[] obtenerTipoPuertos() {
-		TreeMap<String, TipoPuerto> tipoPuerto = coordinador.listarTipoPuertos();
-		List<String> tiposPuertos = new ArrayList<String>();
-		for (TipoPuerto tipos : tipoPuerto.values()) {
-			tiposPuertos.add(tipos.getCodigo());
-		}
-		String[] listPuertos = new String[tiposPuertos.size()];
-		int i = 0;
-		for (String tipos : tiposPuertos) {
-			listPuertos[i] = tipos;
-			i++;
-		}
-		return listPuertos;
 	}
 
 	private String agregarDireccionIP(List<String> ips) {

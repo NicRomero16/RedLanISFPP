@@ -38,10 +38,8 @@ public class AplicacionGui extends JFrame {
 	private JPanel panelCentral;
 	private CardLayout cardLayout;
 	private JPanel paneles;
-	private JTextArea textAreaGrafo;
 	private JPanel panel;
 	private JPanel nuevaPantalla;
-	private JPanel nuevaPantalla2;
 
 	private static final Color NEON_GREEN = new Color(57, 255, 20);
 	private static final Color NEON_GRAY = new Color(30, 30, 30);
@@ -57,25 +55,18 @@ public class AplicacionGui extends JFrame {
 		setLocationRelativeTo(null);
 
 		JMenuBar menuBar = new JMenuBar();
-		definirColoresItems(menuBar);
 
 		JMenu menuOpciones = new JMenu("Opciones");
-		definirColoresItems(menuOpciones);
-
 		JMenuItem itemOpcionesConsultas = new JMenuItem("Consultas");
-		definirColoresItems(itemOpcionesConsultas);
-
+		definirColoresMenu(menuBar, menuOpciones, itemOpcionesConsultas);
 		JMenuItem itemOpcionesGrafico = new JMenuItem("Grafico");
-		definirColoresItems(itemOpcionesGrafico);
+		definirColoresMenu(menuBar, menuOpciones, itemOpcionesGrafico);
 
 		JMenu menuABM = new JMenu("Editar");
-		definirColoresItems(menuABM);
-
 		JMenuItem itemABMEquipo = new JMenuItem("Equipos");
-		definirColoresItems(itemABMEquipo);
-
+		definirColoresMenu(menuBar, menuABM, itemABMEquipo);
 		JMenuItem itemABMConexion = new JMenuItem("Conexiones");
-		definirColoresItems(itemABMConexion);
+		definirColoresMenu(menuBar, menuABM, itemABMConexion);
 
 		itemOpcionesGrafico.addActionListener(new ActionListener() {
 			@Override
@@ -135,12 +126,6 @@ public class AplicacionGui extends JFrame {
 			}
 		});
 
-		menuBar.add(menuOpciones);
-		menuOpciones.add(itemOpcionesConsultas);
-		menuOpciones.add(itemOpcionesGrafico);
-		menuABM.add(itemABMEquipo);
-		menuABM.add(itemABMConexion);
-		menuBar.add(menuABM);
 		setJMenuBar(menuBar);
 
 		panelCentral = crearPanelPrincipal(NEON_GREEN, NEON_GRAY, Color.BLACK, Color.WHITE);
@@ -173,38 +158,6 @@ public class AplicacionGui extends JFrame {
 		panelCentral.add(scrollGrande);
 		String[] listaDeEquipos = coordinador.devolverEquipoCodigos();
 
-		JButton botonMostrarEquipos = new JButton("Ver Equipos");
-		crearBoton(panelCentral, botonMostrarEquipos);
-		botonMostrarEquipos.setBounds(540, 76, 200, 40);
-
-		JButton botonRealizarPingEquipo = new JButton("Realizar Ping a un equipo");
-		crearBoton(panelCentral, botonRealizarPingEquipo);
-		botonRealizarPingEquipo.setBounds(540, 176, 200, 40);
-
-		JComboBox<String> comboBoxEquipoPing = new JComboBox<String>(listaDeEquipos);
-		crearComboBox(panelCentral, comboBoxEquipoPing);
-		comboBoxEquipoPing.setBounds(540, 236, 200, 40);
-
-		JButton botonVelocidadMaxEntreEquipos = new JButton("Velocidad maxima entre equipos");
-		crearBoton(panelCentral, botonVelocidadMaxEntreEquipos);
-		botonVelocidadMaxEntreEquipos.setBounds(540, 286, 200, 40);
-
-		JComboBox<String> comboBoxVelMaxEquip1 = new JComboBox<>(listaDeEquipos);
-		crearComboBox(panelCentral, comboBoxVelMaxEquip1);
-		comboBoxVelMaxEquip1.setBounds(540, 350, 200, 40);
-
-		JComboBox<String> comboBoxVelMaxEquip2 = new JComboBox<>(listaDeEquipos);
-		crearComboBox(panelCentral, comboBoxVelMaxEquip2);
-		comboBoxVelMaxEquip2.setBounds(540, 400, 200, 40);
-
-		JButton botonMotrarConexionesGrafo = new JButton("Ver Conexiones");
-		crearBoton(panelCentral, botonMotrarConexionesGrafo);
-		botonMotrarConexionesGrafo.setBounds(540, 125, 200, 40);
-
-		JButton botonMotrarMasConsultas = new JButton("Mas consultas");
-		crearBoton(panelCentral, botonMotrarMasConsultas);
-		botonMotrarMasConsultas.setBounds(540, 450, 200, 40);
-
 		JLabel labelTitulo = new JLabel("Redes");
 		labelTitulo.setForeground(neonGreen);
 		labelTitulo.setBounds(20, 20, 500, 40);
@@ -215,13 +168,45 @@ public class AplicacionGui extends JFrame {
 		labelSubTitulo.setBounds(570, 30, 200, 30);
 		labelSubTitulo.setFont(labelTitulo.getFont().deriveFont(30f));
 
+		JButton botonMostrarEquipos = new JButton("Ver Equipos");
+		crearBoton(panelCentral, botonMostrarEquipos);
+		botonMostrarEquipos.setBounds(540, 76, 200, 40);
+
+		JButton botonMotrarConexionesGrafo = new JButton("Ver Conexiones");
+		crearBoton(panelCentral, botonMotrarConexionesGrafo);
+		botonMotrarConexionesGrafo.setBounds(540, 125, 200, 40);
+
+		JButton botonRealizarPingEquipo = new JButton("Realizar Ping a un equipo");
+		crearBoton(panelCentral, botonRealizarPingEquipo);
+		botonRealizarPingEquipo.setBounds(540, 176, 200, 40);
+
 		JLabel labelSeleccionarUnEquipo = new JLabel("Selecione un equipo: ");
 		labelSeleccionarUnEquipo.setForeground(neonGreen);
 		labelSeleccionarUnEquipo.setBounds(540, 206, 200, 40);
 
+		JComboBox<String> comboBoxEquipoPing = new JComboBox<String>(listaDeEquipos);
+		crearComboBox(panelCentral, comboBoxEquipoPing);
+		comboBoxEquipoPing.setBounds(540, 236, 200, 40);
+
+		JButton botonVelocidadMaxEntreEquipos = new JButton("Velocidad maxima entre equipos");
+		crearBoton(panelCentral, botonVelocidadMaxEntreEquipos);
+		botonVelocidadMaxEntreEquipos.setBounds(540, 286, 200, 40);
+
 		JLabel labelSeleccionarEquipos = new JLabel("Selecione los equipos: ");
 		labelSeleccionarEquipos.setForeground(neonGreen);
-		labelSeleccionarEquipos.setBounds(540, 320, 200, 40);
+		labelSeleccionarEquipos.setBounds(540, 318, 200, 40);
+
+		JComboBox<String> comboBoxVelMaxEquip1 = new JComboBox<>(listaDeEquipos);
+		crearComboBox(panelCentral, comboBoxVelMaxEquip1);
+		comboBoxVelMaxEquip1.setBounds(540, 350, 200, 40);
+
+		JComboBox<String> comboBoxVelMaxEquip2 = new JComboBox<>(listaDeEquipos);
+		crearComboBox(panelCentral, comboBoxVelMaxEquip2);
+		comboBoxVelMaxEquip2.setBounds(540, 400, 200, 40);
+
+		JButton botonMotrarMasConsultas = new JButton("Mas consultas");
+		crearBoton(panelCentral, botonMotrarMasConsultas);
+		botonMotrarMasConsultas.setBounds(540, 450, 200, 40);
 
 		JButton botonSalir = new JButton("Salir");
 		crearBoton(panelCentral, botonSalir);
@@ -353,28 +338,46 @@ public class AplicacionGui extends JFrame {
 		scrollGrande.setBorder(new LineBorder(neonGreen, 2));
 		panelCentral.add(scrollGrande);
 
-		JLabel labelDireccionIP = new JLabel("Ingrese una direccion IP:");
-		labelDireccionIP.setForeground(neonGreen);
-		labelDireccionIP.setBounds(540, 43, 200, 40);
-
-		JTextField txtDireccionIP = new JTextField();
-		txtDireccionIP.setForeground(neonGreen);
-		txtDireccionIP.setBackground(neonBlack);
-		txtDireccionIP.setCaretColor(neonGreen);
-		txtDireccionIP.setBorder(BorderFactory.createLineBorder(neonGreen, 2));
-		txtDireccionIP.setBounds(540, 76, 200, 40);
-
-		JButton botonRangoIP = new JButton("Ver rango direccion IP");
-		crearBoton(nuevaPantalla, botonRangoIP);
-		botonRangoIP.setBounds(540, 125, 200, 40);
-
 		JLabel labelTitulo = new JLabel("Redes");
 		labelTitulo.setForeground(neonGreen);
 		labelTitulo.setBounds(20, 20, 500, 40);
 		labelTitulo.setFont(labelTitulo.getFont().deriveFont(30f));
 
+		JButton botonRangoIP = new JButton("Ver rango direccion IP");
+		crearBoton(nuevaPantalla, botonRangoIP);
+		botonRangoIP.setBounds(540, 62, 200, 40);
+
+		JLabel labelDireccionIP = new JLabel("Ingrese una direccion IP:");
+		labelDireccionIP.setForeground(neonGreen);
+		labelDireccionIP.setBounds(540, 92, 200, 40);
+
+		JTextField txtDireccionIP = new JTextField();
+		crearJTextField(nuevaPantalla, txtDireccionIP);
+		txtDireccionIP.setBounds(540, 125, 200, 40);
+
+		JButton botonPingEntreIPS = new JButton("Ver equipos entre las ip");
+		crearBoton(nuevaPantalla, botonPingEntreIPS);
+		botonPingEntreIPS.setBounds(540, 175, 200, 40);
+
+		JLabel labelDireccionesIP = new JLabel("Ingrese las direcciones IP:");
+		labelDireccionesIP.setForeground(neonGreen);
+		labelDireccionesIP.setBounds(540, 205, 200, 40);
+
+		JTextField textIpOrigen = new JTextField();
+		crearJTextField(nuevaPantalla, textIpOrigen);
+		textIpOrigen.setBounds(540, 238, 200, 40);
+
+		JTextField textIpDestino = new JTextField();
+		crearJTextField(nuevaPantalla, textIpDestino);
+		textIpDestino.setBounds(540, 288, 200, 40);
+
 		JButton botonVolver = new JButton("Volver");
 		crearBoton(nuevaPantalla, botonVolver);
+
+		JButton botonSalir = new JButton("Salir");
+		crearBoton(nuevaPantalla, botonSalir);
+		botonSalir.setBounds(50, 490, 100, 30);
+
 		botonVolver.setBounds(540, 450, 200, 40);
 		botonVolver.addActionListener(new ActionListener() {
 			@Override
@@ -383,14 +386,14 @@ public class AplicacionGui extends JFrame {
 			}
 		});
 
-		JButton botonSalir = new JButton("Salir");
-		crearBoton(nuevaPantalla, botonSalir);
-		botonSalir.setBounds(50, 490, 100, 30);
-		botonSalir.addActionListener(ev -> {
-			int confirm = JOptionPane.showConfirmDialog(null, "¿Estás seguro de que deseas salir?", "Confirmar salida",
-					JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-			if (confirm == JOptionPane.YES_OPTION)
-				System.exit(0);
+		botonSalir.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int confirm = JOptionPane.showConfirmDialog(null, "¿Estás seguro de que deseas salir?",
+						"Confirmar salida", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+				if (confirm == JOptionPane.YES_OPTION)
+					System.exit(0);
+			}
 		});
 
 		botonRangoIP.addActionListener(new ActionListener() {
@@ -400,9 +403,23 @@ public class AplicacionGui extends JFrame {
 			}
 		});
 
-		nuevaPantalla.add(txtDireccionIP);
+		botonPingEntreIPS.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (textIpOrigen.getText().equals(textIpDestino.getText())) {
+					JOptionPane.showMessageDialog(null, "Ingrese direcciones IP diferentes", "Error",
+							JOptionPane.WARNING_MESSAGE);
+					textAreaGrande.setText("");
+					return;
+				}
+				textAreaGrande
+						.setText(coordinador.mostrarEquiposEntrePings(textIpOrigen.getText(), textIpDestino.getText()));
+			}
+		});
+
 		nuevaPantalla.add(labelTitulo);
 		nuevaPantalla.add(labelDireccionIP);
+		nuevaPantalla.add(labelDireccionesIP);
 		nuevaPantalla.add(scrollGrande);
 		return nuevaPantalla;
 	}
@@ -414,15 +431,23 @@ public class AplicacionGui extends JFrame {
 		return panel;
 	}
 
-	public void definirColoresItems(JMenuBar menuBar) {
-		menuBar.setBackground(Color.BLACK);
-		menuBar.setForeground(NEON_GREEN);
+	private void crearJTextField(JPanel panel, JTextField text) {
+		text.setForeground(NEON_GREEN);
+		text.setBackground(Color.BLACK);
+		text.setCaretColor(NEON_GREEN);
+		text.setBorder(BorderFactory.createLineBorder(NEON_GREEN, 2));
+		panel.add(text);
 	}
 
-	public void definirColoresItems(JMenuItem item) {
+	public void definirColoresMenu(JMenuBar menuBar, JMenu menu, JMenuItem item) {
+		menuBar.setBackground(Color.BLACK);
+		menuBar.setForeground(NEON_GREEN);
+		menu.setBackground(Color.BLACK);
+		menu.setForeground(NEON_GREEN);
 		item.setBackground(Color.BLACK);
 		item.setForeground(NEON_GREEN);
-
+		menu.add(item);
+		menuBar.add(menu);
 	}
 
 	private JComboBox<String> crearComboBox(JPanel panel, JComboBox<String> comboBox) {

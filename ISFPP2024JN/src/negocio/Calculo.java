@@ -1,6 +1,7 @@
 package negocio;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -60,6 +61,23 @@ public class Calculo {
 			return verticesIntermedios;
 		} else
 			throw new EquipoInexistenteException("Los equipos no tienen equipos intermedios");
+	}
+
+	public List<Equipo> mostrarEquiposEntrePings(String ipOrigen, String ipDestino) {
+		TreeMap<String, Equipo> equipos = coordinador.listarEquipos();
+		Equipo eOrigen = null;
+		Equipo eDestino = null;
+
+		for (Equipo equipo : equipos.values()) {
+			if (equipo.getDireccionesIP().contains(ipOrigen))
+				eOrigen = equipo;
+			if (equipo.getDireccionesIP().contains(ipDestino))
+				eDestino = equipo;
+		}
+
+		List<Equipo> camino = DijkstraShortestPath.findPathBetween(redGrafo, eOrigen, eDestino).getVertexList();
+
+		return camino;
 	}
 
 	public double velocidadMaxima(Equipo origen, Equipo destino) throws ConexionInexistenteException {

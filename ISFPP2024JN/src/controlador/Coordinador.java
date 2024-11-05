@@ -149,37 +149,19 @@ public class Coordinador {
 		return resultado.toString();
 	}
 
+	public String mostrarEquiposEntrePings(String ipOrigen, String ipDestino) {
+		List<Equipo> equipos = calculo.mostrarEquiposEntrePings(ipOrigen, ipDestino);
+		StringBuilder resultado = new StringBuilder();
+		for (Equipo equipo : equipos)
+			resultado.append(equipo.getCodigo() + " -> ");
+		return resultado.length() > 0 ? resultado.substring(0, resultado.length() - 4) : "";
+	}
+
 	public double VelocidadMaximaEntreEquipos(String equipo1, String equipo2) {
 		return calculo.velocidadMaximaEntreEquipos(red.buscarEquipo(equipo1), red.buscarEquipo(equipo2));
 
 	}
 
-	public String[] devolverEquipoCodigos() {
-		TreeMap<String, Equipo> equipos = listarEquipos();
-		List<String> equipoList = new ArrayList<>();
-		for (Equipo equipo : equipos.values()) {
-			equipoList.add(equipo.getCodigo());
-		}
-		return equipoList.toArray(new String[0]);
-	}
-
-	public String[] devolverTipoPuertoCodigo() {
-		TreeMap<String, TipoPuerto> tipoPuertos = listarTipoPuertos();
-		List<String> tipoPuertoList = new ArrayList<>();
-		for (TipoPuerto tipoPuerto : tipoPuertos.values()) {
-			tipoPuertoList.add(tipoPuerto.getCodigo());
-		}
-		return tipoPuertoList.toArray(new String[0]);
-	}
-
-	public String[] devolverTipoCableCodigo() {
-		TreeMap<String, TipoCable> tipoCables = listarTipoCables();
-		List<String> tipoCableList = new ArrayList<>();
-		for (TipoCable tipoCable : tipoCables.values()) {
-			tipoCableList.add(tipoCable.getCodigo());
-		}
-		return tipoCableList.toArray(new String[0]);
-	}
 
 	public int getPuertosDisponibles(Equipo equipo) {
 		int totalPuertos = equipo.getCantidadPuertos();
@@ -316,8 +298,34 @@ public class Coordinador {
 		calculo.cargarDatos(listarConexiones());
 	}
 
-	public TipoPuerto buscarTipoPuerto(String codigo) {
+	public String[] devolverEquipoCodigos() {
+		TreeMap<String, Equipo> equipos = listarEquipos();
+		List<String> equipoList = new ArrayList<>();
+		for (Equipo equipo : equipos.values()) {
+			equipoList.add(equipo.getCodigo());
+		}
+		return equipoList.toArray(new String[0]);
+	}
 
+	public String[] devolverTipoPuertoCodigo() {
+		TreeMap<String, TipoPuerto> tipoPuertos = listarTipoPuertos();
+		List<String> tipoPuertoList = new ArrayList<>();
+		for (TipoPuerto tipoPuerto : tipoPuertos.values()) {
+			tipoPuertoList.add(tipoPuerto.getCodigo());
+		}
+		return tipoPuertoList.toArray(new String[0]);
+	}
+
+	public String[] devolverTipoCableCodigo() {
+		TreeMap<String, TipoCable> tipoCables = listarTipoCables();
+		List<String> tipoCableList = new ArrayList<>();
+		for (TipoCable tipoCable : tipoCables.values()) {
+			tipoCableList.add(tipoCable.getCodigo());
+		}
+		return tipoCableList.toArray(new String[0]);
+	}
+	
+	public TipoPuerto buscarTipoPuerto(String codigo) {
 		return red.buscarTipoPuerto(codigo);
 	}
 
@@ -371,9 +379,7 @@ public class Coordinador {
 	}
 
 	public double velocidadMaximaEntreEquipos(String equipo1, String equipo2) {
-
 		return calculo.velocidadMaximaEntreEquipos(red.buscarEquipo(equipo1), red.buscarEquipo(equipo2));
-
 	}
 
 }
