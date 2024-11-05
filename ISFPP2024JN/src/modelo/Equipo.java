@@ -69,6 +69,11 @@ public class Equipo {
 		}
 		return total;
 	}
+	public String obtenerTipoPuerto(Equipo e) {
+	
+		
+		return null;
+	}
 
 	public String getDescripcion() {
 		return descripcion;
@@ -192,5 +197,7 @@ public class Equipo {
 			return "cantidad=" + cantidad + ", " + tipoPuerto;
 		}
 	}
+
+
 
 }

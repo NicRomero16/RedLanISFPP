@@ -68,7 +68,7 @@ public class AplicacionGui extends JFrame {
 		JMenuItem itemOpcionesGrafico = new JMenuItem("Grafico");
 		definirColoresItems(itemOpcionesGrafico);
 
-		JMenu menuABM = new JMenu("ABM");
+		JMenu menuABM = new JMenu("Editar");
 		definirColoresItems(menuABM);
 
 		JMenuItem itemABMEquipo = new JMenuItem("Equipos");
@@ -341,89 +341,6 @@ public class AplicacionGui extends JFrame {
 		nuevaPantalla.setBackground(neonBlack);
 		nuevaPantalla.setLayout(null);
 
-		textAreaGrafo = new JTextArea();
-		textAreaGrafo.setBackground(neonGray);
-		textAreaGrafo.setForeground(neonGreen);
-		textAreaGrafo.setBorder(new LineBorder(neonGreen, 2));
-		textAreaGrafo.setCaretColor(neonWhite);
-		textAreaGrafo.setEditable(false);
-
-		JScrollPane scrollGrafo = new JScrollPane(textAreaGrafo);
-		scrollGrafo.setBounds(20, 70, 500, 400);
-		scrollGrafo.setBorder(new LineBorder(neonGreen, 2));
-
-		String[] listaDeEquipos = coordinador.devolverEquipoCodigos();
-
-		JButton botonMostrarEquipos = new JButton("ACA pone los metodos");
-		crearBoton(nuevaPantalla, botonMostrarEquipos);
-		botonMostrarEquipos.setBounds(540, 76, 200, 40);
-
-		JButton botonRealizarPingEquipo = new JButton("no es necesario crear ");
-		crearBoton(nuevaPantalla, botonRealizarPingEquipo);
-		botonRealizarPingEquipo.setBounds(540, 176, 200, 40);
-
-		JComboBox<String> comboBoxEquipoPing = new JComboBox<String>(listaDeEquipos);
-		crearComboBox(nuevaPantalla, comboBoxEquipoPing);
-		comboBoxEquipoPing.setBounds(540, 236, 200, 40);
-
-		JButton botonVelocidadMaxEntreEquipos = new JButton("otra nueva pantalla");
-		crearBoton(nuevaPantalla, botonVelocidadMaxEntreEquipos);
-		botonVelocidadMaxEntreEquipos.setBounds(540, 286, 200, 40);
-
-		JComboBox<String> comboBoxVelMaxEquip1 = new JComboBox<>(listaDeEquipos);
-		crearComboBox(nuevaPantalla, comboBoxVelMaxEquip1);
-		comboBoxVelMaxEquip1.setBounds(540, 350, 200, 40);
-
-		JComboBox<String> comboBoxVelMaxEquip2 = new JComboBox<>(listaDeEquipos);
-		crearComboBox(nuevaPantalla, comboBoxVelMaxEquip2);
-		comboBoxVelMaxEquip2.setBounds(540, 400, 200, 40);
-
-		JButton botonMotrarConexionesGrafo = new JButton("ya tenemos este");
-		crearBoton(nuevaPantalla, botonMotrarConexionesGrafo);
-		botonMotrarConexionesGrafo.setBounds(540, 125, 200, 40);
-
-		JButton botonVolver = new JButton("Volver");
-		crearBoton(nuevaPantalla, botonVolver);
-		botonVolver.setBounds(540, 450, 200, 40);
-
-		JLabel labelTitulo = new JLabel("Redes");
-		labelTitulo.setForeground(neonGreen);
-		labelTitulo.setBounds(20, 20, 500, 40);
-		labelTitulo.setFont(labelTitulo.getFont().deriveFont(30f));
-
-		JLabel labelSubTitulo = new JLabel("Consultas");
-		labelSubTitulo.setForeground(neonGreen);
-		labelSubTitulo.setBounds(570, 30, 200, 30);
-		labelSubTitulo.setFont(labelTitulo.getFont().deriveFont(30f));
-
-		JLabel labelSeleccionarUnEquipo = new JLabel("Selecione un equipo: ");
-		labelSeleccionarUnEquipo.setForeground(neonGreen);
-		labelSeleccionarUnEquipo.setBounds(540, 206, 200, 40);
-
-		JLabel labelSeleccionarEquipos = new JLabel("Selecione los equipos: ");
-		labelSeleccionarEquipos.setForeground(neonGreen);
-		labelSeleccionarEquipos.setBounds(540, 320, 200, 40);
-
-		botonVolver.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-				cardLayout.show(paneles, "panelPrincipal");
-			}
-		});
-		nuevaPantalla.add(labelTitulo);
-		nuevaPantalla.add(labelSubTitulo);
-		nuevaPantalla.add(scrollGrafo);
-
-		nuevaPantalla.add(botonVolver);
-		return nuevaPantalla;
-	}
-
-	private JPanel crearNuevaPantalla2(Color neonGreen, Color neonGray, Color neonBlack, Color neonWhite) {
-		JPanel nuevaPantalla = new JPanel();
-		nuevaPantalla.setBackground(neonBlack);
-		nuevaPantalla.setLayout(null);
-
 		JTextArea textAreaGrande = new JTextArea();
 		textAreaGrande.setBackground(neonGray);
 		textAreaGrande.setForeground(neonGreen);
@@ -479,7 +396,7 @@ public class AplicacionGui extends JFrame {
 		botonRangoIP.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				textAreaGrande.setText(coordinador.rangoIP(txtDireccionIP.getText()));
+				textAreaGrande.setText(coordinador.verRangoIP(txtDireccionIP.getText()));
 			}
 		});
 

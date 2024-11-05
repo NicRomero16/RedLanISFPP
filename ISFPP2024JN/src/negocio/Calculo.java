@@ -1,5 +1,6 @@
 package negocio;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -200,6 +201,14 @@ public class Calculo {
 					equipos2.put(equipo.getCodigo(), equipo);
 		}
 		return equipos2;
+	}
+
+	public List<String> recibirDireccionesIP(Equipo equipo, String ip) {
+		List<String> direccionesIP = new ArrayList<String>();
+		for (String direc : equipo.getDireccionesIP())
+			if (direc.startsWith(ip))
+				direccionesIP.add(direc);
+		return direccionesIP;
 	}
 
 	public void update() {

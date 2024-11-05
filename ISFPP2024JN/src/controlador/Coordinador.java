@@ -139,11 +139,12 @@ public class Coordinador {
 		return calculo.realizarPingEquipo(red.buscarEquipo(equipoSelected));
 	}
 
-	public String rangoIP(String ip) {
+	public String verRangoIP(String ip) {
 		TreeMap<String, Equipo> equipos = calculo.rangoIp(ip);
 		StringBuilder resultado = new StringBuilder();
 		for (Equipo equipo : equipos.values()) {
-			resultado.append("Equipo = " + equipo.getCodigo() + ", Estado = " + equipo.getEstado() + "\n");
+			resultado.append("Equipo = " + equipo.getCodigo() + ", Estado = " + equipo.getEstado() + ", Direccion IP: "
+					+ String.join(", ", calculo.recibirDireccionesIP(equipo, ip)) + "\n");
 		}
 		return resultado.toString();
 	}

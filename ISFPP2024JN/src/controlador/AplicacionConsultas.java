@@ -105,7 +105,7 @@ public class AplicacionConsultas {
 	
 	private void rangoIp() {
 		String direccion = interfaz.ingresarIP();
-		coordinador.rangoIP(direccion);
+		coordinador.verRangoIP(direccion);
 	}
 
 }
