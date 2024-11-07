@@ -382,4 +382,8 @@ public class Coordinador {
 		return calculo.velocidadMaximaEntreEquipos(red.buscarEquipo(equipo1), red.buscarEquipo(equipo2));
 	}
 
+	public List<String> obtenerTiposDePuerto(Equipo equipo) {
+		return equipo.obtenerTiposDePuerto();
+	}
+
 }

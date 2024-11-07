@@ -69,10 +69,15 @@ public class Equipo {
 		}
 		return total;
 	}
-	public String obtenerTipoPuerto(Equipo e) {
-	
-		
-		return null;
+
+	public List<String> obtenerTiposDePuerto() {
+		List<String> tiposDePuerto = new ArrayList<>();
+		for (Puerto puerto : puertos) {
+			if (puerto.getTipoPuerto() != null) {
+				tiposDePuerto.add(puerto.getTipoPuerto().getCodigo());
+			}
+		}
+		return tiposDePuerto;
 	}
 
 	public String getDescripcion() {
@@ -197,7 +202,5 @@ public class Equipo {
 			return "cantidad=" + cantidad + ", " + tipoPuerto;
 		}
 	}
-
-
 
 }

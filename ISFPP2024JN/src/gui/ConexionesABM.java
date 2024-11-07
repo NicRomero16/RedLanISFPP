@@ -6,11 +6,10 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
 import controlador.Coordinador;
-import excepciones.ArchivoExistenteException;
 import modelo.Conexion;
 import modelo.Equipo;
-import modelo.TipoCable;
 import modelo.TipoPuerto;
+import modelo.TipoCable;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -18,118 +17,157 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 public class ConexionesABM extends JPanel {
-	private static final Color NEON_GRAY = new Color(60, 60, 60);
-	private static final Color NEON_GREEN = new Color(57, 255, 20);
-	private DefaultTableModel tableModel;
-	private JTable table;
-	private JComboBox<String> comboBoxEquipo1;
-	private JComboBox<String> comboBoxEquipo2;
-	private JComboBox<String> comboBoxTipoPuerto1;
-	private JComboBox<String> comboBoxTipoPuerto2;
-	private JComboBox<String> comboBoxtipocable;
-	private List<Conexion> conexiones;
-	private JButton btnActualizar;
-	private JButton btnModificar;
-	private JButton btnAgregar;
-	private JButton btnBorrar;
-	private Coordinador coordinador;
+    private static final Color NEON_GRAY = new Color(60, 60, 60);
+    private static final Color NEON_GREEN = new Color(57, 255, 20);
+    private DefaultTableModel tableModel;
+    private JTable table;
+    private JComboBox<String> comboBoxEquipo1;
+    private JComboBox<String> comboBoxEquipo2;
+    private JComboBox<String> comboBoxTipoPuerto1;
+    private JComboBox<String> comboBoxTipoPuerto2;
+    private JComboBox<String> comboBoxtipocable;
+    private List<Conexion> conexiones;
+    private JButton btnActualizar;
+    private JButton btnModificar;
+    private JButton btnAgregar;
+    private JButton btnBorrar;
+    private JButton btnCancelar;
+    private Coordinador coordinador;
 
-	public ConexionesABM(Coordinador coordinador) {
-		setBackground(Color.BLACK);
-		setLayout(null);
-		this.coordinador = coordinador;
-		this.conexiones = coordinador.listarConexiones();
-		itemConexion();
-	}
+    public ConexionesABM(Coordinador coordinador) {
+        setBackground(Color.BLACK);
+        setLayout(null);
+        this.coordinador = coordinador;
+        this.conexiones = coordinador.listarConexiones();
+        itemConexion();
+    }
 
-	private void itemConexion() {
-		String[] listaDeEquipos = coordinador.devolverEquipoCodigos();
-		String[] listaDeTipoPuertos = coordinador.devolverTipoPuertoCodigo();
-		String[] listaDeTipoCables = coordinador.devolverTipoCableCodigo();
+    private void itemConexion() {
+        String[] listaDeEquipos = coordinador.devolverEquipoCodigos();
+        String[] listaDeTipoCables = coordinador.devolverTipoCableCodigo();
 
-		comboBoxEquipo1 = crearComboBox(new JComboBox<>(listaDeEquipos));
-		comboBoxEquipo2 = crearComboBox(new JComboBox<>(listaDeEquipos));
-		comboBoxTipoPuerto1 = crearComboBox(new JComboBox<>(listaDeTipoPuertos));
-		comboBoxTipoPuerto2 = crearComboBox(new JComboBox<>(listaDeTipoPuertos));
-		comboBoxtipocable = crearComboBox(new JComboBox<>(listaDeTipoCables));
+        comboBoxEquipo1 = crearComboBox(new JComboBox<>(listaDeEquipos));
+        comboBoxEquipo2 = crearComboBox(new JComboBox<>(listaDeEquipos));
+        comboBoxTipoPuerto1 = crearComboBox(new JComboBox<>());
+        comboBoxTipoPuerto2 = crearComboBox(new JComboBox<>());
+        comboBoxtipocable = crearComboBox(new JComboBox<>(listaDeTipoCables));
 
-		JLabel labelEquipo1 = crearLabel("Equipo 1");
-		JLabel labelEquipo2 = crearLabel("Equipo 2");
-		JLabel labelTipoPuerto1 = crearLabel("Tipo Puerto 1");
-		JLabel labelTipoPuerto2 = crearLabel("Tipo Puerto 2");
-		JLabel labelTipoCable = crearLabel("Tipo Cable");
+        comboBoxEquipo1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String equipoSeleccionado1 = (String) comboBoxEquipo1.getSelectedItem();
+                Equipo equipo1 = coordinador.buscarEquipo(equipoSeleccionado1);
 
-		labelEquipo1.setBounds(20, 15, 100, 20);
-		labelEquipo2.setBounds(200, 15, 100, 20);
-		labelTipoPuerto1.setBounds(20, 95, 100, 20);
-		labelTipoPuerto2.setBounds(200, 95, 100, 20);
-		labelTipoCable.setBounds(380, 55, 100, 20);
+                List<String> tiposPuerto1 = coordinador.obtenerTiposDePuerto(equipo1);
 
-		comboBoxEquipo1.setBounds(20, 40, 150, 30);
-		comboBoxEquipo2.setBounds(200, 40, 150, 30);
-		comboBoxTipoPuerto1.setBounds(20, 120, 150, 30);
-		comboBoxTipoPuerto2.setBounds(200, 120, 150, 30);
-		comboBoxtipocable.setBounds(380, 80, 150, 30);
+                for (String tipoPuerto : tiposPuerto1) {
+                    comboBoxTipoPuerto1.addItem(tipoPuerto);
+                }
+            }
+        });
 
-		btnAgregar = new JButton("Agregar");
-		btnAgregar.setBounds(550, 40, 100, 30);
-		btnAgregar.setForeground(Color.BLACK);
-		btnAgregar.setBackground(NEON_GREEN);
-		btnAgregar.setBorder(new LineBorder(NEON_GREEN, 2));
+        comboBoxEquipo2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String equipoSeleccionado2 = (String) comboBoxEquipo2.getSelectedItem();
+                Equipo equipo2 = coordinador.buscarEquipo(equipoSeleccionado2);
 
-		btnBorrar = new JButton("Borrar");
-		btnBorrar.setBounds(680, 40, 100, 30);
-		btnBorrar.setForeground(Color.BLACK);
-		btnBorrar.setBackground(NEON_GREEN);
-		btnBorrar.setBorder(new LineBorder(NEON_GREEN, 2));
+                List<String> tiposPuerto2 = coordinador.obtenerTiposDePuerto(equipo2);
 
-		btnModificar = new JButton("Modificar");
-		btnModificar.setBounds(550, 100, 100, 30);
-		btnModificar.setForeground(Color.BLACK);
-		btnModificar.setBackground(NEON_GREEN);
-		btnModificar.setBorder(new LineBorder(NEON_GREEN, 2));
+                comboBoxTipoPuerto2.removeAllItems();
 
-		btnActualizar = new JButton("Actualizar");
-		btnActualizar.setBounds(680, 100, 100, 30);
-		btnActualizar.setForeground(Color.BLACK);
-		btnActualizar.setBackground(NEON_GREEN);
-		btnActualizar.setBorder(new LineBorder(NEON_GREEN, 2));
-		btnActualizar.setVisible(false);
+                for (String tipoPuerto : tiposPuerto2) {
+                    comboBoxTipoPuerto2.addItem(tipoPuerto);
+                }
+            }
+        });
 
-		String[] columnNames = { "Equipo 1", "Tipo Puerto 1", "Equipo 2", "Tipo Puerto 2", "Tipo Cable" };
-		tableModel = new DefaultTableModel(columnNames, 0) {
-			@Override
-			public boolean isCellEditable(int row, int column) {
-				return false;
-			}
-		};
+        JLabel labelEquipo1 = crearLabel("Equipo 1");
+        JLabel labelEquipo2 = crearLabel("Equipo 2");
+        JLabel labelTipoPuerto1 = crearLabel("Tipo Puerto 1");
+        JLabel labelTipoPuerto2 = crearLabel("Tipo Puerto 2");
+        JLabel labelTipoCable = crearLabel("Tipo Cable");
 
-		table = new JTable(tableModel);
-		table.setBackground(Color.BLACK);
-		table.setForeground(NEON_GREEN);
-		table.setFont(new Font("Arial", Font.PLAIN, 14));
+        labelEquipo1.setBounds(20, 15, 100, 20);
+        labelEquipo2.setBounds(200, 15, 100, 20);
+        labelTipoPuerto1.setBounds(20, 95, 100, 20);
+        labelTipoPuerto2.setBounds(200, 95, 100, 20);
+        labelTipoCable.setBounds(380, 55, 100, 20);
 
-		JTableHeader header = table.getTableHeader();
-		header.setBackground(NEON_GRAY);
-		header.setForeground(NEON_GREEN);
-		header.setFont(new Font("Arial", Font.BOLD, 16));
-		header.setBorder(new LineBorder(NEON_GREEN, 2));
+        comboBoxEquipo1.setBounds(20, 40, 150, 30);
+        comboBoxEquipo2.setBounds(200, 40, 150, 30);
+        comboBoxTipoPuerto1.setBounds(20, 120, 150, 30);
+        comboBoxTipoPuerto2.setBounds(200, 120, 150, 30);
+        comboBoxtipocable.setBounds(380, 80, 150, 30);
 
-		table.setGridColor(NEON_GREEN);
-		table.setShowGrid(true);
-		table.setIntercellSpacing(new java.awt.Dimension(0, 0));
+        btnAgregar = new JButton("Agregar");
+        btnAgregar.setBounds(550, 40, 100, 30);
+        btnAgregar.setForeground(Color.BLACK);
+        btnAgregar.setBackground(NEON_GREEN);
+        btnAgregar.setBorder(new LineBorder(NEON_GREEN, 2));
 
-		for (int i = 0; i < conexiones.size(); i++) {
-			String[] conecAux = { conexiones.get(i).getEquipo1().getCodigo(),
-					conexiones.get(i).getTipoPuerto1().getCodigo(), conexiones.get(i).getEquipo2().getCodigo(),
-					conexiones.get(i).getTipoPuerto2().getCodigo(), conexiones.get(i).getTipoCable().getCodigo() };
-			tableModel.insertRow(table.getRowCount(), conecAux);
-		}
+        btnBorrar = new JButton("Borrar");
+        btnBorrar.setBounds(680, 40, 100, 30);
+        btnBorrar.setForeground(Color.BLACK);
+        btnBorrar.setBackground(NEON_GREEN);
+        btnBorrar.setBorder(new LineBorder(NEON_GREEN, 2));
 
-		JScrollPane scrollPane = new JScrollPane(table);
-		scrollPane.setBounds(20, 160, 740, 350);
-		scrollPane.setBorder(new LineBorder(NEON_GREEN, 2));
-		scrollPane.getViewport().setBackground(Color.BLACK);
+        btnModificar = new JButton("Modificar");
+        btnModificar.setBounds(550, 100, 100, 30);
+        btnModificar.setForeground(Color.BLACK);
+        btnModificar.setBackground(NEON_GREEN);
+        btnModificar.setBorder(new LineBorder(NEON_GREEN, 2));
+
+        btnActualizar = new JButton("Actualizar");
+        btnActualizar.setBounds(680, 100, 100, 30);
+        btnActualizar.setForeground(Color.BLACK);
+        btnActualizar.setBackground(NEON_GREEN);
+        btnActualizar.setBorder(new LineBorder(NEON_GREEN, 2));
+        btnActualizar.setVisible(false);
+        
+        btnCancelar = new JButton("Cancelar");
+        btnCancelar.setBounds(680, 40, 100, 30);
+        btnCancelar.setForeground(Color.BLACK);
+        btnCancelar.setBackground(NEON_GREEN);
+        btnCancelar.setBorder(new LineBorder(NEON_GREEN, 2));
+        btnCancelar.setVisible(false);  // Inicialmente oculto
+        
+        
+
+        String[] columnNames = { "Equipo 1", "Tipo Puerto 1", "Equipo 2", "Tipo Puerto 2", "Tipo Cable" };
+        tableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        table = new JTable(tableModel);
+        table.setBackground(Color.BLACK);
+        table.setForeground(NEON_GREEN);
+        table.setFont(new Font("Arial", Font.PLAIN, 14));
+
+        JTableHeader header = table.getTableHeader();
+        header.setBackground(NEON_GRAY);
+        header.setForeground(NEON_GREEN);
+        header.setFont(new Font("Arial", Font.BOLD, 16));
+        header.setBorder(new LineBorder(NEON_GREEN, 2));
+
+        table.setGridColor(NEON_GREEN);
+        table.setShowGrid(true);
+        table.setIntercellSpacing(new java.awt.Dimension(0, 0));
+
+        for (int i = 0; i < conexiones.size(); i++) {
+            String[] conecAux = { conexiones.get(i).getEquipo1().getCodigo(),
+                    conexiones.get(i).getTipoPuerto1().getCodigo(), conexiones.get(i).getEquipo2().getCodigo(),
+                    conexiones.get(i).getTipoPuerto2().getCodigo(), conexiones.get(i).getTipoCable().getCodigo() };
+            tableModel.insertRow(table.getRowCount(), conecAux);
+        }
+
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBounds(20, 160, 740, 350);
+        scrollPane.setBorder(new LineBorder(NEON_GREEN, 2));
+        scrollPane.getViewport().setBackground(Color.BLACK);
 
 		btnAgregar.addActionListener(new ActionListener() {
 			@Override
@@ -141,6 +179,15 @@ public class ConexionesABM extends JPanel {
 				String tipoPuerto2 = (String) comboBoxTipoPuerto2.getSelectedItem();
 				String tipoCable = (String) comboBoxtipocable.getSelectedItem();
 
+		        if (equipo1 == null || equipo1.isEmpty() ||
+		                tipoPuerto1 == null || tipoPuerto1.isEmpty() ||
+		                equipo2 == null || equipo2.isEmpty() ||
+		                tipoPuerto2 == null || tipoPuerto2.isEmpty() ||
+		                tipoCable == null || tipoCable.isEmpty()) {
+		                mostrarMensaje("Error: Todos los campos deben ser seleccionados(equipo1, equipo2 y tipoCable).", "Error", JOptionPane.WARNING_MESSAGE);
+		                return;
+		            }
+				
 				Equipo e1 = coordinador.buscarEquipo(equipo1);
 				TipoPuerto tP1 = coordinador.buscarTipoPuerto(tipoPuerto1);
 				Equipo e2 = coordinador.buscarEquipo(equipo2);
@@ -236,122 +283,180 @@ public class ConexionesABM extends JPanel {
 		});
 
 		btnModificar.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int selectedRow = table.getSelectedRow();
-				if (selectedRow != -1) {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        int selectedRow = table.getSelectedRow();
+		        if (selectedRow != -1) {
 
-					comboBoxEquipo1.setSelectedItem(tableModel.getValueAt(selectedRow, 0));
-					comboBoxTipoPuerto1.setSelectedItem(tableModel.getValueAt(selectedRow, 1));
-					comboBoxEquipo2.setSelectedItem(tableModel.getValueAt(selectedRow, 2));
-					comboBoxTipoPuerto2.setSelectedItem(tableModel.getValueAt(selectedRow, 3));
-					comboBoxtipocable.setSelectedItem(tableModel.getValueAt(selectedRow, 4));
+		            String equipo1 = (String) tableModel.getValueAt(selectedRow, 0);
+		            String tipoPuerto1 = (String) tableModel.getValueAt(selectedRow, 1);
+		            String equipo2 = (String) tableModel.getValueAt(selectedRow, 2);
+		            String tipoPuerto2 = (String) tableModel.getValueAt(selectedRow, 3);
 
-					btnActualizar.setVisible(true);
-					btnAgregar.setVisible(false);
-					btnModificar.setEnabled(false);
-				} else {
-					JOptionPane.showMessageDialog(null, "Seleccione una conexión para modificar.");
-				}
-			}
+		            comboBoxEquipo1.setSelectedItem(equipo1);
+		            comboBoxEquipo2.setSelectedItem(equipo2);
+
+		            Equipo e1 = coordinador.buscarEquipo(equipo1);
+		            Equipo e2 = coordinador.buscarEquipo(equipo2);
+
+		            comboBoxTipoPuerto1.removeAllItems();
+		            comboBoxTipoPuerto2.removeAllItems();
+
+		            List<String> tiposPuerto1 = e1.obtenerTiposDePuerto();
+		            List<String> tiposPuerto2 = e2.obtenerTiposDePuerto();
+
+		            for (String tipoPuerto : tiposPuerto1) {
+		                comboBoxTipoPuerto1.addItem(tipoPuerto);
+		            }
+
+		            for (String tipoPuerto : tiposPuerto2) {
+		                comboBoxTipoPuerto2.addItem(tipoPuerto);
+		            }
+
+		            comboBoxTipoPuerto1.setSelectedItem(tipoPuerto1);
+		            comboBoxTipoPuerto2.setSelectedItem(tipoPuerto2);
+
+		            btnActualizar.setVisible(true);
+	                btnCancelar.setVisible(true);
+		            btnAgregar.setVisible(false);
+		            btnModificar.setEnabled(false);
+		            btnBorrar.setVisible(false);
+
+		        } else {
+		            JOptionPane.showMessageDialog(null, "Seleccione una conexión para modificar.");
+		        }
+		    }
 		});
 
 		btnActualizar.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int selectedRow = table.getSelectedRow();
-				if (selectedRow != -1) {
-					StringBuilder mensajesError = new StringBuilder();
-					String nuevoEquipo1 = (String) comboBoxEquipo1.getSelectedItem();
-					String nuevoTipoPuerto1 = (String) comboBoxTipoPuerto1.getSelectedItem();
-					String nuevoEquipo2 = (String) comboBoxEquipo2.getSelectedItem();
-					String nuevoTipoPuerto2 = (String) comboBoxTipoPuerto2.getSelectedItem();
-					String nuevoTipoCable = (String) comboBoxtipocable.getSelectedItem();
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        int selectedRow = table.getSelectedRow();
+		        if (selectedRow != -1) {
 
-					Equipo e1 = coordinador.buscarEquipo(nuevoEquipo1);
-					TipoPuerto tP1 = coordinador.buscarTipoPuerto(nuevoTipoPuerto1);
-					Equipo e2 = coordinador.buscarEquipo(nuevoEquipo2);
-					TipoPuerto tP2 = coordinador.buscarTipoPuerto(nuevoTipoPuerto2);
-					TipoCable tC = coordinador.buscarTipoCable(nuevoTipoCable);
+		            StringBuilder mensajesError = new StringBuilder();
+		            String nuevoEquipo1 = (String) comboBoxEquipo1.getSelectedItem();
+		            String nuevoTipoPuerto1 = (String) comboBoxTipoPuerto1.getSelectedItem();
+		            String nuevoEquipo2 = (String) comboBoxEquipo2.getSelectedItem();
+		            String nuevoTipoPuerto2 = (String) comboBoxTipoPuerto2.getSelectedItem();
+		            String nuevoTipoCable = (String) comboBoxtipocable.getSelectedItem();
 
-					if (coordinador.getPuertosDisponibles(e1) <= 0) {
-						mensajesError
-								.append("Error: No hay puertos disponibles en el equipo " + e1.getCodigo() + ".\n");
-					}
-					if (coordinador.getPuertosDisponibles(e2) <= 0) {
-						mensajesError
-								.append("Error: No hay puertos disponibles en el equipo " + e2.getCodigo() + ".\n");
-					}
+		            Equipo e1 = coordinador.buscarEquipo(nuevoEquipo1);
+		            TipoPuerto tP1 = coordinador.buscarTipoPuerto(nuevoTipoPuerto1);
+		            Equipo e2 = coordinador.buscarEquipo(nuevoEquipo2);
+		            TipoPuerto tP2 = coordinador.buscarTipoPuerto(nuevoTipoPuerto2);
+		            TipoCable tC = coordinador.buscarTipoCable(nuevoTipoCable);
 
-					if (mensajesError.length() > 0) {
-						mostrarMensaje(mensajesError.toString(), "Error", JOptionPane.ERROR_MESSAGE);
-						return;
-					}
+		            if (coordinador.getPuertosDisponibles(e1) <= 0) {
+		                mensajesError.append("Error: No hay puertos disponibles en el equipo " + e1.getCodigo() + ".\n");
+		            }
+		            if (coordinador.getPuertosDisponibles(e2) <= 0) {
+		                mensajesError.append("Error: No hay puertos disponibles en el equipo " + e2.getCodigo() + ".\n");
+		            }
 
-					if (coordinador.existeConexion(e1, e2)) {
-						JOptionPane.showMessageDialog(null, "La conexión ya existe.");
-						return;
-					}
-					String equipo1Actual = (String) tableModel.getValueAt(selectedRow, 0);
-					String tipoPuerto1Actual = (String) tableModel.getValueAt(selectedRow, 1);
-					String equipo2Actual = (String) tableModel.getValueAt(selectedRow, 2);
-					String tipoPuerto2Actual = (String) tableModel.getValueAt(selectedRow, 3);
-					String tipoCableActual = (String) tableModel.getValueAt(selectedRow, 4);
+		            if (nuevoEquipo1.equals(nuevoEquipo2)) {
+		                mensajesError.append("Error: El equipo 1 no puede ser igual al equipo 2.\n");
+		            }
 
-					Equipo e1a = coordinador.buscarEquipo(equipo1Actual);
-					TipoPuerto tP1a = coordinador.buscarTipoPuerto(tipoPuerto1Actual);
-					Equipo e2a = coordinador.buscarEquipo(equipo2Actual);
-					TipoPuerto tP2a = coordinador.buscarTipoPuerto(tipoPuerto2Actual);
-					TipoCable tCa = coordinador.buscarTipoCable(tipoCableActual);
+		            if (coordinador.existeConexion(e1, e2)) {
+		                mensajesError.append("Error: Ya existe una conexión entre estos equipos.\n");
+		            }
 
-					Conexion conexionActual = coordinador.buscarConexion(e1a, tP1a, e2a, tP2a, tCa);
-					if (conexionActual == null) {
-						JOptionPane.showMessageDialog(null, "Error: No se encontró la conexión a actualizar.");
-						return;
-					}
+		            if (mensajesError.length() > 0) {
+		                mostrarMensaje(mensajesError.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+		                return;
+		            }
 
-					try {
+		            String equipo1Actual = (String) tableModel.getValueAt(selectedRow, 0);
+		            String tipoPuerto1Actual = (String) tableModel.getValueAt(selectedRow, 1);
+		            String equipo2Actual = (String) tableModel.getValueAt(selectedRow, 2);
+		            String tipoPuerto2Actual = (String) tableModel.getValueAt(selectedRow, 3);
+		            String tipoCableActual = (String) tableModel.getValueAt(selectedRow, 4);
 
-						Conexion nuevaConexion = new Conexion(e1, tP1, e2, tP2, tC);
+		            TipoPuerto tP1a = coordinador.buscarTipoPuerto(tipoPuerto1Actual);
+		            TipoPuerto tP2a = coordinador.buscarTipoPuerto(tipoPuerto2Actual);
+		            TipoCable tCa = coordinador.buscarTipoCable(tipoCableActual);
 
-						coordinador.borrarConexion(conexionActual);
-						coordinador.agregarConexion(nuevaConexion);
+		            Conexion conexionActual = coordinador.buscarConexion(e1, tP1a, e2, tP2a, tCa);
+		            if (conexionActual == null) {
+		                JOptionPane.showMessageDialog(null, "Error: No se encontró la conexión a actualizar.");
+		                return;
+		            }
 
-						tableModel.setValueAt(nuevoEquipo1, selectedRow, 0);
-						tableModel.setValueAt(nuevoTipoPuerto1, selectedRow, 1);
-						tableModel.setValueAt(nuevoEquipo2, selectedRow, 2);
-						tableModel.setValueAt(nuevoTipoPuerto2, selectedRow, 3);
-						tableModel.setValueAt(nuevoTipoCable, selectedRow, 4);
+		            try {
+		                Conexion nuevaConexion = new Conexion(e1, tP1, e2, tP2, tC);
 
-						JOptionPane.showMessageDialog(null, "Conexión actualizada exitosamente.");
-					} catch (Exception ex) {
-						JOptionPane.showMessageDialog(null, "Error al actualizar la conexión: " + ex.getMessage());
-					}
+		                coordinador.borrarConexion(conexionActual);
+		                coordinador.agregarConexion(nuevaConexion);
 
-					btnActualizar.setVisible(false);
-					btnAgregar.setVisible(true);
-					btnModificar.setEnabled(true);
-				} else {
-					JOptionPane.showMessageDialog(null, "Seleccione una conexión para actualizar.");
-				}
-			}
+		                // Actualizar tabla
+		                tableModel.setValueAt(nuevoEquipo1, selectedRow, 0);
+		                tableModel.setValueAt(nuevoTipoPuerto1, selectedRow, 1);
+		                tableModel.setValueAt(nuevoEquipo2, selectedRow, 2);
+		                tableModel.setValueAt(nuevoTipoPuerto2, selectedRow, 3);
+		                tableModel.setValueAt(nuevoTipoCable, selectedRow, 4);
+
+		                JOptionPane.showMessageDialog(null, "Conexión actualizada exitosamente.");
+		            } catch (Exception ex) {
+		                JOptionPane.showMessageDialog(null, "Error al actualizar la conexión: " + ex.getMessage());
+		            }
+
+		            btnActualizar.setVisible(false);
+		            btnAgregar.setVisible(true);
+		            btnModificar.setEnabled(true);
+		            btnBorrar.setVisible(true);
+		        } else {
+		            JOptionPane.showMessageDialog(null, "Seleccione una conexión para actualizar.");
+		        }
+		    }
 		});
+		
+		   btnCancelar.addActionListener(new ActionListener() {
+		        @Override
+		        public void actionPerformed(ActionEvent e) {
+		            // Restablecer los valores de los combo boxes
+		            int selectedRow = table.getSelectedRow();
+		            if (selectedRow != -1) {
+		                String equipo1 = (String) tableModel.getValueAt(selectedRow, 0);
+		                String tipoPuerto1 = (String) tableModel.getValueAt(selectedRow, 1);
+		                String equipo2 = (String) tableModel.getValueAt(selectedRow, 2);
+		                String tipoPuerto2 = (String) tableModel.getValueAt(selectedRow, 3);
 
-		add(scrollPane);
-		add(labelEquipo1);
-		add(labelEquipo2);
-		add(labelTipoPuerto1);
-		add(labelTipoPuerto2);
-		add(labelTipoCable);
-		add(comboBoxEquipo1);
-		add(comboBoxEquipo2);
-		add(comboBoxTipoPuerto1);
-		add(comboBoxTipoPuerto2);
-		add(comboBoxtipocable);
-		add(btnAgregar);
-		add(btnBorrar);
-		add(btnModificar);
-		add(btnActualizar);
+		                comboBoxEquipo1.setSelectedItem(equipo1);
+		                comboBoxEquipo2.setSelectedItem(equipo2);
+		                comboBoxTipoPuerto1.setSelectedItem(tipoPuerto1);
+		                comboBoxTipoPuerto2.setSelectedItem(tipoPuerto2);
+		            }
+
+		            // Volver a la configuración original de los botones
+		            btnActualizar.setVisible(false);
+		            btnCancelar.setVisible(false);
+		            btnAgregar.setVisible(true);
+		            btnModificar.setEnabled(true);
+		            btnBorrar.setVisible(true);
+		        }
+		    });
+
+
+
+
+
+        add(labelEquipo1);
+        add(labelEquipo2);
+        add(labelTipoPuerto1);
+        add(labelTipoPuerto2);
+        add(labelTipoCable);
+        add(comboBoxEquipo1);
+        add(comboBoxEquipo2);
+        add(comboBoxTipoPuerto1);
+        add(comboBoxTipoPuerto2);
+        add(comboBoxtipocable);
+        add(btnAgregar);
+        add(btnBorrar);
+        add(btnModificar);
+        add(btnActualizar);
+        add(btnCancelar);
+        add(scrollPane);
 	}
 
 	private JComboBox<String> crearComboBox(JComboBox<String> comboBox) {
