@@ -8,6 +8,7 @@ import excepciones.ConexionExistenteException;
 import excepciones.ConexionInexistenteException;
 import excepciones.EquipoExistenteException;
 import excepciones.EquipoInexistenteException;
+import excepciones.UbicacionInexistenteException;
 import modelo.Conexion;
 import modelo.Equipo;
 import modelo.TipoCable;
@@ -141,7 +142,22 @@ public class Red {
 		return tiposEquipos.get(codigo);
 	}
 
+	public void agregarUbicacion(Ubicacion ubicacion) throws EquipoExistenteException {
+		if (ubicaciones.containsKey(ubicacion.getCodigo()))
+			throw new EquipoExistenteException("La ubicacion ya existe");
+		ubicaciones.put(ubicacion.getCodigo(), ubicacion);
+		ubicacionService.insertar(ubicacion);
+	}
+	
+	public void eliminarUbicacion(Ubicacion ubicacion) {
+		buscarUbicacion(ubicacion.getCodigo());
+		ubicaciones.remove(ubicacion.getCodigo());
+		ubicacionService.borrar(ubicacion);
+	}
+	
 	public Ubicacion buscarUbicacion(String codigo) {
+		if (!ubicaciones.containsKey(codigo))
+			throw new UbicacionInexistenteException("La ubicacion no existe");
 		return ubicaciones.get(codigo);
 	}
 

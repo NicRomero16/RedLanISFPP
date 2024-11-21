@@ -1,16 +1,22 @@
 package dao.secuencial;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.Collections;
 import java.util.Formatter;
 import java.util.FormatterClosedException;
 import java.util.ResourceBundle;
+import java.util.Scanner;
 import java.util.TreeMap;
 
 import excepciones.ArchivoExistenteException;
 import excepciones.ArchivoInexisteException;
 import dao.UbicacionDAO;
+import modelo.Equipo;
+import modelo.TipoEquipo;
+import modelo.TipoPuerto;
 import modelo.Ubicacion;
 
 public class UbicacionSecuencialDAO implements UbicacionDAO {
@@ -28,22 +34,27 @@ public class UbicacionSecuencialDAO implements UbicacionDAO {
 
 	private TreeMap<String, Ubicacion> readFromFile(String file) {
 
-		TreeMap<String, Ubicacion> ubicacion = new TreeMap<String, Ubicacion>();
+		Scanner read;
+		TreeMap<String, Ubicacion> map = new TreeMap<String, Ubicacion>();
 
-		try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+		try {
+			read = new Scanner(new File(file));
+			read.useDelimiter("\\s*;\\s*");
 
-			String linea;
-			while ((linea = br.readLine()) != null) {
-				String[] atributos = linea.split(";");
-				ubicacion.put(atributos[0], new Ubicacion(atributos[0], atributos[1]));
-
+			while (read.hasNext()) {
+				String codigo = read.next();
+				if (codigo.isEmpty()) // para evitar problemas cuando lee un campo vacio, le asignamos el valor null
+					codigo = null;
+				String descripcion = read.next();
+				if (descripcion.isEmpty())
+					descripcion = null;
+				Ubicacion ubicacion = new Ubicacion(codigo, descripcion);
+				map.put(codigo, ubicacion);
 			}
-			// System.out.println(ubicacion.toString());
-
 		} catch (Exception ex) {
-			System.out.println("Error al leer el archivo ");
+			System.out.println("Error al leer el archivo");
 		}
-		return ubicacion;
+		return map;
 	}
 
 	private void writeToFile(TreeMap<String, Ubicacion> map, String file) {
@@ -51,7 +62,18 @@ public class UbicacionSecuencialDAO implements UbicacionDAO {
 		try {
 			outFile = new Formatter(file);
 			for (Ubicacion e : map.values()) {
-				outFile.format("%s;%s;\n", e.getCodigo(), e.getDescripcion());
+				String codigo;
+				if (e.getCodigo() == null)
+					codigo = "";
+				else
+					codigo = e.getCodigo();
+
+				String descripcion;
+				if (e.getDescripcion() == null)
+					descripcion = "";
+				else
+					descripcion = e.getDescripcion();
+				outFile.format("%s;%s;\n", codigo, descripcion);
 			}
 		} catch (FileNotFoundException fileNotFoundException) {
 			System.err.println("Error creating file.");

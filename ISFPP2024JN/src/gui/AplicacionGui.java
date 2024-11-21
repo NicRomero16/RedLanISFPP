@@ -20,9 +20,11 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
 import org.jgrapht.Graph;
@@ -30,11 +32,13 @@ import org.jgrapht.Graph;
 import controlador.Coordinador;
 import modelo.Conexion;
 import modelo.Equipo;
+import modelo.Ubicacion;
 
 @SuppressWarnings("serial")
 public class AplicacionGui extends JFrame {
 	private JScrollPane scrollGrande;
 	private Coordinador coordinador;
+	private JPanel pantallaCarga;
 	private JPanel panelCentral;
 	private CardLayout cardLayout;
 	private JPanel paneles;
@@ -48,6 +52,7 @@ public class AplicacionGui extends JFrame {
 		this.coordinador = coordinador;
 		cardLayout = new CardLayout();
 		paneles = new JPanel(cardLayout);
+		paneles.setBackground(Color.BLACK);
 		setResizable(false);
 		setTitle("Redes - Neon Style");
 		setSize(800, 600);
@@ -67,6 +72,8 @@ public class AplicacionGui extends JFrame {
 		definirColoresMenu(menuBar, menuABM, itemABMEquipo);
 		JMenuItem itemABMConexion = new JMenuItem("Conexiones");
 		definirColoresMenu(menuBar, menuABM, itemABMConexion);
+		JMenuItem itemUbicaciones = new JMenuItem("Ubicacion");
+		definirColoresMenu(menuBar, menuABM, itemUbicaciones);
 
 		itemOpcionesGrafico.addActionListener(new ActionListener() {
 			@Override
@@ -101,10 +108,10 @@ public class AplicacionGui extends JFrame {
 
 				TreeMap<String, Equipo> equipos = coordinador.listarEquipos();
 
-				ABMEquipos EquipoABM = new ABMEquipos(equipos, coordinador);
+				ABMEquipos equipoABM = new ABMEquipos(equipos, coordinador);
 
 				panel.removeAll();
-				panel.add(EquipoABM);
+				panel.add(equipoABM);
 				panel.revalidate();
 				panel.repaint();
 
@@ -116,10 +123,24 @@ public class AplicacionGui extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				ConexionesABM ConexionABM = new ConexionesABM(coordinador);
+				ConexionesABM conexionABM = new ConexionesABM(coordinador);
 
 				panel.removeAll();
-				panel.add(ConexionABM);
+				panel.add(conexionABM);
+				panel.revalidate();
+				panel.repaint();
+				cardLayout.show(paneles, "pantallaGrafico");
+			}
+		});
+
+		itemUbicaciones.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				TreeMap<String, Ubicacion> ubicaciones = coordinador.listarUbicaciones();
+				ABMUbicacion ubicacionABM = new ABMUbicacion(ubicaciones, coordinador);
+
+				panel.removeAll();
+				panel.add(ubicacionABM);
 				panel.revalidate();
 				panel.repaint();
 				cardLayout.show(paneles, "pantallaGrafico");
@@ -128,19 +149,68 @@ public class AplicacionGui extends JFrame {
 
 		setJMenuBar(menuBar);
 
-		panelCentral = crearPanelPrincipal(NEON_GREEN, NEON_GRAY, Color.BLACK, Color.WHITE);
-		panel = crearPantallaGrafico(NEON_GREEN, NEON_GRAY, Color.BLACK, Color.WHITE);
-		nuevaPantalla = crearNuevaPantalla(NEON_GREEN, NEON_GRAY, Color.BLACK, Color.WHITE);
-		add(paneles);
+		pantallaCarga = crearPantallaCarga(NEON_GREEN, NEON_GRAY, Color.BLACK, Color.WHITE, menuBar);
+		paneles.add(pantallaCarga, "pantallaCarga");
 
+		panelCentral = crearPanelPrincipal(NEON_GREEN, NEON_GRAY, Color.BLACK, Color.WHITE, menuBar);
 		paneles.add(panelCentral, "panelPrincipal");
+
+		panel = crearPantallaGrafico(NEON_GREEN, NEON_GRAY, Color.BLACK, Color.WHITE);
 		paneles.add(panel, "pantallaGrafico");
+
+		nuevaPantalla = crearNuevaPantalla(NEON_GREEN, NEON_GRAY, Color.BLACK, Color.WHITE);
 		paneles.add(nuevaPantalla, "nuevaPantalla");
 
+		add(paneles);
 		setVisible(true);
 	}
 
-	private JPanel crearPanelPrincipal(Color neonGreen, Color neonGray, Color neonBlack, Color neonWhite) {
+	private JPanel crearPantallaCarga(Color neonGreen, Color neonGray, Color neonBlack, Color neonWhite,
+			JMenuBar menuBar) {
+
+		JPanel pantallaCarga = new JPanel();
+		pantallaCarga.setBackground(neonBlack);
+		pantallaCarga.setLayout(null);
+
+		JLabel labelCargando = new JLabel("Cargando, por favor espere...");
+		labelCargando.setForeground(neonGreen);
+		labelCargando.setFont(new Font("Arial", Font.BOLD, 20));
+		labelCargando.setBounds(200, 200, 400, 50);
+		pantallaCarga.add(labelCargando);
+
+		JProgressBar barraProgreso = new JProgressBar();
+		barraProgreso.setBounds(150, 300, 500, 30);
+		barraProgreso.setForeground(neonGreen);
+		barraProgreso.setBackground(neonGray);
+		barraProgreso.setBorder(new LineBorder(neonGreen, 2));
+		pantallaCarga.add(barraProgreso);
+
+		SwingUtilities.invokeLater(() -> {
+			setJMenuBar(null);
+		});
+
+		new Thread(() -> {
+			for (int i = 0; i <= 100; i++) {
+				try {
+					Thread.sleep(50);
+					barraProgreso.setValue(i);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+
+			SwingUtilities.invokeLater(() -> {
+				setJMenuBar(menuBar);
+				cardLayout.show(paneles, "panelPrincipal");
+			});
+		}).start();
+
+		return pantallaCarga;
+	}
+
+	private JPanel crearPanelPrincipal(Color neonGreen, Color neonGray, Color neonBlack, Color neonWhite,
+			JMenuBar menuBar) {
+
 		JPanel panelCentral = new JPanel();
 		panelCentral.setBackground(neonBlack);
 		panelCentral.setLayout(null);
@@ -465,4 +535,5 @@ public class AplicacionGui extends JFrame {
 		panel.add(boton);
 		return boton;
 	}
+
 }

@@ -14,6 +14,7 @@ import excepciones.ConexionExistenteException;
 import excepciones.ConexionInexistenteException;
 import excepciones.EquipoExistenteException;
 import excepciones.EquipoInexistenteException;
+import excepciones.UbicacionExistenteException;
 import interfaz.Interfaz;
 import modelo.Conexion;
 import modelo.Equipo;
@@ -34,7 +35,6 @@ public class Coordinador {
 
 	// interfaz grafica
 	public Graph<Equipo, Conexion> cargarDatos() {
-
 		return calculo.cargarDatos(listarConexiones());
 	}
 
@@ -161,7 +161,6 @@ public class Coordinador {
 		return calculo.velocidadMaximaEntreEquipos(red.buscarEquipo(equipo1), red.buscarEquipo(equipo2));
 
 	}
-
 
 	public int getPuertosDisponibles(Equipo equipo) {
 		int totalPuertos = equipo.getCantidadPuertos();
@@ -298,6 +297,21 @@ public class Coordinador {
 		calculo.cargarDatos(listarConexiones());
 	}
 
+	public void agregarUbicacion(Ubicacion ubicacion) {
+		try {
+			red.agregarUbicacion(ubicacion);
+		} catch (UbicacionExistenteException e) {
+			e.printStackTrace();
+		}
+		calculo.update();
+	}
+
+	public void eliminarUbicacion(String codigo) {
+		Ubicacion ubicacion = buscarUbicacion(codigo);
+		red.eliminarUbicacion(ubicacion);
+		calculo.update();
+	}
+
 	public String[] devolverEquipoCodigos() {
 		TreeMap<String, Equipo> equipos = listarEquipos();
 		List<String> equipoList = new ArrayList<>();
@@ -324,7 +338,7 @@ public class Coordinador {
 		}
 		return tipoCableList.toArray(new String[0]);
 	}
-	
+
 	public TipoPuerto buscarTipoPuerto(String codigo) {
 		return red.buscarTipoPuerto(codigo);
 	}

@@ -492,7 +492,7 @@ public class ABMEquipos extends JPanel {
 
 	private String agregarDireccionIP(List<String> ips) {
 		JDialog dialog = new JDialog((Frame) null, "Agregar direccionIP", true);
-		dialog.setTitle("Modificar Equipo");
+		dialog.setTitle("Agregar direccion IP");
 		dialog.setSize(300, 100);
 		dialog.setLocationRelativeTo(null);
 
@@ -501,9 +501,9 @@ public class ABMEquipos extends JPanel {
 		panelFormulario.setBackground(Color.BLACK);
 		panelFormulario.setForeground(NEON_GREEN);
 
-		JLabel labelMarca = new JLabel("Ingrese la direccion IP");
+		JLabel labelDireccionIP = new JLabel("Ingrese la direccion IP");
 		JTextField campoDireccionIP = new JTextField();
-		crearJTextField(labelMarca, panelFormulario, campoDireccionIP);
+		crearJTextField(labelDireccionIP, panelFormulario, campoDireccionIP);
 
 		TreeMap<String, Equipo> equipos = coordinador.listarEquipos();
 
