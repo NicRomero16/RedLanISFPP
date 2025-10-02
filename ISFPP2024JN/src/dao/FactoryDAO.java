@@ -14,6 +14,9 @@ import dao.postgres.TipoCablePostgresDAO;
 import dao.EquipoDAO;
 import dao.secuencial.EquipoSecuencialDAO;
 import dao.postgres.EquipoPostgresDAO;
+import dao.ConexionDAO;
+import dao.postgres.ConexionPostgresDAO;
+import dao.secuencial.ConexionSecuencialDAO;
 
 // **********************************************
 // Asegúrate de que las interfaces TipoEquipoDAO y UbicacionDAO estén importadas
@@ -89,5 +92,14 @@ public class FactoryDAO {
             return new EquipoPostgresDAO();
         }
         throw new RuntimeException("Implementación DAO de Equipo no válida: " + IMPLEMENTACION);
+    }
+
+    public static ConexionDAO getConexionDAO() {
+        if ("SECUENCIAL".equals(IMPLEMENTACION)) {
+            return new ConexionSecuencialDAO();
+        } else if ("POSTGRES".equals(IMPLEMENTACION)) {
+            return new ConexionPostgresDAO();
+        }
+        throw new RuntimeException("Implementación DAO de Conexion no válida: " + IMPLEMENTACION);
     }
 }

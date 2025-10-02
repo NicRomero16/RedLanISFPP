@@ -82,9 +82,26 @@ public class Red {
 	}
 
 	public void modificarEquipo(Equipo equipo, Equipo equipoModificado) {
-		equipos.put(equipo.getCodigo(), equipoModificado);
-		equipoService.actualizar(equipo, equipoModificado);
-	}
+        // Actualiza en BD
+        equipoService.actualizar(equipo, equipoModificado);
+
+        // Mantén la misma instancia para preservar referencias en conexiones
+        Equipo actual = equipos.get(equipo.getCodigo());
+        if (actual != null) {
+            actual.setDescripcion(equipoModificado.getDescripcion());
+            actual.setMarca(equipoModificado.getMarca());
+            actual.setModelo(equipoModificado.getModelo());
+            actual.setTipoEquipo(equipoModificado.getTipoEquipo());
+            actual.setUbicacion(equipoModificado.getUbicacion());
+            actual.setEstado(equipoModificado.getEstado());
+
+            // Si necesitas reflejar puertos/IPs modificados:
+            actual.getPuertos().clear();
+            actual.getPuertos().addAll(equipoModificado.getPuertos());
+            actual.getDireccionesIP().clear();
+            actual.getDireccionesIP().addAll(equipoModificado.getDireccionesIP());
+        }
+    }
 
 	public void eliminarEquipo(Equipo equipo) {
 		buscarEquipo(equipo.getCodigo());
@@ -199,4 +216,13 @@ public class Red {
 	public TreeMap<String, TipoPuerto> getTiposPuertos() {
 		return tiposPuertos;
 	}
+
+	public synchronized void refrescarDesdeBD() {
+        tiposEquipos.clear(); tiposEquipos.putAll(tipoEquipoService.buscarTodos());
+        tiposCables.clear();  tiposCables.putAll(tipoCableService.buscarTodos());
+        tiposPuertos.clear(); tiposPuertos.putAll(tipoPuertoService.buscarTodos());
+        ubicaciones.clear();  ubicaciones.putAll(ubicacionService.buscarTodos());
+        equipos.clear();      equipos.putAll(equipoService.buscarTodos());
+        conexiones.clear();   conexiones.addAll(conexionService.buscarTodos());
+    }
 }
