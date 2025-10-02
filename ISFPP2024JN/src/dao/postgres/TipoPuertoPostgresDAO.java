@@ -77,22 +77,4 @@ public class TipoPuertoPostgresDAO implements TipoPuertoDAO {
         }
         return map;
     }
-    
-    // Opcional (no está en la interfaz)
-    public TipoPuerto buscarPorCodigo(String codigo) throws SQLException {
-        try (Connection conn = ConexionPostgres.getConnection();
-             PreparedStatement ps = conn.prepareStatement(SQL_SELECT_BY_PK)) {
-            ps.setString(1, codigo);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return new TipoPuerto(
-                        rs.getString("codigo"),
-                        rs.getString("descripcion"),
-                        rs.getInt("velocidad")
-                    );
-                }
-            }
-        }
-        return null;
-    }
 }

@@ -95,18 +95,4 @@ public class TipoEquipoPostgresDAO implements TipoEquipoDAO {
         }
         return map;
     }
-    
-    // Agrega @Override si está declarado en la interfaz
-    public TipoEquipo buscarPorCodigo(String codigo) throws SQLException {
-        try (Connection conn = ConexionPostgres.getConnection();
-             PreparedStatement ps = conn.prepareStatement(SQL_SELECT_BY_PK)) {
-            ps.setString(1, codigo);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return new TipoEquipo(rs.getString("codigo"), rs.getString("descripcion"));
-                }
-            }
-        }
-        return null;
-    }
 }

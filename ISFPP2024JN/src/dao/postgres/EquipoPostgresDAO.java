@@ -48,7 +48,7 @@ public class EquipoPostgresDAO implements EquipoDAO {
         "SELECT codigo, descripcion FROM ubicacion WHERE codigo = ?";
 
     @Override
-    public void insertar(Equipo e) {
+    public void insertar(Equipo e) throws SQLException {
         // Validaciones para cumplir NOT NULL en FKs y estado
         if (e.getTipoEquipo() == null) throw new RuntimeException("TipoEquipo es obligatorio.");
         if (e.getUbicacion() == null) throw new RuntimeException("Ubicacion es obligatoria.");
@@ -110,7 +110,7 @@ public class EquipoPostgresDAO implements EquipoDAO {
     }
 
     @Override
-    public void actualizar(Equipo original, Equipo modificado) {
+    public void actualizar(Equipo original, Equipo modificado) throws SQLException {
         if (modificado.getTipoEquipo() == null) throw new RuntimeException("TipoEquipo es obligatorio.");
         if (modificado.getUbicacion() == null) throw new RuntimeException("Ubicacion es obligatoria.");
         String codigo = original.getCodigo();
@@ -176,7 +176,7 @@ public class EquipoPostgresDAO implements EquipoDAO {
     }
 
     @Override
-    public void borrar(Equipo e) {
+    public void borrar(Equipo e) throws SQLException {
         String codigo = e.getCodigo();
         try (Connection conn = ConexionPostgres.getConnection()) {
             conn.setAutoCommit(false);

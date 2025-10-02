@@ -41,7 +41,7 @@ public class ConexionPostgresDAO implements ConexionDAO {
         "JOIN tipo_cable  tc  ON tc.codigo  = c.tipocable_fk";
 
     @Override
-    public void insertar(Conexion conexion) {
+    public void insertar(Conexion conexion) throws SQLException {
         try (Connection conn = ConexionPostgres.getConnection();
              PreparedStatement ps = conn.prepareStatement(SQL_INSERT)) {
 
@@ -59,7 +59,7 @@ public class ConexionPostgresDAO implements ConexionDAO {
 
     // Nota: sin id en el modelo, hacemos delete+insert de la misma conexión
     @Override
-    public void actualizar(Conexion conexion) {
+    public void actualizar(Conexion conexion) throws SQLException {
         try (Connection conn = ConexionPostgres.getConnection()) {
             conn.setAutoCommit(false);
             try (PreparedStatement del = conn.prepareStatement(SQL_DELETE);
@@ -94,7 +94,7 @@ public class ConexionPostgresDAO implements ConexionDAO {
     }
 
     @Override
-    public void borrar(Conexion conexion) {
+    public void borrar(Conexion conexion) throws SQLException {
         try (Connection conn = ConexionPostgres.getConnection();
              PreparedStatement ps = conn.prepareStatement(SQL_DELETE)) {
 
