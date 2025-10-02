@@ -21,12 +21,10 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -52,11 +50,9 @@ public class ABMEquipos extends JPanel {
 	}
 
 	public void crearPanelEquipo() {
-		// Crear el panel principal para el equipo
 		JPanel panelEquipo = new JPanel();
 		panelEquipo.setLayout(new BorderLayout());
 
-		// Crear el modelo de la tabla y asignar los nombres de las columnas
 		String ids[] = { "Codigo", "Descripcion", "Marca", "Modelo", "Tipo de equipo", "Ubicacion", "Puertos",
 				"Direcciones IP", "Estado", "Eliminar", "Modificar" };
 		DefaultTableModel tEquipos = new DefaultTableModel();
@@ -74,11 +70,10 @@ public class ABMEquipos extends JPanel {
 			tEquipos.addRow(fila);
 		}
 
-		// Inicializar la tabla y asignar el modelo
 		JTable tablaEquipos = new JTable(tEquipos) {
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				return false; // Hacer que ninguna celda sea editable
+				return false; 
 			}
 		};
 
@@ -101,7 +96,6 @@ public class ABMEquipos extends JPanel {
 					}
 				}
 
-				// Verificar si se hizo clic en la columna de "Eliminar"
 				if (column == 9) {
 					String codigo = tablaEquipos.getValueAt(row, 0).toString();
 					int confirmacion = JOptionPane.showConfirmDialog(null,
@@ -128,17 +122,15 @@ public class ABMEquipos extends JPanel {
 				}
 			}
 		});
-		tablaEquipos.setBackground(Color.BLACK); // Fondo de la tabla
-		tablaEquipos.setForeground(NEON_GREEN); // Letras de la tabla
-		tablaEquipos.setGridColor(NEON_GREEN); // Bordes de la tabla
+		tablaEquipos.setBackground(Color.BLACK); 
+		tablaEquipos.setForeground(NEON_GREEN);
+		tablaEquipos.setGridColor(NEON_GREEN); 
 
-		// Personalizar la cabecera
 		JTableHeader header = tablaEquipos.getTableHeader();
 		header.setBackground(Color.BLACK);
 		header.setForeground(NEON_GREEN);
-		header.setFont(header.getFont().deriveFont(Font.BOLD, 14f)); // Fuente en negrita para la cabecera
+		header.setFont(header.getFont().deriveFont(Font.BOLD, 14f)); 
 
-		// Configurar el JScrollPane para contener la tabla
 		JScrollPane pane = new JScrollPane(tablaEquipos);
 		pane.setBackground(Color.BLACK);
 		pane.getViewport().setBackground(Color.BLACK);
@@ -155,13 +147,11 @@ public class ABMEquipos extends JPanel {
 
 	public void formularioAgregarEquipo(JTable tablaEquipos, DefaultTableModel table) {
 
-		// Crear un nuevo JDialog para el formulario
 		JDialog dialog = new JDialog((Frame) null, "Agregar equipo", true);
 		dialog.setTitle("Agregar Nuevo Equipo");
 		dialog.setSize(500, 500);
-		dialog.setLocationRelativeTo(null); // Centra el diálogo
+		dialog.setLocationRelativeTo(null); 
 
-		// Crear un panel para el formulario
 		JPanel panelFormulario = new JPanel();
 		panelFormulario.setLayout(new GridLayout(0, 2));
 		panelFormulario.setBackground(Color.BLACK);
@@ -183,25 +173,21 @@ public class ABMEquipos extends JPanel {
 		JTextField campoModelo = new JTextField();
 		crearJTextField(labelModelo, panelFormulario, campoModelo);
 
-		// Tipos de equipo
 		JLabel labelTipoEquipo = new JLabel("Tipo de equipo:");
 		String[] listTipoEq = obtenerTiposEquipos();
 		JComboBox<String> comboBoxTipoEquipos = new JComboBox<String>(listTipoEq);
 		crearComboBox(labelTipoEquipo, panelFormulario, comboBoxTipoEquipos);
 
-		// Ubicación
 		JLabel labelUbicacion = new JLabel("Ubicacion:");
 		String[] listUbicaciones = obtenerUbicaciones();
 		JComboBox<String> comboBoxUbicacion = new JComboBox<String>(listUbicaciones);
 		crearComboBox(labelUbicacion, panelFormulario, comboBoxUbicacion);
 
-		// Puertos
 		JLabel labelPuertos = new JLabel("Cantidad de puertos:");
 		Integer[] cantPuertos = obtenerCantidadPuertos();
 		JComboBox<Integer> comboBoxPuertos = new JComboBox<>(cantPuertos);
 		crearComboBox(labelPuertos, panelFormulario, comboBoxPuertos);
 
-		// Tipos de puertos
 		JLabel labelTipoPuertos = new JLabel("Tipos de puertos:");
 		String[] listPuertos = coordinador.devolverTipoPuertoCodigo();
 		JComboBox<String> comboBoxTipoPuerto = new JComboBox<String>(listPuertos);
@@ -211,13 +197,11 @@ public class ABMEquipos extends JPanel {
 
 		abmDireccionesIP(dialog, panelFormulario, direccionesIP);
 
-		// Estado
 		JLabel labelEstado = new JLabel("Estado:");
 		String[] estados = { "false", "true" };
 		JComboBox<String> comboBoxEstado = new JComboBox<String>(estados);
 		crearComboBox(labelEstado, panelFormulario, comboBoxEstado);
 
-		// Botón para confirmar la adición
 		JButton btnAgregar = new JButton("Agregar");
 		btnAgregar.addActionListener(e -> {
 			if (equipos.containsKey(campoCodigo.getText())) {
@@ -259,7 +243,6 @@ public class ABMEquipos extends JPanel {
 			coordinador.agregarEquipo(equipo);
 
 			table.addRow(nuevaFila);
-			// Cerrar el dialogo despues de agregar
 			dialog.dispose();
 		});
 
@@ -269,28 +252,25 @@ public class ABMEquipos extends JPanel {
 
 		dialog.add(panelFormulario);
 		dialog.setVisible(true);
-		dialog.setResizable(false); // No permite cambiar el tamañoo de la ventana
+		dialog.setResizable(false); 
 	}
 
 	private void modificarEquipo(DefaultTableModel tEquipos, int row, Equipo equipo) {
 		JDialog dialog = new JDialog((Frame) null, "Modificar equipo", true);
 		dialog.setTitle("Modificar Equipo");
 		dialog.setSize(500, 500);
-		dialog.setLocationRelativeTo(null); // Centra el diálogo
+		dialog.setLocationRelativeTo(null); 
 
-		// Obtener los datos actuales de la fila
 		List<String> direccionesIP = equipo.getDireccionesIP().stream().filter(ip -> !ip.trim().isEmpty())
 				.collect(Collectors.toList());
 
 		String estadoActual = tEquipos.getValueAt(row, 8).toString();
 
-		// Crear un panel para el formulario
 		JPanel panelFormulario = new JPanel();
-		panelFormulario.setLayout(new GridLayout(0, 2)); // 0 filas, 2 columnas
+		panelFormulario.setLayout(new GridLayout(0, 2)); 
 		panelFormulario.setBackground(Color.BLACK);
 		panelFormulario.setForeground(NEON_GREEN);
 
-		// Campos individuales sin bucles
 		JLabel labelCodigo = new JLabel("Codigo de equipo");
 		JTextField campoCodigo = new JTextField(equipo.getCodigo());
 		crearJTextField(labelCodigo, panelFormulario, campoCodigo);
@@ -307,28 +287,24 @@ public class ABMEquipos extends JPanel {
 		JTextField campoModelo = new JTextField(equipo.getModelo());
 		crearJTextField(labelModelo, panelFormulario, campoModelo);
 
-		// Tipos de equipo
 		JLabel labelTipoEquipo = new JLabel("Tipo de equipo:");
 		String[] listTipoEq = obtenerTiposEquipos();
 		JComboBox<String> comboBoxTipoEquipos = new JComboBox<String>(listTipoEq);
 		crearComboBox(labelTipoEquipo, panelFormulario, comboBoxTipoEquipos);
 		comboBoxTipoEquipos.setSelectedItem(equipo.getTipoEquipo().getCodigo()); // Establecer el último dato
 
-		// Ubicación
 		JLabel labelUbicacion = new JLabel("Ubicacion:");
 		String[] listUbicaciones = obtenerUbicaciones();
 		JComboBox<String> comboBoxUbicacion = new JComboBox<String>(listUbicaciones);
 		crearComboBox(labelUbicacion, panelFormulario, comboBoxUbicacion);
 		comboBoxUbicacion.setSelectedItem(equipo.getUbicacion().getCodigo()); // Establecer el último dato
 
-		// Puertos
 		JLabel labelPuertos = new JLabel("Cantidad de puertos:");
 		Integer[] cantPuertos = obtenerCantidadPuertos();
 		JComboBox<Integer> comboBoxPuertos = new JComboBox<>(cantPuertos);
 		crearComboBox(labelPuertos, panelFormulario, comboBoxPuertos);
 		comboBoxPuertos.setSelectedItem(equipo.getCantidadPuertos()); // Establecer el último dato
 
-		// Tipos de puertos
 		JLabel labelTipoPuertos = new JLabel("Tipos de puertos:");
 		String[] listPuertos = coordinador.devolverTipoPuertoCodigo();
 		JComboBox<String> comboBoxTipoPuerto = new JComboBox<String>(listPuertos);
@@ -337,14 +313,12 @@ public class ABMEquipos extends JPanel {
 
 		abmDireccionesIP(dialog, panelFormulario, direccionesIP);
 
-		// Estado
 		JLabel labelEstado = new JLabel("Estado:");
 		String[] estados = { "false", "true" };
 		JComboBox<String> comboBoxEstado = new JComboBox<String>(estados);
 		crearComboBox(labelEstado, panelFormulario, comboBoxEstado);
 		comboBoxEstado.setSelectedItem(estadoActual);
 
-		// Botón para confirmar la modificación
 		JButton btnModificar = new JButton("Modificar");
 		btnModificar.addActionListener(e -> {
 
@@ -366,13 +340,11 @@ public class ABMEquipos extends JPanel {
 			else
 				estado = true;
 
-			// Crear un nuevo objeto Equipo con los valores modificados
 			Equipo equipoModificado = new Equipo(campoCodigo.getText(), campoDescripcion.getText(),
 					campoMarca.getText(), campoModelo.getText(), tipoEquipo, ubicacion, estado);
 
 			String direccionesIPTexto = String.join(", ", direccionesIP);
 
-			// Actualizar el modelo de la tabla
 			tEquipos.setValueAt(equipoModificado.getCodigo(), row, 0);
 			tEquipos.setValueAt(equipoModificado.getDescripcion(), row, 1);
 			tEquipos.setValueAt(equipoModificado.getMarca(), row, 2);
@@ -393,21 +365,17 @@ public class ABMEquipos extends JPanel {
 			coordinador.modificarEquipo(equipo.getCodigo(), equipoModificado); // Corregido
 			coordinador.cargarDatos();
 
-			// Cerrar el diálogo después de modificar
 			dialog.dispose();
 		});
 
-		// Botón para cancelar
 		JButton btnCancelar = new JButton("Cancelar");
 		btnCancelar.addActionListener(e -> dialog.dispose());
 
-		// Agregar los botones al panel, ocupando una sola fila
 		panelFormulario.add(btnModificar);
 		panelFormulario.add(btnCancelar);
 
-		// Agregar el panel al diálogo
 		dialog.add(panelFormulario);
-		dialog.setVisible(true); // Muestra el diálogo
+		dialog.setVisible(true); 
 		dialog.setResizable(false);
 	}
 
@@ -582,7 +550,7 @@ public class ABMEquipos extends JPanel {
 			panelBotones.setLayout(new BoxLayout(panelBotones, BoxLayout.X_AXIS));
 			JButton btnEliminar = new JButton("Eliminar");
 			btnEliminar.addActionListener(ev -> {
-				int[] selectedRows = tablaDireccionesIP.getSelectedRows(); // Obtener todas las filas seleccionadas
+				int[] selectedRows = tablaDireccionesIP.getSelectedRows();
 				if (selectedRows.length > 0) {
 					for (int i = selectedRows.length - 1; i >= 0; i--) {
 						model.removeRow(selectedRows[i]);

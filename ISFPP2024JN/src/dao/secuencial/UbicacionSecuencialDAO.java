@@ -1,10 +1,7 @@
 package dao.secuencial;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.util.Collections;
 import java.util.Formatter;
 import java.util.FormatterClosedException;
 import java.util.ResourceBundle;
@@ -14,9 +11,6 @@ import java.util.TreeMap;
 import excepciones.ArchivoExistenteException;
 import excepciones.ArchivoInexisteException;
 import dao.UbicacionDAO;
-import modelo.Equipo;
-import modelo.TipoEquipo;
-import modelo.TipoPuerto;
 import modelo.Ubicacion;
 
 public class UbicacionSecuencialDAO implements UbicacionDAO {

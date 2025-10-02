@@ -1,7 +1,6 @@
 package negocio;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -28,32 +27,55 @@ public class Calculo {
 		redGrafo = new DefaultUndirectedGraph<>(Conexion.class);
 	}
 
+		public void update() {
+		this.actualizar = true;
+	}
+
+	public Graph<Equipo, Conexion> getRed() {
+		actualizar();
+		return redGrafo;
+	}
+
+	public Coordinador getCoordinador() {
+		return coordinador;
+	}
+
+	public void setCoordinador(Coordinador coordinador) {
+		this.coordinador = coordinador;
+	}
+
+	private void actualizar() {
+        if (this.actualizar) {
+            this.cargarDatos(coordinador.listarConexiones());
+            this.actualizar = false;
+        }
+    }
+
 	public Graph<Equipo, Conexion> cargarDatos(List<Conexion> conexiones) {
 
 		redGrafo = new DefaultUndirectedWeightedGraph<>(Conexion.class);
 
-		for (Conexion conexion : conexiones) {
-			if (conexion != null) {
-				Equipo equipo1 = conexion.getEquipo1();
-				Equipo equipo2 = conexion.getEquipo2();
+		if (conexiones.isEmpty() || conexiones == null) {
+			throw new IllegalArgumentException("No hay conexiones para cargar en el grafo.");
+		}
 
-				if (equipo1 != null && equipo2 != null && conexion.getTipoCable() != null) {
-					int velocidadEntre = conexion.getTipoCable().getVelocidad();
-					redGrafo.addVertex(equipo1);
-					redGrafo.addVertex(equipo2);
-					redGrafo.addEdge(equipo1, equipo2, conexion);
-					redGrafo.setEdgeWeight(conexion, velocidadEntre);
-				}
+		for (Conexion conexion : conexiones) {
+			Equipo equipo1 = conexion.getEquipo1();
+			Equipo equipo2 = conexion.getEquipo2();
+
+			if (equipo1 != null && equipo2 != null && conexion.getTipoCable() != null) {
+				int velocidadEntre = conexion.getTipoCable().getVelocidad();
+				redGrafo.addVertex(equipo1);
+				redGrafo.addVertex(equipo2);
+				redGrafo.addEdge(equipo1, equipo2, conexion);
+				redGrafo.setEdgeWeight(conexion, velocidadEntre);
 			}
 		}
 		return redGrafo;
 	}
 
 	public List<Equipo> mostrarEquiposIntermedios(Equipo origen, Equipo destino) throws EquipoInexistenteException {
-		if (this.actualizar) {
-			this.cargarDatos(coordinador.listarConexiones());
-			this.actualizar = false;
-		}
+		actualizar();
 		List<Equipo> camino = DijkstraShortestPath.findPathBetween(redGrafo, origen, destino).getVertexList();
 
 		if (camino.size() > 2) {
@@ -81,10 +103,7 @@ public class Calculo {
 	}
 
 	public double velocidadMaxima(Equipo origen, Equipo destino) throws ConexionInexistenteException {
-		if (this.actualizar) {
-			this.cargarDatos(coordinador.listarConexiones()); // al avanzar el codigo tenemos q hacer el patron de
-			this.actualizar = false; // diseño observer
-		}
+		actualizar();
 		DijkstraShortestPath<Equipo, Conexion> dijkstraAlg = new DijkstraShortestPath<>(redGrafo);
 		GraphPath<Equipo, Conexion> path = dijkstraAlg.getPath(origen, destino);
 
@@ -113,7 +132,6 @@ public class Calculo {
 		return velocidadMaxima;
 	}
 
-	// interfaz grafica
 	public boolean realizarPingEquipo(Equipo equipoSelected) {
 
 		if (equipoSelected == null)
@@ -126,30 +144,8 @@ public class Calculo {
 		return equipoSelected.getEstado();
 	}
 
-	/**
-	 * Calcula la velocidad máxima de conexión entre dos equipos.
-	 *
-	 * Este método utiliza el algoritmo de Dijkstra para encontrar el camino más
-	 * corto entre el equipo de origen y el equipo de destino en un grafo que
-	 * representa las conexiones de red. Solo se consideran las conexiones activas y
-	 * cuyos tipos de puertos y cables no sean nulos. Si se encuentra algún equipo
-	 * desactivado o si no hay conexiones activas, se retorna un código de error
-	 * específico.
-	 *
-	 * @param origen  El equipo de origen desde el cual se quiere calcular la
-	 *                velocidad.
-	 * @param destino El equipo de destino al cual se quiere calcular la velocidad.
-	 * @return La velocidad máxima de conexión entre los dos equipos, o un código de
-	 *         error: -1 si el origen es igual al destino, -2 si alguno de los
-	 *         equipos no existe en el grafo, -3 si no hay un camino entre los
-	 *         equipos, -4 si alguno de los tipos de puertos o cables es nulo, -5 si
-	 *         no hay conexiones activas entre los equipos.
-	 */
 	public double velocidadMaximaEntreEquipos(Equipo origen, Equipo destino) {
-		if (this.actualizar) {
-			this.cargarDatos(coordinador.listarConexiones());
-			this.actualizar = false;
-		}
+		actualizar();
 		if (origen.equals(destino))
 			return -1;
 		if (!redGrafo.containsVertex(origen) || !redGrafo.containsVertex(destino))
@@ -170,10 +166,9 @@ public class Calculo {
 			Equipo equipo2 = conexion.getEquipo2();
 
 			if (!equipo1.getEstado() || !equipo2.getEstado()) {
-				continue; // Ignora esta conexión si alguno de los equipos no está activo
+				continue; 
 			}
 
-			// Si llega aca quiere decir que la conexión esta activa.
 			hayConexionesActivas = true;
 
 			Integer velocidadPuerto1 = null;
@@ -227,26 +222,6 @@ public class Calculo {
 			if (direc.startsWith(ip))
 				direccionesIP.add(direc);
 		return direccionesIP;
-	}
-
-	public void update() {
-		this.actualizar = true;
-	}
-
-	public Graph<Equipo, Conexion> getRed() {
-		if (this.actualizar) {
-			this.cargarDatos(coordinador.listarConexiones());
-			this.actualizar = false;
-		}
-		return redGrafo;
-	}
-
-	public Coordinador getCoordinador() {
-		return coordinador;
-	}
-
-	public void setCoordinador(Coordinador coordinador) {
-		this.coordinador = coordinador;
 	}
 
 }

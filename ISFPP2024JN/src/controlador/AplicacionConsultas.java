@@ -2,12 +2,9 @@ package controlador;
 
 import java.util.TreeMap;
 
-import javax.swing.JOptionPane;
-
 import gui.AplicacionGui;
 import interfaz.Interfaz;
 import modelo.Equipo;
-import modelo.TipoPuerto;
 import negocio.Calculo;
 import negocio.Red;
 
@@ -23,17 +20,6 @@ public class AplicacionConsultas {
 		AplicacionConsultas miAplicacion = new AplicacionConsultas();
 
 		miAplicacion.iniciar();
-//		miAplicacion.consultar1();
-//		
-//		  miAplicacion.consultar2(); miAplicacion.consultar3();
-//		 miAplicacion.consultar4(); miAplicacion.consultar5();
-//		  miAplicacion.estadoEquipos(); 
-//		miAplicacion.agregarEquipo();
-//		 
-//		 
-//		 miAplicacion.buscarEquipo();
-		// miAplicacion.eliminarEquipo();
-		//miAplicacion.rangoIp();
 	}
 
 	private void iniciar() {

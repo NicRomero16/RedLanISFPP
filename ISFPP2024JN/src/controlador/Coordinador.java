@@ -13,7 +13,6 @@ import org.jgrapht.Graph;
 import excepciones.ConexionExistenteException;
 import excepciones.ConexionInexistenteException;
 import excepciones.EquipoExistenteException;
-import excepciones.EquipoInexistenteException;
 import excepciones.UbicacionExistenteException;
 import interfaz.Interfaz;
 import modelo.Conexion;
@@ -33,7 +32,6 @@ public class Coordinador {
 		this.red = red;
 	}
 
-	// interfaz grafica
 	public Graph<Equipo, Conexion> cargarDatos() {
 		return calculo.cargarDatos(listarConexiones());
 	}

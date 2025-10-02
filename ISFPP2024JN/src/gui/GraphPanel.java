@@ -16,7 +16,6 @@ import javax.swing.JPanel;
 import modelo.Conexion;
 import modelo.Equipo;
 
-@SuppressWarnings("serial")
 public class GraphPanel extends JPanel {
 
 	private List<Equipo> equipos;

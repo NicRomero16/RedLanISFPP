@@ -15,7 +15,6 @@ import controlador.Coordinador;
 import excepciones.ConexionInexistenteException;
 import excepciones.EquipoExistenteException;
 import excepciones.EquipoInexistenteException;
-import interfaz.Interfaz;
 import modelo.Conexion;
 import modelo.Equipo;
 import modelo.TipoCable;

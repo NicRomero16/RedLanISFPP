@@ -2,19 +2,23 @@ package dao.secuencial;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Formatter;
 import java.util.FormatterClosedException;
-import java.util.List;
-import java.util.TreeMap;
 import java.util.ResourceBundle;
 import java.util.Scanner;
+import java.util.TreeMap;
 
-import modelo.*;
-import dao.*;
+import dao.EquipoDAO;
+import dao.TipoEquipoDAO;
+import dao.TipoPuertoDAO;
+import dao.UbicacionDAO;
 import excepciones.EquipoExistenteException;
 import excepciones.EquipoInexistenteException;
+import modelo.Equipo;
+import modelo.TipoEquipo;
+import modelo.TipoPuerto;
+import modelo.Ubicacion;
 
 public class EquipoSecuencialDAO implements EquipoDAO {
 
