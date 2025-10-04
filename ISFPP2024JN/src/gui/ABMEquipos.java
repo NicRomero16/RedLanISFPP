@@ -228,12 +228,7 @@ public class ABMEquipos extends JPanel {
 							+ tipoPuerto.getVelocidad(),
 					String.join(", ", direccionesIP), comboBoxEstado.getSelectedItem() };
 
-			boolean estado = false;
-
-			if (comboBoxEstado.getSelectedItem() == "false")
-				estado = false;
-			else
-				estado = true;
+			boolean estado = "true".equals(String.valueOf(comboBoxEstado.getSelectedItem()));
 
 			Equipo equipo = new Equipo(campoCodigo.getText(), campoDescripcion.getText(), campoMarca.getText(),
 					campoModelo.getText(), tEquipo, ubicacion, estado);
@@ -273,6 +268,8 @@ public class ABMEquipos extends JPanel {
 
 		JLabel labelCodigo = new JLabel("Codigo de equipo");
 		JTextField campoCodigo = new JTextField(equipo.getCodigo());
+	// Ahora permitimos cambiar el código (PK). La capa de DAO migrará dependencias.
+	campoCodigo.setEditable(true);
 		crearJTextField(labelCodigo, panelFormulario, campoCodigo);
 
 		JLabel labelDescripcion = new JLabel("Descripcion del equipo");
@@ -333,12 +330,7 @@ public class ABMEquipos extends JPanel {
 			int cantidadPuertos = comboBoxPuertos.getSelectedIndex() + 1;
 			TipoPuerto tipoPuerto = coordinador.buscarTipoPuerto(comboBoxTipoPuerto.getSelectedItem().toString());
 
-			boolean estado = false;
-
-			if (comboBoxEstado.getSelectedItem() == "false")
-				estado = false;
-			else
-				estado = true;
+			boolean estado = "true".equals(String.valueOf(comboBoxEstado.getSelectedItem()));
 
 			Equipo equipoModificado = new Equipo(campoCodigo.getText(), campoDescripcion.getText(),
 					campoMarca.getText(), campoModelo.getText(), tipoEquipo, ubicacion, estado);

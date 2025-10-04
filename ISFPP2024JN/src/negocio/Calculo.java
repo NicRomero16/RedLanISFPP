@@ -55,8 +55,9 @@ public class Calculo {
 
 		redGrafo = new DefaultUndirectedWeightedGraph<>(Conexion.class);
 
-		if (conexiones.isEmpty() || conexiones == null) {
-			throw new IllegalArgumentException("No hay conexiones para cargar en el grafo.");
+		// Permitir base vacía: si no hay conexiones, dejamos el grafo vacío
+		if (conexiones == null || conexiones.isEmpty()) {
+			return redGrafo;
 		}
 
 		for (Conexion conexion : conexiones) {
@@ -76,7 +77,11 @@ public class Calculo {
 
 	public List<Equipo> mostrarEquiposIntermedios(Equipo origen, Equipo destino) throws EquipoInexistenteException {
 		actualizar();
-		List<Equipo> camino = DijkstraShortestPath.findPathBetween(redGrafo, origen, destino).getVertexList();
+		GraphPath<Equipo, Conexion> path = DijkstraShortestPath.findPathBetween(redGrafo, origen, destino);
+		if (path == null) {
+			throw new EquipoInexistenteException("No existe un camino entre " + origen.getCodigo() + " y " + destino.getCodigo());
+		}
+		List<Equipo> camino = path.getVertexList();
 
 		if (camino.size() > 2) {
 			List<Equipo> verticesIntermedios = camino.subList(1, camino.size() - 1);
@@ -97,9 +102,10 @@ public class Calculo {
 				eDestino = equipo;
 		}
 
-		List<Equipo> camino = DijkstraShortestPath.findPathBetween(redGrafo, eOrigen, eDestino).getVertexList();
-
-		return camino;
+	if (eOrigen == null || eDestino == null) return new ArrayList<>();
+	GraphPath<Equipo, Conexion> path = DijkstraShortestPath.findPathBetween(redGrafo, eOrigen, eDestino);
+	if (path == null) return new ArrayList<>();
+	return path.getVertexList();
 	}
 
 	public double velocidadMaxima(Equipo origen, Equipo destino) throws ConexionInexistenteException {

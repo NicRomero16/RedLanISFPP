@@ -113,65 +113,130 @@ public class EquipoPostgresDAO implements EquipoDAO {
     public void actualizar(Equipo original, Equipo modificado) throws SQLException {
         if (modificado.getTipoEquipo() == null) throw new RuntimeException("TipoEquipo es obligatorio.");
         if (modificado.getUbicacion() == null) throw new RuntimeException("Ubicacion es obligatoria.");
-        String codigo = original.getCodigo();
+        String codigoOld = original.getCodigo();
+        String codigoNew = modificado.getCodigo();
         try (Connection conn = ConexionPostgres.getConnection()) {
             conn.setAutoCommit(false);
             try {
-                // actualizar equipo base
-                try (PreparedStatement ps = conn.prepareStatement(SQL_UPDATE_EQUIPO)) {
-                    ps.setString(1, modificado.getDescripcion());
-                    ps.setString(2, modificado.getMarca());
-                    ps.setString(3, modificado.getModelo());
-                    ps.setBoolean(4, modificado.getEstado());
-                    ps.setString(5, modificado.getTipoEquipo().getCodigo());
-                    ps.setString(6, modificado.getUbicacion().getCodigo());
-                    ps.setString(7, codigo);
-                    int upd = ps.executeUpdate();
-                    if (upd == 0) throw new RuntimeException("Equipo no existe: " + codigo);
-                }
-
-                // reemplazar puertos
-                try (PreparedStatement del = conn.prepareStatement(SQL_DELETE_PUERTOS)) {
-                    del.setString(1, codigo);
-                    del.executeUpdate();
-                }
-                if (modificado.getCantidadPuertos() > 0) {
-                    String tipoPuertoCodigo = modificado.obtenerCodigoTipoPuerto(0);
-                    int cantidad = modificado.getCantidadPuertos();
-                    try (PreparedStatement ins = conn.prepareStatement(SQL_INSERT_PUERTO)) {
-                        ins.setString(1, codigo);
-                        ins.setString(2, tipoPuertoCodigo);
-                        ins.setInt(3, cantidad);
-                        ins.executeUpdate();
+                if (codigoNew != null && !codigoNew.equals(codigoOld)) {
+                    // PK change: migración segura
+                    // 1) Insertar nueva fila en equipo con el nuevo código
+                    try (PreparedStatement insEq = conn.prepareStatement(SQL_INSERT_EQUIPO)) {
+                        insEq.setString(1, codigoNew);
+                        insEq.setString(2, modificado.getDescripcion());
+                        insEq.setString(3, modificado.getMarca());
+                        insEq.setString(4, modificado.getModelo());
+                        insEq.setBoolean(5, modificado.getEstado());
+                        insEq.setString(6, modificado.getTipoEquipo().getCodigo());
+                        insEq.setString(7, modificado.getUbicacion().getCodigo());
+                        insEq.executeUpdate();
                     }
-                }
 
-                // reemplazar IPs
-                try (PreparedStatement del = conn.prepareStatement(SQL_DELETE_IPS)) {
-                    del.setString(1, codigo);
-                    del.executeUpdate();
-                }
-                if (modificado.getDireccionesIP() != null && !modificado.getDireccionesIP().isEmpty()) {
-                    try (PreparedStatement ins = conn.prepareStatement(SQL_INSERT_IP)) {
-                        for (String ip : modificado.getDireccionesIP()) {
-                            if (ip == null || ip.isBlank()) continue;
-                            ins.setString(1, ip);
-                            ins.setString(2, codigo);
-                            ins.addBatch();
+                    // 2) Actualizar FKs en conexiones
+                    try (PreparedStatement ps1 = conn.prepareStatement("UPDATE conexion SET equipo1_fk = ? WHERE equipo1_fk = ?")) {
+                        ps1.setString(1, codigoNew);
+                        ps1.setString(2, codigoOld);
+                        ps1.executeUpdate();
+                    }
+                    try (PreparedStatement ps2 = conn.prepareStatement("UPDATE conexion SET equipo2_fk = ? WHERE equipo2_fk = ?")) {
+                        ps2.setString(1, codigoNew);
+                        ps2.setString(2, codigoOld);
+                        ps2.executeUpdate();
+                    }
+
+                    // 3) Reemplazar puertos e IPs: borrar de OLD y crear en NEW según 'modificado'
+                    try (PreparedStatement delP = conn.prepareStatement(SQL_DELETE_PUERTOS)) {
+                        delP.setString(1, codigoOld);
+                        delP.executeUpdate();
+                    }
+                    try (PreparedStatement delI = conn.prepareStatement(SQL_DELETE_IPS)) {
+                        delI.setString(1, codigoOld);
+                        delI.executeUpdate();
+                    }
+                    if (modificado.getCantidadPuertos() > 0) {
+                        String tipoPuertoCodigo = modificado.obtenerCodigoTipoPuerto(0);
+                        int cantidad = modificado.getCantidadPuertos();
+                        try (PreparedStatement insP = conn.prepareStatement(SQL_INSERT_PUERTO)) {
+                            insP.setString(1, codigoNew);
+                            insP.setString(2, tipoPuertoCodigo);
+                            insP.setInt(3, cantidad);
+                            insP.executeUpdate();
                         }
-                        ins.executeBatch();
+                    }
+                    if (modificado.getDireccionesIP() != null && !modificado.getDireccionesIP().isEmpty()) {
+                        try (PreparedStatement insI = conn.prepareStatement(SQL_INSERT_IP)) {
+                            for (String ip : modificado.getDireccionesIP()) {
+                                if (ip == null || ip.isBlank()) continue;
+                                insI.setString(1, ip);
+                                insI.setString(2, codigoNew);
+                                insI.addBatch();
+                            }
+                            insI.executeBatch();
+                        }
+                    }
+
+                    // 4) Borrar equipo viejo
+                    try (PreparedStatement delEq = conn.prepareStatement(SQL_DELETE_EQUIPO)) {
+                        delEq.setString(1, codigoOld);
+                        delEq.executeUpdate();
+                    }
+                } else {
+                    // Misma PK: update in-place
+                    try (PreparedStatement ps = conn.prepareStatement(SQL_UPDATE_EQUIPO)) {
+                        ps.setString(1, modificado.getDescripcion());
+                        ps.setString(2, modificado.getMarca());
+                        ps.setString(3, modificado.getModelo());
+                        ps.setBoolean(4, modificado.getEstado());
+                        ps.setString(5, modificado.getTipoEquipo().getCodigo());
+                        ps.setString(6, modificado.getUbicacion().getCodigo());
+                        ps.setString(7, codigoOld);
+                        int upd = ps.executeUpdate();
+                        if (upd == 0) throw new RuntimeException("Equipo no existe: " + codigoOld);
+                    }
+
+                    // reemplazar puertos (sobre el mismo código)
+                    try (PreparedStatement del = conn.prepareStatement(SQL_DELETE_PUERTOS)) {
+                        del.setString(1, codigoOld);
+                        del.executeUpdate();
+                    }
+                    if (modificado.getCantidadPuertos() > 0) {
+                        String tipoPuertoCodigo = modificado.obtenerCodigoTipoPuerto(0);
+                        int cantidad = modificado.getCantidadPuertos();
+                        try (PreparedStatement ins = conn.prepareStatement(SQL_INSERT_PUERTO)) {
+                            ins.setString(1, codigoOld);
+                            ins.setString(2, tipoPuertoCodigo);
+                            ins.setInt(3, cantidad);
+                            ins.executeUpdate();
+                        }
+                    }
+
+                    // reemplazar IPs
+                    try (PreparedStatement del = conn.prepareStatement(SQL_DELETE_IPS)) {
+                        del.setString(1, codigoOld);
+                        del.executeUpdate();
+                    }
+                    if (modificado.getDireccionesIP() != null && !modificado.getDireccionesIP().isEmpty()) {
+                        try (PreparedStatement ins = conn.prepareStatement(SQL_INSERT_IP)) {
+                            for (String ip : modificado.getDireccionesIP()) {
+                                if (ip == null || ip.isBlank()) continue;
+                                ins.setString(1, ip);
+                                ins.setString(2, codigoOld);
+                                ins.addBatch();
+                            }
+                            ins.executeBatch();
+                        }
                     }
                 }
 
                 conn.commit();
             } catch (SQLException ex) {
                 conn.rollback();
-                throw new RuntimeException("Error al actualizar equipo " + codigo, ex);
+                throw new RuntimeException("Error al actualizar equipo " + codigoOld + " -> " + codigoNew, ex);
             } finally {
                 conn.setAutoCommit(true);
             }
         } catch (SQLException ex) {
-            throw new RuntimeException("Error de conexión al actualizar equipo " + codigo, ex);
+            throw new RuntimeException("Error de conexión al actualizar equipo " + codigoOld, ex);
         }
     }
 

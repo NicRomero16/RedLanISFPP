@@ -2,6 +2,7 @@ package dao;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 import dao.secuencial.TipoEquipoSecuencialDAO;
 import dao.secuencial.TipoPuertoSecuencialDAO;
@@ -32,13 +33,25 @@ public class FactoryDAO {
     static {
         Properties props = new Properties();
         String impl = "";
-        try (FileReader reader = new FileReader(CONFIG_FILE_PATH)) {
-            props.load(reader);
-            // Obtenemos el valor de la clave 'dao.implementacion'
-            impl = props.getProperty("dao.implementacion"); 
-        } catch (IOException e) {
-            System.err.println("ERROR: No se pudo cargar config.properties. Usando SECUENCIAL como fallback.");
-            e.printStackTrace();
+        boolean loaded = false;
+        // 1) Classpath
+        try (InputStream in = FactoryDAO.class.getClassLoader().getResourceAsStream(CONFIG_FILE_PATH)) {
+            if (in != null) {
+                props.load(in);
+                loaded = true;
+            }
+        } catch (IOException ignore) {}
+        // 2) Archivo en disco
+        if (!loaded) {
+            try (FileReader reader = new FileReader(CONFIG_FILE_PATH)) {
+                props.load(reader);
+                loaded = true;
+            } catch (IOException ignore) {}
+        }
+        if (loaded) {
+            impl = props.getProperty("dao.implementacion");
+        } else {
+            System.err.println("ERROR: No se pudo cargar config.properties ni desde classpath ni desde disco. Usando SECUENCIAL como fallback.");
             impl = "SECUENCIAL"; // Valor de fallback
         }
         // El valor final se almacena en mayúsculas para simplificar las comparaciones

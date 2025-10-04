@@ -1,5 +1,6 @@
 package servicios;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import dao.ConexionDAO;
@@ -16,17 +17,32 @@ public class ConexionServiceImpl implements ConexionService {
 
     @Override
     public void insertar(Conexion conexion) {
-        conexionDAO.insertar(conexion);
+        try {
+			conexionDAO.insertar(conexion);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     @Override
     public void actualizar(Conexion conexion) {
-        conexionDAO.actualizar(conexion);
+        try {
+			conexionDAO.actualizar(conexion);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     @Override
     public void borrar(Conexion conexion) {
-        conexionDAO.borrar(conexion);
+        try {
+			conexionDAO.borrar(conexion);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     @Override

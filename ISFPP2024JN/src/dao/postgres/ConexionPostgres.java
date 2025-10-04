@@ -1,7 +1,9 @@
 package dao.postgres;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -16,19 +18,37 @@ public class ConexionPostgres {
 
     static {
         Properties p = new Properties();
-        try (FileReader r = new FileReader(PROPS_PATH)) {
-            p.load(r);
+        boolean loaded = false;
+        // 1) Intentar classpath (src/main/resources o raiz del jar)
+        try (InputStream in = ConexionPostgres.class.getClassLoader().getResourceAsStream(PROPS_PATH)) {
+            if (in != null) {
+                p.load(in);
+                loaded = true;
+            }
+        } catch (IOException ignore) {}
+
+        // 2) Intentar archivo en disco (raíz del proyecto/ejecución)
+        if (!loaded) {
+            File f = new File(PROPS_PATH);
+            if (f.exists()) {
+                try (FileReader r = new FileReader(f)) {
+                    p.load(r);
+                    loaded = true;
+                } catch (IOException ignore) {}
+            }
+        }
+
+        if (loaded) {
             URL  = p.getProperty("db.url");
             USER = p.getProperty("db.user");
             PASS = p.getProperty("db.password");
-            if (URL == null || USER == null || PASS == null) {
-                throw new IllegalStateException("Faltan propiedades db.url/db.user/db.password en " + PROPS_PATH);
-            }
-        } catch (IOException e) {
-            System.err.println("No se pudo leer " + PROPS_PATH + ". Usando valores por defecto.");
-            URL  = "jdbc:postgresql://localhost:5432/RedLan";
-            USER = "postgres";
-            PASS = "postgres";
+        }
+
+        if (!loaded || URL == null || USER == null || PASS == null) {
+            System.err.println("No se pudo leer postgres.properties o faltan claves. Usando valores por defecto.");
+            URL  = (URL  != null ? URL  : "jdbc:postgresql://localhost:5432/RedLan");
+            USER = (USER != null ? USER : "postgres");
+            PASS = (PASS != null ? PASS : "postgres");
         }
     }
 

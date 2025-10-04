@@ -72,6 +72,10 @@ public class Red {
 		conexionService = new ConexionServiceImpl();
 		conexiones.addAll(conexionService.buscarTodos());
 
+		// Si cambiamos a Postgres y la BD está vacía, mantenemos estructuras vacías.
+		// Refrescar una vez para asegurar coherencia inicial.
+		refrescarDesdeBD();
+
 	}
 
 	public void agregarEquipo(Equipo equipo) throws EquipoExistenteException {
@@ -86,21 +90,29 @@ public class Red {
         equipoService.actualizar(equipo, equipoModificado);
 
         // Mantén la misma instancia para preservar referencias en conexiones
-        Equipo actual = equipos.get(equipo.getCodigo());
-        if (actual != null) {
-            actual.setDescripcion(equipoModificado.getDescripcion());
-            actual.setMarca(equipoModificado.getMarca());
-            actual.setModelo(equipoModificado.getModelo());
-            actual.setTipoEquipo(equipoModificado.getTipoEquipo());
-            actual.setUbicacion(equipoModificado.getUbicacion());
-            actual.setEstado(equipoModificado.getEstado());
+		Equipo actual = equipos.get(equipo.getCodigo());
+		if (actual != null) {
+			boolean pkCambia = !equipo.getCodigo().equals(equipoModificado.getCodigo());
+			if (pkCambia) {
+				// Mueve la entrada del mapa a la nueva clave pero conserva la MISMA instancia
+				equipos.remove(equipo.getCodigo());
+				actual.setCodigo(equipoModificado.getCodigo());
+				equipos.put(actual.getCodigo(), actual);
+			}
 
-            // Si necesitas reflejar puertos/IPs modificados:
-            actual.getPuertos().clear();
-            actual.getPuertos().addAll(equipoModificado.getPuertos());
-            actual.getDireccionesIP().clear();
-            actual.getDireccionesIP().addAll(equipoModificado.getDireccionesIP());
-        }
+			actual.setDescripcion(equipoModificado.getDescripcion());
+			actual.setMarca(equipoModificado.getMarca());
+			actual.setModelo(equipoModificado.getModelo());
+			actual.setTipoEquipo(equipoModificado.getTipoEquipo());
+			actual.setUbicacion(equipoModificado.getUbicacion());
+			actual.setEstado(equipoModificado.getEstado());
+
+			// Reflejar puertos/IPs modificados:
+			actual.getPuertos().clear();
+			actual.getPuertos().addAll(equipoModificado.getPuertos());
+			actual.getDireccionesIP().clear();
+			actual.getDireccionesIP().addAll(equipoModificado.getDireccionesIP());
+		}
     }
 
 	public void eliminarEquipo(Equipo equipo) {

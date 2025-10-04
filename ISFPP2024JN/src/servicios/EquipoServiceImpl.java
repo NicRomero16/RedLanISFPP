@@ -1,5 +1,6 @@
 package servicios;
 
+import java.sql.SQLException;
 import java.util.TreeMap;
 
 import modelo.Equipo;
@@ -16,17 +17,35 @@ public class EquipoServiceImpl implements EquipoService{
     }
     @Override
     public void insertar(Equipo equipo) {
-        equipoDAO.insertar(equipo);				
+        try {
+			equipoDAO.insertar(equipo);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}				
     }
 
     @Override
     public void actualizar(Equipo equipo, Equipo equipoModificado) {
-        equipoDAO.actualizar(equipo,equipoModificado);						
+        try {
+			equipoDAO.actualizar(equipo,equipoModificado);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (RuntimeException e){
+            // Algunas implementaciones envuelven SQLException en RuntimeException
+            e.printStackTrace();
+            throw e;
+        }                        
     }
 
     @Override
     public void borrar(Equipo equipo) {
-        equipoDAO.borrar(equipo);
+        try {
+			equipoDAO.borrar(equipo);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     @Override

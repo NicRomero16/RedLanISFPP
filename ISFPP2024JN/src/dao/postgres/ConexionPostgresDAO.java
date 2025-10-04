@@ -40,6 +40,14 @@ public class ConexionPostgresDAO implements ConexionDAO {
         "JOIN tipo_puerto tp2 ON tp2.codigo = c.tipopuerto2_fk " +
         "JOIN tipo_cable  tc  ON tc.codigo  = c.tipocable_fk";
 
+    // Para enriquecer equipos con puertos e IPs como en EquipoPostgresDAO
+    private static final String SQL_SELECT_PUERTOS_FOR_EQUIPO =
+        "SELECT p.tipo_puerto_fk, tp.descripcion, tp.velocidad, p.cantidad " +
+        "FROM puerto p JOIN tipo_puerto tp ON tp.codigo = p.tipo_puerto_fk " +
+        "WHERE p.equipo_fk = ?";
+    private static final String SQL_SELECT_IPS_FOR_EQUIPO =
+        "SELECT ip_address FROM direccion_ip WHERE equipo_fk = ?";
+
     @Override
     public void insertar(Conexion conexion) throws SQLException {
         try (Connection conn = ConexionPostgres.getConnection();
@@ -127,13 +135,17 @@ public class ConexionPostgresDAO implements ConexionDAO {
                 TipoEquipo te2 = new TipoEquipo(rs.getString("te2_cod"), rs.getString("te2_desc"));
                 Ubicacion  ub2 = new Ubicacion (rs.getString("u2_cod"),  rs.getString("u2_desc"));
 
-                // Equipos completos (usar alias e1_cod/e1_desc y e2_cod/e2_desc)
+                // Equipos con datos básicos
                 Equipo e1 = new Equipo(rs.getString("e1_cod"), rs.getString("e1_desc"),
                                        rs.getString("e1_marca"), rs.getString("e1_modelo"),
                                        te1, ub1, rs.getBoolean("e1_estado"));
                 Equipo e2 = new Equipo(rs.getString("e2_cod"), rs.getString("e2_desc"),
                                        rs.getString("e2_marca"), rs.getString("e2_modelo"),
                                        te2, ub2, rs.getBoolean("e2_estado"));
+
+                // Enriquecer con puertos e IPs
+                fillPuertosEIPs(conn, e1);
+                fillPuertosEIPs(conn, e2);
 
                 TipoPuerto tp1 = new TipoPuerto(
                     rs.getString("tipopuerto1_fk"),
@@ -159,5 +171,32 @@ public class ConexionPostgresDAO implements ConexionDAO {
             e.printStackTrace();
         }
         return list;
+    }
+
+    // Helpers
+    private void fillPuertosEIPs(Connection conn, Equipo e) throws SQLException {
+        // Puertos
+        try (PreparedStatement ps = conn.prepareStatement(SQL_SELECT_PUERTOS_FOR_EQUIPO)) {
+            ps.setString(1, e.getCodigo());
+            try (ResultSet rpu = ps.executeQuery()) {
+                while (rpu.next()) {
+                    String tpCod = rpu.getString("tipo_puerto_fk");
+                    String tpDesc = rpu.getString("descripcion");
+                    int velocidad = rpu.getInt("velocidad");
+                    int cantidad = rpu.getInt("cantidad");
+                    modelo.TipoPuerto tp = new modelo.TipoPuerto(tpCod, tpDesc, velocidad);
+                    e.agregarPuerto(cantidad, tp);
+                }
+            }
+        }
+        // IPs
+        try (PreparedStatement ps = conn.prepareStatement(SQL_SELECT_IPS_FOR_EQUIPO)) {
+            ps.setString(1, e.getCodigo());
+            try (ResultSet rip = ps.executeQuery()) {
+                while (rip.next()) {
+                    e.agregarDireccionIP(rip.getString("ip_address"));
+                }
+            }
+        }
     }
 }
